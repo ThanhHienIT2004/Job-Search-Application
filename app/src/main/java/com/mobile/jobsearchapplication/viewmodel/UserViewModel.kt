@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 
-import com.example.app.model.MenuItem
-import com.example.app.model.BottomNavItem
+import com.mobile.jobsearchapplication.model.MenuItem
+import com.mobile.jobsearchapplication.model.BottomNavItem
 
 class UserViewModel : ViewModel() {
 
