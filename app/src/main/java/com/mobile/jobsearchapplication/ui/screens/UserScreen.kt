@@ -18,7 +18,7 @@ fun UserScreen(navController: NavController, viewModel: UserViewModel = viewMode
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Header()
+            Header(navController)
             MenuList(viewModel, navController)
         }
     }
