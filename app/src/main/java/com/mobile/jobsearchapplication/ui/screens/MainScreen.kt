@@ -4,7 +4,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.mobile.jobsearchapplication.ui.screens.components.*
 
@@ -20,10 +19,11 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.PostJob.route) { PostScreen() }
             composable(Screen.Notifications.route) { NotificationScreen(navController) }
             composable(Screen.Account.route) { UserScreen(navController) }
+            composable("detail_user_screen") { DetailUserScreen(navController) }
 
         }
     }

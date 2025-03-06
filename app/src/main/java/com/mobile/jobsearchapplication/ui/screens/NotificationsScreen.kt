@@ -148,3 +148,10 @@ fun formatDateTime(date: Long): String {
     val localDateTime = Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.currentSystemDefault())
     return "${localDateTime.dayOfMonth}/${localDateTime.monthNumber}/${localDateTime.year} ${localDateTime.hour}:${localDateTime.minute}"
 }
+
+data class NotificationData(
+    val imageRes: Int,
+    val title: String,
+    val description: String,
+    val time: Long
+)
