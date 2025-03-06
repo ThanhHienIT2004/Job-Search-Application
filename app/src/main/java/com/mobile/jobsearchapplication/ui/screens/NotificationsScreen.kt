@@ -9,12 +9,5 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NotificationScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "🔔 Thông Báo", style = MaterialTheme.typography.titleLarge)
-    }
+
 }

@@ -5,23 +5,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+
+// Định nghĩa các màn hình
+sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
+    object Home : Screen("home", Icons.Filled.Home, "Home")
+    object PostJob : Screen("post_job", Icons.Filled.AddCircle, "Đăng tin")
+    object Notifications : Screen("notifications", Icons.Filled.Notifications, "Thông báo")
+    object Account : Screen("account", Icons.Filled.AccountCircle, "Tài khoản")
+}
+
+val bottomNavItems = listOf(Screen.Home, Screen.PostJob, Screen.Notifications, Screen.Account)
 
 @Composable
-fun BottomNavigationBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    val bottomNavItems = listOf(
-        Icons.Filled.Home to "Home",
-        Icons.Filled.AddCircle to "Đăng tin",
-        Icons.Filled.Notifications to "Thông báo",
-        Icons.Filled.AccountCircle to "Tài khoản"
-    )
+fun BottomNavigationBar(navController: NavController) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     NavigationBar {
-        bottomNavItems.forEachIndexed { index, item ->
+        bottomNavItems.forEach { screen ->
             NavigationBarItem(
-                icon = { Icon(item.first, contentDescription = item.second) },
-                label = { Text(item.second) },
-                selected = selectedTab == index,
-                onClick = { onTabSelected(index) }
+                icon = { Icon(screen.icon, contentDescription = screen.title) },
+                label = { Text(screen.title) },
+                selected = currentRoute == screen.route,
+                onClick = {
+                    navController.navigate(screen.route) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             )
         }
     }

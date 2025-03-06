@@ -1,32 +1,29 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavigationBar
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.*
+import com.mobile.jobsearchapplication.ui.screens.components.*
 
 @Composable
 fun MainScreen() {
-    var selectedTab by remember { mutableStateOf(0) }
+    val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(selectedTab) { selectedTab = it } }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
-        // Dùng Modifier.padding(paddingValues) để áp dụng khoảng cách từ Scaffold
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues) // Đã sử dụng paddingValues
-                .padding(16.dp) // Thêm padding bổ sung nếu cần
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(paddingValues)
         ) {
-            when (selectedTab) {
-                0 -> Text(text = "🏠 Trang chủ", style = MaterialTheme.typography.titleLarge)
-                1 -> PostScreen() // ➕ Đăng Tin
-                2 -> NotificationScreen() // 🔔 Thông Báo
-                3 -> UserScreen() // 👤 Tài Khoản
-            }
+            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.PostJob.route) { PostScreen() }
+            composable(Screen.Notifications.route) { NotificationScreen() }
+            composable(Screen.Account.route) { UserScreen() }
         }
     }
 }
