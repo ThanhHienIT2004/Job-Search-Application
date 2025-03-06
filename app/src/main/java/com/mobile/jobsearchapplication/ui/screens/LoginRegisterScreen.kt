@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
@@ -38,11 +39,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mobile.jobsearchapplication.R
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun LoginRegisterScreen() {
@@ -51,14 +52,20 @@ fun LoginRegisterScreen() {
 
     val animatedOffset by animateFloatAsState(
         targetValue = if (rawOffset < 50f) 0f else 100f,
-        animationSpec = tween(durationMillis = 10),
-        label = "",
+        animationSpec = tween(durationMillis = 200), // Làm mượt animation
+        label = ""
+    )
+
+    // Scale thay đổi khi kéo
+    val scale by animateFloatAsState(
+        targetValue = if (rawOffset in 10f..90f) 1.1f else 1f,
+        animationSpec = tween(durationMillis = 200),
+        label = ""
     )
 
     Box {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(50.dp))
@@ -71,6 +78,11 @@ fun LoginRegisterScreen() {
                     .background(Color.LightGray)
                     .padding(2.dp)
                     .offset(x = animatedOffset.dp)
+                    .graphicsLayer(
+                        scaleX = scale,  // Scale ngang
+                        scaleY = scale,  // Scale dọc
+                        rotationZ = (rawOffset / 100f) * 10f  // Xoay nhẹ khi kéo
+                    )
                     .draggable(
                         state = rememberDraggableState { delta ->
                             rawOffset = (rawOffset + delta).coerceIn(0f, 100f)
@@ -88,95 +100,96 @@ fun LoginRegisterScreen() {
                         .padding(horizontal = 10.dp, vertical = 10.dp)
                         .wrapContentSize(Alignment.Center)
                 ) {
-                    Text(if (isLogin) "Đăng nhập" else "Đăng kí", color = Color.White, fontSize = 18.sp)
-
+                    Text(if (isLogin) "Đăng nhập" else "Đăng ký", color = Color.White, fontSize = 18.sp)
                 }
             }
             Spacer(Modifier.height(5.dp))
             // form login or register
-            if (isLogin) LoginForm() else RegisterScreen()
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = 8.dp
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .background(Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (isLogin) LoginForm() else RegisterScreen()
+
+                    Divider(
+                        color = Color.Gray,
+                        thickness = 1.dp, // Độ dày của đường
+                        modifier = Modifier.fillMaxWidth(0.8f) // Chiều dài full màn hình
+                    )
+                    Text("Hoặc đăng nhập với", fontSize = 12.sp, color = Color.Gray)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // Google Login Button
+                        Button(
+                            onClick = { /* Xử lý đăng nhập Google */ },
+                            colors = ButtonDefaults.buttonColors(Color.White),
+                            modifier = Modifier.border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_google),
+                                contentDescription = "Google",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+
+                        // Facebook Login Button
+                        Button(
+                            onClick = { /* Xử lý đăng nhập Facebook */ },
+                            colors = ButtonDefaults.buttonColors(Color.White),
+                            modifier = Modifier.border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_facebook),
+                                contentDescription = "Facebook",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 fun LoginForm() {
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
+    Box{
+        Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            elevation = 8.dp
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            OutlinedTextField(value = "", onValueChange = {}, label = { Text("Email") })
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(value = "", onValueChange = {}, label = { Text("Mật khẩu") })
+
+            // 👉 Nút "Quên mật khẩu?"
+            TextButton(onClick = { /* Xử lý quên mật khẩu */ },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White, shape = RoundedCornerShape(16.dp))
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                OutlinedTextField(value = "", onValueChange = {}, label = { Text("Email") })
-                Spacer(modifier = Modifier.height(8.dp))
+                    .wrapContentWidth(Alignment.Start)) {
+                Text("Quên mật khẩu?", color = Color.Blue, fontSize = 9.sp)
+            }
 
-                OutlinedTextField(value = "", onValueChange = {}, label = { Text("Mật khẩu") })
-
-                // 👉 Nút "Quên mật khẩu?"
-                TextButton(onClick = { /* Xử lý quên mật khẩu */ },
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .wrapContentWidth(Alignment.Start)) {
-                    Text("Quên mật khẩu?", color = Color.Blue, fontSize = 9.sp)
-                }
-
-                Button(onClick = { /* Xử lý đăng nhập */ }) {
-                    Text("Đăng nhập")
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-                Divider(
-                    color = Color.Gray,
-                    thickness = 1.dp, // Độ dày của đường
-                    modifier = Modifier.fillMaxWidth(0.8f) // Chiều dài full màn hình
-                )
-
-
-                Text("Hoặc đăng nhập với", fontSize = 12.sp, color = Color.Gray)
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // Google Login Button
-                    Button(
-                        onClick = { /* Xử lý đăng nhập Google */ },
-                        colors = ButtonDefaults.buttonColors(Color.White),
-                        modifier = Modifier.border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_google),
-                            contentDescription = "Google",
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-
-                    // Facebook Login Button
-                    Button(
-                        onClick = { /* Xử lý đăng nhập Facebook */ },
-                        colors = ButtonDefaults.buttonColors(Color.White),
-                        modifier = Modifier.border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_facebook),
-                            contentDescription = "Facebook",
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
+            Button(onClick = { /* Xử lý đăng nhập */ }) {
+                Text("Đăng nhập")
             }
         }
     }
@@ -189,62 +202,68 @@ fun RegisterScreen() {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
+    var isCheckedClause by remember { mutableStateOf(false) }
+
+    Box{
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            elevation = 8.dp
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            OutlinedTextField(
+                value = fullName,
+                onValueChange = { fullName = it },
+                label = { Text("Họ và tên") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Mật khẩu") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Xác nhận mật khẩu") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = fullName,
-                    onValueChange = { fullName = it },
-                    label = { Text("Họ và tên") },
-                    modifier = Modifier.fillMaxWidth()
+                Checkbox(
+                    checked = isCheckedClause,
+                    onCheckedChange = { isCheckedClause = it }
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Mật khẩu") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = { Text("Xác nhận mật khẩu") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = { /* Xử lý đăng ký */ },
-                    modifier = Modifier.fillMaxWidth(0.4f)
-                ) {
-                    Text("Đăng ký")
+                TextButton(onClick = { /* Xử lý mở điều khoản */ }) {
+                    Text("Tôi đồng ý với Điều khoản", color = Color.Gray, fontSize = 12.sp)
                 }
+            }
+
+            Button(
+                onClick = { /* Xử lý đăng ký */ },
+                modifier = Modifier.fillMaxWidth(0.4f)
+            ) {
+                Text("Đăng ký")
             }
         }
     }
