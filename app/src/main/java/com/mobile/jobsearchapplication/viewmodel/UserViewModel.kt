@@ -16,11 +16,4 @@ class UserViewModel : ViewModel() {
         MenuItem(Icons.Filled.Settings, "Cài đặt tài khoản"),
         MenuItem(Icons.Filled.ExitToApp, "Đăng xuất")
     )
-
-    val bottomNavItems = listOf(
-        BottomNavItem(Icons.Filled.Home, "Home"),
-        BottomNavItem(Icons.Filled.AddCircle, "Đăng tin"),
-        BottomNavItem(Icons.Filled.Notifications, "Thông báo"),
-        BottomNavItem(Icons.Filled.AccountCircle, "Tài khoản")
-    )
 }
