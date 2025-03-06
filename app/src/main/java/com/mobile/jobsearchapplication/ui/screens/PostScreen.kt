@@ -15,6 +15,6 @@ fun PostScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "➕ Đăng Tiddn", style = MaterialTheme.typography.titleLarge)
+        Text(text = "➕ Đăng Tinnnnn", style = MaterialTheme.typography.titleLarge)
     }
 }
