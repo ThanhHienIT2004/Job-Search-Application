@@ -5,11 +5,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.screens.components.*
 
 @Composable
-fun UserScreen(viewModel: UserViewModel = viewModel()) {
+fun UserScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
@@ -21,7 +22,8 @@ fun UserScreen(viewModel: UserViewModel = viewModel()) {
                 .padding(paddingValues)
         ) {
             Header()
-            MenuList(viewModel)
+            // ✅ Truyền navController vào MenuList
+            MenuList(viewModel, navController)
         }
     }
 }
