@@ -11,5 +11,15 @@ import com.mobile.jobsearchapplication.ui.screens.components.*
 
 @Composable
 fun UserScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
-
+    Scaffold(
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Header()
+            MenuList(viewModel, navController)
+        }
+    }
 }
