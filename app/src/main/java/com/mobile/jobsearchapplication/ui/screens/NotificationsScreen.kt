@@ -49,7 +49,6 @@ fun NotificationScreen(navController: NavController, viewModel: UserViewModel = 
                 title = { Text("Thông báo", fontSize = 24.sp, fontWeight = FontWeight.Bold) }
             )
         },
-        bottomBar = { BottomNavigationBar(viewModel, selectedTab) { selectedTab = it } }
     ) { paddingValues ->
         Column(
             modifier = Modifier

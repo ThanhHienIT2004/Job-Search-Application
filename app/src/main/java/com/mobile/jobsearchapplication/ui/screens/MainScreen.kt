@@ -22,8 +22,9 @@ fun MainScreen() {
         ) {
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.PostJob.route) { PostScreen() }
-            composable(Screen.Notifications.route) { NotificationScreen() }
-            composable(Screen.Account.route) { UserScreen() }
+            composable(Screen.Notifications.route) { NotificationScreen(navController) }
+            composable(Screen.Account.route) { UserScreen(navController) }
+
         }
     }
 }
