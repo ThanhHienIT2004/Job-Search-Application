@@ -15,28 +15,26 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavigationBar
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-
     val userNotifications = remember {
         mutableStateListOf(
-            NotificationData(R.drawable.baseline_notifications_24, "Công việc mới", "Công ty ABC vừa đăng tin tuyển dụng", dateFormat.parse("05/03/2025 12:45")!!),
-            NotificationData(R.drawable.baseline_notifications_24, "Lời mời phỏng vấn", "Bạn có lời mời phỏng vấn từ Công ty DEF", dateFormat.parse("04/03/2025 18:00")!!)
+            NotificationData(R.drawable.baseline_notifications_24, "Công việc mới", "Công ty ABC vừa đăng tin tuyển dụng", 1733175900000L),
+            NotificationData(R.drawable.baseline_notifications_24, "Lời mời phỏng vấn", "Bạn có lời mời phỏng vấn từ Công ty DEF", 1733099400000L)
         )
     }
 
     val recruiterNotifications = remember {
         mutableStateListOf(
-            NotificationData(R.drawable.baseline_notifications_24, "Nhà tuyển dụng đã xem hồ sơ", "Nhà tuyển dụng XYZ đã xem hồ sơ của bạn", dateFormat.parse("05/03/2025 10:30")!!),
-            NotificationData(R.drawable.baseline_notifications_24, "Tin tuyển dụng mới", "Công ty GHI đã đăng tin tuyển dụng mới", dateFormat.parse("03/03/2025 14:20")!!)
+            NotificationData(R.drawable.baseline_notifications_24, "Nhà tuyển dụng đã xem hồ sơ", "Nhà tuyển dụng XYZ đã xem hồ sơ của bạn", 1733154600000L),
+            NotificationData(R.drawable.baseline_notifications_24, "Tin tuyển dụng mới", "Công ty GHI đã đăng tin tuyển dụng mới", 1733000400000L)
         )
     }
 
@@ -103,8 +101,7 @@ fun NotificationSection(title: String, notifications: Map<String, List<Notificat
 
 @Composable
 fun NotificationItem(notification: NotificationData) {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-    val formattedTime = dateFormat.format(notification.time)
+    val formattedTime = formatDateTime(notification.time) // ✅ Gọi hàm định dạng thời gian
 
     Row(
         modifier = Modifier
@@ -128,26 +125,26 @@ fun NotificationItem(notification: NotificationData) {
     }
 }
 
+
+// ✅ Hàm nhóm thông báo theo ngày
 fun groupNotificationsByDate(notifications: List<NotificationData>): Map<String, List<NotificationData>> {
     return notifications.groupBy { getRelativeDate(it.time) }
 }
 
-fun getRelativeDate(date: Date): String {
-    val now = Calendar.getInstance()
-    val today = Calendar.getInstance()
-    val yesterday = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
+// ✅ Hàm xác định ngày tương đối (Hôm nay, Hôm qua, ...)
+fun getRelativeDate(date: Long): String {
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val notificationDate = Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return when {
-        sdf.format(date) == sdf.format(today.time) -> "Hôm nay"
-        sdf.format(date) == sdf.format(yesterday.time) -> "Hôm qua"
-        else -> sdf.format(date)
+        notificationDate == now -> "Hôm nay"
+        notificationDate == now.minus(1, DateTimeUnit.DAY) -> "Hôm qua"
+        else -> "${notificationDate.dayOfMonth}/${notificationDate.monthNumber}/${notificationDate.year}"
     }
 }
 
-data class NotificationData(
-    val imageRes: Int,
-    val title: String,
-    val description: String,
-    val time: Date
-)
+// ✅ Định dạng ngày giờ khi hiển thị thông báo
+fun formatDateTime(date: Long): String {
+    val localDateTime = Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.currentSystemDefault())
+    return "${localDateTime.dayOfMonth}/${localDateTime.monthNumber}/${localDateTime.year} ${localDateTime.hour}:${localDateTime.minute}"
+}
