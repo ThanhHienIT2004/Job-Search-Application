@@ -5,15 +5,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.screens.components.*
 
 @Composable
-fun UserScreen(viewModel: UserViewModel = viewModel()) {
-    var selectedTab by remember { mutableStateOf(0) }
-
+fun UserScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     Scaffold(
-        bottomBar = { BottomNavigationBar(viewModel, selectedTab) { selectedTab = it } }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -21,7 +19,7 @@ fun UserScreen(viewModel: UserViewModel = viewModel()) {
                 .padding(paddingValues)
         ) {
             Header()
-            MenuList(viewModel)
+            MenuList(viewModel, navController)
         }
     }
 }

@@ -8,10 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
-fun MenuList(viewModel: UserViewModel) {
+fun MenuList(viewModel: UserViewModel = viewModel(), navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         viewModel.menuItems.forEach { item ->
             MenuItemRow(item)
