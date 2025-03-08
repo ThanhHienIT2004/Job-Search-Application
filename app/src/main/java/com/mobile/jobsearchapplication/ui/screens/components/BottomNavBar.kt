@@ -38,4 +38,5 @@ fun BottomNavigationBar(navController: NavController) {
             )
         }
     }
+
 }
