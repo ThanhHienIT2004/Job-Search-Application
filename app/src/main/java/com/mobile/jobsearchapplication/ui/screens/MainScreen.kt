@@ -25,7 +25,7 @@ fun MainScreen() {
             composable(Screen.Account.route) { UserScreen(navController) }
             composable("detail_user_screen") { DetailUserScreen(navController) }
             composable("login_register") { LoginRegisterScreen(navController) }
-            composable("detail_job_screen") { JobDetailScreen(navController) }
+//            composable("detail_job_screen") { JobDetailScreen(navController,jobTitle) }
 
         }
     }

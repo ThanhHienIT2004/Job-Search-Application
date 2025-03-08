@@ -36,10 +36,10 @@ fun JobDetailScreen(navController: NavHostController, jobTitle: String?) {
                 .padding(16.dp)
         ){
             // Thanh điều hướng trên cùng
-            TopBar()
+            TopBar(navController) // ✅ Truyền navController vào đây
 
             // Nội dung chi tiết công việc
-            JobDetailContent()
+            JobDetailContent(jobTitle)
         }
 
         // Thanh hành động phía dưới
@@ -49,6 +49,7 @@ fun JobDetailScreen(navController: NavHostController, jobTitle: String?) {
         )
     }
 }
+
 
 @Composable
 fun BottomActionBar(modifier: Modifier = Modifier) {
@@ -121,7 +122,7 @@ fun BottomActionBar(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun TopBar() {
+fun TopBar(navControler: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,7 +158,7 @@ fun TopBar() {
 }
 
 @Composable
-fun JobDetailContent() {
+fun JobDetailContent(jobTitle: String?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
