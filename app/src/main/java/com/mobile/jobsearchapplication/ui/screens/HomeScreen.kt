@@ -46,9 +46,11 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
 
 @Composable
 fun SearchBar() {
+    var searchText by remember { mutableStateOf("") }
+
     TextField(
-        value = "",
-        onValueChange = {},
+        value = searchText,
+        onValueChange = { searchText = it },
         placeholder = { Text("Tìm kiếm việc làm...") },
         leadingIcon = {
             Icon(
@@ -65,9 +67,16 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent, // Xóa underline khi focus
+            unfocusedIndicatorColor = Color.Transparent, // Xóa underline khi không focus
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
+
+
 
 
 

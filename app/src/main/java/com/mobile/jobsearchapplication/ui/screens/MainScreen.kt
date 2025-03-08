@@ -21,10 +21,15 @@ fun MainScreen() {
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.PostJob.route) { PostScreen() }
+<<<<<<< Updated upstream
             composable(Screen.Notifications.route) { NotificationsScreen(navController) }
+=======
+            composable(Screen.Notifications.route) { NotificationsScreen() }
+>>>>>>> Stashed changes
             composable(Screen.Account.route) { UserScreen(navController) }
             composable("detail_user_screen") { DetailUserScreen(navController) }
             composable("login_register") { LoginRegisterScreen(navController) }
+            composable("detail_job_screen") { JobDetailScreen(navController) }
 
         }
     }
