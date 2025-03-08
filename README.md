@@ -35,9 +35,11 @@ npm start
 Hướng dẫn sử dụng dự án.
 
 ## 🤝 Đóng Góp
-Cách thức đóng góp vào dự án.
+-  Trần Nguyễn Thành Hiển : Thanh Nav, Đăng tin
+- Nguyễn Hoàng Huy : UserDetail, Notification, Home
+- Phạm Đăng Quang : Login, Logout
 
 ## 👨‍💻 Thành Viên Nhóm
 - Trần Nguyễn Thành Hiển - [GitHub](https://github.com/ThanhHienIT2004)
-- Nguyễn Hoàng Huy - [GitHub](https://github.com/user2)
-- Phạm Đăng Quang - [GitHub](https://github.com/user3)
+- Nguyễn Hoàng Huy - [GitHub](https://github.com/Huy2304)
+- Phạm Đăng Quang - [GitHub](https://github.com/Quangnotfun)
