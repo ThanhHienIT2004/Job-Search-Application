@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.Color
@@ -29,10 +31,7 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
         Column(
             modifier = Modifier
                 .fillMaxSize()
-
         ) {
-
-
             // Thanh tìm kiếm
             SearchBar()
 
@@ -67,7 +66,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(40.dp),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent, // Xóa underline khi focus
             unfocusedIndicatorColor = Color.Transparent, // Xóa underline khi không focus
@@ -76,21 +75,40 @@ fun SearchBar() {
     )
 }
 
+// ---------------
 
-
-
-
+// hàm tạo tiêu đề cho từng section
 @Composable
-fun JobCategorySection() {
-    Column(modifier = Modifier.padding(16.dp)) {
+fun TitleSection(title: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
-            text = "Việc làm theo nghề ➝",
+            text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
 
+        Spacer(Modifier.weight(1f))
+
+        Text(
+            text = "Mở rộng",
+            fontSize = 12.sp,
+            modifier = Modifier.clickable {  }
+
+        )
+    }
+}
+
+// -------------- Việc làm theo nghề -----------------------
+@Composable
+fun JobCategorySection() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        TitleSection("Việc làm theo nghề")
+
         LazyRow(modifier = Modifier.padding(top = 8.dp)) {
-            val categories = listOf("Bán hàng", "Tạp vụ", "Giúp việc")
+            val categories = listOf("Bán hàng", "Tạp vụ", "Giúp việc", "t", "t", "t", "t")
 
             items(categories.size) { index ->
                 JobCategoryItem(category = categories[index])
@@ -106,7 +124,7 @@ fun JobCategoryItem(category: String) {
         modifier = Modifier.padding(8.dp)
     ) {
         Surface(
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier.size(64.dp),
             color = Color.LightGray,
             shape = RoundedCornerShape(50)
         ) {
@@ -117,17 +135,14 @@ fun JobCategoryItem(category: String) {
     }
 }
 
+// -------------- Việc dành cho bạn -----------------------
 @Composable
 fun RecommendedJobsList() {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Việc dành cho bạn ➝",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
+        TitleSection("Việc dành cho bạn")
 
         LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-            val jobs = listOf("Job 1", "Job 2", "Job 3")
+            val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3")
 
             items(jobs.size) { index ->
                 JobListItem(jobTitle = jobs[index])
@@ -139,29 +154,35 @@ fun RecommendedJobsList() {
 @Composable
 fun JobListItem(jobTitle: String) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.padding(8.dp)) {
             Surface(
-                modifier = Modifier.size(60.dp),
+                modifier = Modifier.size(64.dp),
                 color = Color.LightGray,
                 shape = RoundedCornerShape(8.dp)
             ) {
                 // Placeholder hình ảnh
             }
+
             Spacer(modifier = Modifier.width(16.dp))
+            // content
             Column {
-                Text(text = jobTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = "Mô tả công việc ngắn gọn...", fontSize = 12.sp, color = Color.Gray)
+                Text(text = jobTitle, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Search, contentDescription = "Clock", tint = Color.Gray)
+                    Icon(Icons.Filled.AccessTime, contentDescription = "Clock", tint = Color.Gray, modifier = Modifier.size(12.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Today • 23 min", fontSize = 12.sp, color = Color.Gray)
                 }
+
+                Spacer(Modifier.height(4.dp))
+                Text(text = "Mô tả công việc ngắnádasdasdasdasdjasgdjaghdgahjsdgjassgdjgsdjasgsjdgjjhagsdjagsjdgajsdgasgdjhagsjdhgajgdjasgdjasghdasjdgajsghdjagsdhagsjdgáhgdjas gọn...", fontSize = 12.sp, color = Color.Gray)
+
             }
         }
     }
