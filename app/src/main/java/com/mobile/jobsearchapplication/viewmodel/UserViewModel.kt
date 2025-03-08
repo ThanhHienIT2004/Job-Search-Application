@@ -34,30 +34,9 @@ class UserViewModel : ViewModel() {
 fun MenuList(viewModel: UserViewModel, navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         viewModel.menuItems.forEach { item ->
-            MenuItemRow(item, navController)
+            MenuItemRow(item,navController)
             Spacer(modifier = Modifier.height(12.dp))
         }
-    }
-}
-
-@Composable
-fun MenuItemRow(item: MenuItem, navController: NavController) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                println("Clicked on: ${item.title}") // Debug: Kiểm tra xem có nhận click không
-                if (item.title == "Hồ sơ") {
-                    println("Navigating to detailUserScreen") // Debug: Kiểm tra điều hướng
-                    navController.navigate("detailUserScreen")
-                }
-            }
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(item.icon, contentDescription = item.title, modifier = Modifier.size(32.dp))
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = item.title)
     }
 }
 

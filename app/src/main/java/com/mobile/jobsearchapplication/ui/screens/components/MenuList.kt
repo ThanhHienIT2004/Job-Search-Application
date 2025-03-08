@@ -16,18 +16,23 @@ import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 fun MenuList(viewModel: UserViewModel = viewModel(), navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         viewModel.menuItems.forEach { item ->
-            MenuItemRow(item)
+            MenuItemRow(item, navController) // Truyền navController vào đây
             Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
 
+
 @Composable
-fun MenuItemRow(item: com.mobile.jobsearchapplication.model.MenuItem) {
+fun MenuItemRow(item: com.mobile.jobsearchapplication.model.MenuItem, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Xử lý click */ }
+            .clickable {
+                if (item.title == "Hồ sơ") {
+                    navController.navigate("detail_user_screen") // Chuyển sang màn hình Hồ sơ
+                }
+            }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -36,3 +41,4 @@ fun MenuItemRow(item: com.mobile.jobsearchapplication.model.MenuItem) {
         Text(text = item.title, fontSize = 18.sp)
     }
 }
+

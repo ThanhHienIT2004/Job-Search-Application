@@ -18,7 +18,7 @@ fun NotificationItem(notification: NotificationData) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
