@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(navController: NavHostController) {
+fun JobDetailScreen(navController: NavHostController, jobTitle: String?) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -32,8 +32,9 @@ fun JobDetailScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 64.dp) // Tạo khoảng trống cho thanh bar bên dưới
-        ) {
+                .background(Color.White)
+                .padding(16.dp)
+        ){
             // Thanh điều hướng trên cùng
             TopBar()
 
