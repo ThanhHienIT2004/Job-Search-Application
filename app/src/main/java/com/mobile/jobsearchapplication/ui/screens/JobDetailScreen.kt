@@ -23,25 +23,106 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(navController: NavHostController ) {
-    Column(
+fun JobDetailScreen(navController: NavHostController, jobTitle: String?) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Thanh điều hướng trên cùng
-        TopBar()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp)
+        ){
+            // Thanh điều hướng trên cùng
+            TopBar(navController) // ✅ Truyền navController vào đây
 
-        // Nội dung chi tiết công việc
-        JobDetailContent()
+            // Nội dung chi tiết công việc
+            JobDetailContent(jobTitle)
+        }
 
         // Thanh hành động phía dưới
-        BottomActionBar()
+        BottomActionBar(
+            modifier = Modifier
+                .align(Alignment.BottomCenter) // Căn thanh bar xuống dưới cùng
+        )
     }
 }
 
+
 @Composable
-fun TopBar() {
+fun BottomActionBar(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .background(Color(0xFFF6F0FF)) // Màu nền nhạt
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Nút gọi
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý gọi */ }
+                .padding(horizontal = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Call,
+                contentDescription = "Gọi",
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = "Gọi",
+                fontSize = 12.sp,
+                color = Color.Black
+            )
+        }
+
+        // Nút chat
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý chat */ }
+                .padding(horizontal = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Chat,
+                contentDescription = "Chat",
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = "Chat",
+                fontSize = 12.sp,
+                color = Color.Black
+            )
+        }
+
+        // Nút ứng tuyển
+        Button(
+            onClick = { /* TODO: Xử lý ứng tuyển */ },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFF6F61) // Màu cam đỏ
+            ),
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.height(48.dp)
+        ) {
+            Text(
+                text = "Ứng tuyển",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+
+@Composable
+fun TopBar(navControler: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +158,7 @@ fun TopBar() {
 }
 
 @Composable
-fun JobDetailContent() {
+fun JobDetailContent(jobTitle: String?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
