@@ -20,7 +20,7 @@ fun MainScreen() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }
-            composable(Screen.PostJob.route) { PostScreen() }
+            composable(Screen.PostJob.route) { PostScreen(navController) }
             composable(Screen.Notifications.route) { NotificationsScreen(navController) }
             composable(Screen.Account.route) { UserScreen(navController) }
             composable("detail_user_screen") { DetailUserScreen(navController) }
