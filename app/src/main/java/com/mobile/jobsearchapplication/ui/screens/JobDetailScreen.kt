@@ -24,29 +24,21 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
+    BaseScreen(
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
+        actionsTop = { TopBarIcon() },
+        actionsBot = { BottomActionBar() }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(16.dp)
+                .padding(padding)
         ){
-            // Thanh điều hướng trên cùng
-            TopBar(navController) // ✅ Truyền navController vào đây
-
             // Nội dung chi tiết công việc
             JobDetailContent(jobTitle)
         }
-
-        // Thanh hành động phía dưới
-        BottomActionBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter) // Căn thanh bar xuống dưới cùng
-        )
     }
 }
 
@@ -122,39 +114,22 @@ fun BottomActionBar(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun TopBar(navControler: NavHostController) {
-    Row(
+fun TopBarIcon() {
+    Icon(
+        imageVector = Icons.Default.FavoriteBorder,
+        contentDescription = "Like",
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            modifier = Modifier
-                .size(24.dp)
-                .clickable { /* TODO: Xử lý back */ }
-        )
-        Row {
-            Icon(
-                imageVector = Icons.Default.FavoriteBorder,
-                contentDescription = "Like",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* TODO: Xử lý yêu thích */ }
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Icon(
-                imageVector = Icons.Default.Share,
-                contentDescription = "Share",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { /* TODO: Xử lý chia sẻ */ }
-            )
-        }
-    }
+            .size(24.dp)
+            .clickable { /* TODO: Xử lý yêu thích */ }
+    )
+    Spacer(modifier = Modifier.width(16.dp))
+    Icon(
+        imageVector = Icons.Default.Share,
+        contentDescription = "Share",
+        modifier = Modifier
+            .size(24.dp)
+            .clickable { /* TODO: Xử lý chia sẻ */ }
+    )
 }
 
 @Composable

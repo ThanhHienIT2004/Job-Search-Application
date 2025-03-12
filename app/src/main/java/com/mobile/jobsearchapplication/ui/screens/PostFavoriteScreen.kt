@@ -28,7 +28,7 @@ fun PostFaveriteScreen(navController: NavController, viewModel: UserViewModel = 
             val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
 
             items(jobs.size) { index ->
-                JobListItem(jobTitle = jobs[index])
+                JobListItem(navController, jobTitle = jobs[index])
             }
         }
     }

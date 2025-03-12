@@ -18,14 +18,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun JobListItem(jobTitle: String) {
+fun JobListItem(navController: NavController, jobTitle: String) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { navController.navigate("job_detail_screen/${jobTitle}") },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -159,10 +161,10 @@ fun ActionButtons(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun JobListItemPreview() {
-    MaterialTheme {
-        JobListItem(jobTitle = "Mobile Developer")
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun JobListItemPreview() {
+//    MaterialTheme {
+//        JobListItem(jobTitle = "Mobile Developer")
+//    }
+//}

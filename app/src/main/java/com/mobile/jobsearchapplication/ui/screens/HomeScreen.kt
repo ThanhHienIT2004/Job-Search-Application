@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,7 +12,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -19,25 +22,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mobile.jobsearchapplication.ui.screens.components.BottomNavigationBar
 import com.mobile.jobsearchapplication.ui.screens.components.JobListItem
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        // Thanh tìm kiếm
-        SearchBar()
+    BaseScreen(
+        actionsTop = { SearchBar() },
+        actionsBot = { BottomNavigationBar(navController) }
+    ) { padding ->
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .padding(padding)
+        ) {
+            // Thanh tìm kiếm
 
+            // Danh mục công việc theo nghề
+            JobCategorySection(navController)
 
-        // Danh mục công việc theo nghề
-        JobCategorySection(navController)
-
-        // Danh sách việc làm gợi ý
-        RecommendedJobsList()
+            // Danh sách việc làm gợi ý
+            RecommendedJobsList(navController)
+        }
     }
+
 }
 
 @Composable
@@ -164,7 +172,7 @@ fun JobCategoryItem(category: String, isCheckedIconJob: Boolean, onToggleIconJob
 
 // -------------- Việc dành cho bạn -----------------------
 @Composable
-fun RecommendedJobsList() {
+fun RecommendedJobsList(navController: NavController) {
     var isExpanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -176,7 +184,7 @@ fun RecommendedJobsList() {
             val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
 
             items(jobs.size) { index ->
-                JobListItem(jobTitle = jobs[index])
+                JobListItem(navController, jobTitle = jobs[index])
             }
         }
     }
