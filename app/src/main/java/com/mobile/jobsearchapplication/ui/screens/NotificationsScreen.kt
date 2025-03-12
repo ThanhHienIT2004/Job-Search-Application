@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.mobile.jobsearchapplication.ui.screens.components.BottomBarCustom
 import com.mobile.jobsearchapplication.ui.screens.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
 import com.mobile.jobsearchapplication.viewmodel.NotificationViewModel
@@ -21,8 +22,7 @@ fun NotificationsScreen(navController: NavController,viewModel: NotificationView
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
     BaseScreen (
-        showBackButton = true,
-        onBackClick = { navController.popBackStack() }
+        actionsBot = { BottomBarCustom(navController) }
     ) { paddingValues ->
         Column(
             modifier = Modifier

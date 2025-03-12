@@ -22,15 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavigationBar
+import com.mobile.jobsearchapplication.ui.screens.components.BottomBarCustom
 import com.mobile.jobsearchapplication.ui.screens.components.JobListItem
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = { SearchBar() },
-        actionsBot = { BottomNavigationBar(navController) }
+        actionsTop = { SearchBar()  },
+        actionsBot = { BottomBarCustom(navController) }
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize()
@@ -51,11 +51,10 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
 @Composable
 fun SearchBar() {
     var searchText by remember { mutableStateOf("") }
-
     TextField(
         value = searchText,
         onValueChange = { searchText = it },
-        placeholder = { Text("Tìm kiếm việc làm...") },
+        placeholder = { Text("Tìm kiếm việc làm...", fontSize = 12.sp) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Menu,
@@ -70,7 +69,7 @@ fun SearchBar() {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(5.dp),
         shape = RoundedCornerShape(40.dp),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent, // Xóa underline khi focus

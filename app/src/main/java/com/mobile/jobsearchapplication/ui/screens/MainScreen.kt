@@ -12,7 +12,7 @@ fun MainScreen() {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomBarCustom(navController) }
     ) { paddingValues ->
         NavHost(
             navController = navController,

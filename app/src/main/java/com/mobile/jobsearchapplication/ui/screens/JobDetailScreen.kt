@@ -25,8 +25,6 @@ import androidx.navigation.NavHostController
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
-        showBackButton = true,
-        onBackClick = { navController.popBackStack() },
         actionsTop = { TopBarIcon() },
         actionsBot = { BottomActionBar() }
     ) { padding ->
