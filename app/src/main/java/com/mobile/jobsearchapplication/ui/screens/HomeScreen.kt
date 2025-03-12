@@ -1,6 +1,5 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import android.health.connect.datatypes.units.Length
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,25 +9,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavigationBar
-import com.mobile.jobsearchapplication.ui.screens.components.Header
-import com.mobile.jobsearchapplication.ui.screens.components.MenuList
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
-import com.mobile.jobsearchapplication.model.Job
+import com.mobile.jobsearchapplication.ui.screens.components.JobListItem
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
@@ -39,6 +30,7 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
     ) {
         // Thanh tìm kiếm
         SearchBar()
+
 
         // Danh mục công việc theo nghề
         JobCategorySection(navController)
@@ -112,7 +104,7 @@ fun JobCategorySection(navController: NavController) {
     var isExpanded by remember { mutableStateOf(false) }
     var isCheckedIconJob by remember { mutableStateOf(false) }
     var selectedJob by remember { mutableStateOf<String?>(null) }
-    val categories = listOf("Bán hàng", "Tạp vụ", "Giúp việc", "t", "t", "t", "t", "t", "t")
+    val categories = listOf("Bán Hàng", "Tạp vụ", "Giúp việc", "t", "t", "t", "t", "t", "t")
 
     Column(modifier = Modifier.padding(16.dp)) {
         TitleSection("Việc làm theo nghề", isExpanded = isExpanded) {
@@ -181,7 +173,7 @@ fun RecommendedJobsList() {
         }
 
         LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-            val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3")
+            val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
 
             items(jobs.size) { index ->
                 JobListItem(jobTitle = jobs[index])
@@ -190,100 +182,4 @@ fun RecommendedJobsList() {
     }
 }
 
-@Composable
-fun JobListItem(jobTitle: String) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                modifier = Modifier.size(64.dp),
-                color = Color.LightGray,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                // Placeholder hình ảnh
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            // content
-            Column {
-                // title
-                Text(text = jobTitle, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-
-                // AccessTime
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.AccessTime, contentDescription = "Clock", tint = Color.Gray, modifier = Modifier.size(12.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Today • 23 min", fontSize = 12.sp, color = Color.Gray)
-                }
-
-                // salary
-                Spacer(Modifier.height(4.dp))
-                Text("Lương: 1000000 - 12000000", fontSize = 14.sp)
-
-                // describe
-                Spacer(Modifier.height(4.dp))
-                ExpandableText("Mô tả công việc ngắnádasdasdasdasdjasgdjaghdgahjsdgjassgdjgsdjasgsjdgjjhagsdjagsjdgajsdgasgdjhagsjdhgajgdjasgdjasghdasjdgajsghdjagsdhagsjdgáhgdjas gọn...")
-
-                // button
-                ButtonForJobItem()
-            }
-        }
-    }
-}
-
-// Giới hạn kí tự trong mô tả
-@Composable
-fun ExpandableText(text: String, maxLength: Int = 50) {
-    var expanded by remember { mutableStateOf(false) }
-
-    val displayText = if (expanded || text.length <= maxLength) text else  text.take(maxLength)
-
-    Column {
-        Text (
-            text = displayText, fontSize = 12.sp
-        )
-    }
-
-    if (text.length > maxLength) {
-        Text(
-            text = if (expanded) "Thu gọn" else "Xem thêm", fontSize = 12.sp,
-            modifier = Modifier.clickable { expanded = !expanded }
-        )
-    }
-}
-
-// Các nút trong bài đăng
-@Composable
-fun ButtonForJobItem() {
-    var isCheckedFav by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = {isCheckedFav = !isCheckedFav}) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = "FavoriteButton",
-                tint = if (isCheckedFav) Color.Red else Color.White
-            )
-        }
-
-        IconButton(onClick = {}) {
-            Icon(
-                imageVector = Icons.Filled.Send,
-                contentDescription = "SendButton",
-                tint = Color.Blue
-            )
-        }
-    }
-}
 
