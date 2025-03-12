@@ -10,8 +10,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 // Định nghĩa các màn hình
 sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
-    object Home : Screen("home", Icons.Filled.Home, "Trang chủ")
-    object PostJob : Screen("post_job", Icons.Filled.AddCircle, "Đăng tin")
+    object Home : Screen("home_screen", Icons.Filled.Home, "Trang chủ")
+    object PostJob : Screen("post_screen", Icons.Filled.AddCircle, "Đăng tin")
     object Notifications : Screen("notifications", Icons.Filled.Notifications, "Thông báo")
     object Account : Screen("account", Icons.Filled.AccountCircle, "Tài khoản")
 }

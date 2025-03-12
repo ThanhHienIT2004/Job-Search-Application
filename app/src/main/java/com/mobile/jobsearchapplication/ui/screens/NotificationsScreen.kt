@@ -20,8 +20,9 @@ fun NotificationsScreen(navController: NavController,viewModel: NotificationView
     val groupedUserNotifications = NotificationUtils.groupNotificationsByDate(userNotifications)
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
-    Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text("Thông báo") }) }
+    BaseScreen (
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() }
     ) { paddingValues ->
         Column(
             modifier = Modifier

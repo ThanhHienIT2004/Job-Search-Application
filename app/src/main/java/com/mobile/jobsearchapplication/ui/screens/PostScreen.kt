@@ -16,138 +16,145 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.screens.components.*
 import com.mobile.jobsearchapplication.viewmodel.PostViewModel
 
 
 @Composable
-fun PostScreen(viewModel: PostViewModel = viewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        // 🟢 Header
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
+    BaseScreen(
+        "Đăng tin",
+        true,
+        onBackClick = { navController.navigate("home_screen")}
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "Đăng tin", fontSize = 20.sp, color = Color(0xFFFFA500))
-            IconButton(onClick = { /* Đóng màn hình */ }) {
-                Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Close")
-            }
-        }
-
-        Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
-
-        // 🟢 Thông tin nhà tuyển dụng
-        Text(text = "THÔNG TIN NHÀ TUYỂN DỤNG", fontSize = 16.sp, color = Color.Gray)
-
-        Row(modifier = Modifier.padding(vertical = 8.dp)) {
-            var selectedType by remember { mutableStateOf("Cá nhân") }
-
-            Button(
-                onClick = { selectedType = "Cá nhân" },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedType == "Cá nhân") Color(0xFFFFA500) else Color.LightGray
-                )
+            // 🟢 Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Cá nhân", color = if (selectedType == "Cá nhân") Color.White else Color.Black)
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(
-                onClick = { selectedType = "Công ty" },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedType == "Công ty") Color(0xFFFFA500) else Color.LightGray
-                )
-            ) {
-                Text("Công ty", color = if (selectedType == "Công ty") Color.White else Color.Black)
-            }
-        }
-
-
-
-        CustomTextField(label = "Tên hộ kinh doanh", value = "") {}
-
-        CustomTextField(label = "Địa chỉ", value = "") {}
-
-        Box(modifier = Modifier.fillMaxWidth().height(100.dp).clickable { /* Chọn ảnh */ }) {
-            Image(painter = painterResource(id = R.drawable.ic_image), contentDescription = "Hình ảnh nơi làm việc")
-            Text(text = "Hình nơi làm việc", modifier = Modifier.align(Alignment.Center))
-        }
-
-        // 🟢 Nội dung đăng tuyển
-        Text(text = "NỘI DUNG ĐĂNG TUYỂN", fontSize = 16.sp, color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
-
-        CustomTextField(label = "Tiêu đề tin đăng", value = viewModel.title) { viewModel.title = it }
-
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CustomTextField(
-                label = "Số lượng tuyển dụng",
-                value = viewModel.jobQuantity,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
-            ) {
-                if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
-                    viewModel.jobQuantity = it
-                }
-            }
-        }
-
-        CustomTextField(label = "Mô tả công việc", value = viewModel.description, maxLines = 4) { viewModel.description = it }
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CustomTextField(
-                label = "Lương tối thiểu",
-                value = viewModel.salaryMin,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
-            ) {
-                if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
-                    viewModel.salaryMin = it
+                Text(text = "Đăng tin", fontSize = 20.sp, color = Color(0xFFFFA500))
+                IconButton(onClick = { /* Đóng màn hình */ }) {
+                    Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Close")
                 }
             }
 
-            CustomTextField(
-                label = "Lương tối đa",
-                value = viewModel.salaryMax,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
-            ) {
-                if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
-                    viewModel.salaryMax = it
-                }
-            }
-        }
+            Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
+            // 🟢 Thông tin nhà tuyển dụng
+            Text(text = "THÔNG TIN NHÀ TUYỂN DỤNG", fontSize = 16.sp, color = Color.Gray)
 
-        Text(text = "Giới tính", modifier = Modifier.padding(top = 8.dp))
-        Row {
-            listOf("Không yêu cầu", "Nam", "Nữ").forEach { option ->
-                Row(
-                    modifier = Modifier.clickable { viewModel.gender = option }.padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                var selectedType by remember { mutableStateOf("Cá nhân") }
+
+                Button(
+                    onClick = { selectedType = "Cá nhân" },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedType == "Cá nhân") Color(0xFFFFA500) else Color.LightGray
+                    )
                 ) {
-                    RadioButton(selected = viewModel.gender == option, onClick = { viewModel.gender = option })
-                    Text(text = option)
+                    Text("Cá nhân", color = if (selectedType == "Cá nhân") Color.White else Color.Black)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Button(
+                    onClick = { selectedType = "Công ty" },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedType == "Công ty") Color(0xFFFFA500) else Color.LightGray
+                    )
+                ) {
+                    Text("Công ty", color = if (selectedType == "Công ty") Color.White else Color.Black)
                 }
             }
-        }
 
-        DropdownMenuField(label = "Trình độ học vấn", options = listOf("Không yêu cầu", "Trung cấp", "Cao đẳng", "Đại học"), selectedOption = viewModel.educationLevel) { viewModel.educationLevel = it }
-        DropdownMenuField(label = "Kinh nghiệm làm việc", options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm"), selectedOption = viewModel.experience) { viewModel.experience = it }
 
-        CustomTextField(label = "Thông tin khác", value = viewModel.additionalInfo) { viewModel.additionalInfo = it }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.submitPost() }, modifier = Modifier.fillMaxWidth()) {
-            Text("Đăng tin")
+            CustomTextField(label = "Tên hộ kinh doanh", value = "") {}
+
+            CustomTextField(label = "Địa chỉ", value = "") {}
+
+            Box(modifier = Modifier.fillMaxWidth().height(100.dp).clickable { /* Chọn ảnh */ }) {
+                Image(painter = painterResource(id = R.drawable.ic_image), contentDescription = "Hình ảnh nơi làm việc")
+                Text(text = "Hình nơi làm việc", modifier = Modifier.align(Alignment.Center))
+            }
+
+            // 🟢 Nội dung đăng tuyển
+            Text(text = "NỘI DUNG ĐĂNG TUYỂN", fontSize = 16.sp, color = Color.Gray, modifier = Modifier.padding(top = 16.dp))
+
+            CustomTextField(label = "Tiêu đề tin đăng", value = viewModel.title) { viewModel.title = it }
+
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CustomTextField(
+                    label = "Số lượng tuyển dụng",
+                    value = viewModel.jobQuantity,
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                ) {
+                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                        viewModel.jobQuantity = it
+                    }
+                }
+            }
+
+            CustomTextField(label = "Mô tả công việc", value = viewModel.description, maxLines = 4) { viewModel.description = it }
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CustomTextField(
+                    label = "Lương tối thiểu",
+                    value = viewModel.salaryMin,
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                ) {
+                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                        viewModel.salaryMin = it
+                    }
+                }
+
+                CustomTextField(
+                    label = "Lương tối đa",
+                    value = viewModel.salaryMax,
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                ) {
+                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                        viewModel.salaryMax = it
+                    }
+                }
+            }
+
+
+            Text(text = "Giới tính", modifier = Modifier.padding(top = 8.dp))
+            Row {
+                listOf("Không yêu cầu", "Nam", "Nữ").forEach { option ->
+                    Row(
+                        modifier = Modifier.clickable { viewModel.gender = option }.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected = viewModel.gender == option, onClick = { viewModel.gender = option })
+                        Text(text = option)
+                    }
+                }
+            }
+
+            DropdownMenuField(label = "Trình độ học vấn", options = listOf("Không yêu cầu", "Trung cấp", "Cao đẳng", "Đại học"), selectedOption = viewModel.educationLevel) { viewModel.educationLevel = it }
+            DropdownMenuField(label = "Kinh nghiệm làm việc", options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm"), selectedOption = viewModel.experience) { viewModel.experience = it }
+
+            CustomTextField(label = "Thông tin khác", value = viewModel.additionalInfo) { viewModel.additionalInfo = it }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { viewModel.submitPost() }, modifier = Modifier.fillMaxWidth()) {
+                Text("Đăng tin")
+            }
         }
     }
 }

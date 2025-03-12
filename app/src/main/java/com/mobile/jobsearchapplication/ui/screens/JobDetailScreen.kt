@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(navController: NavHostController, jobTitle: String?) {
+fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -183,12 +183,14 @@ fun JobDetailContent(jobTitle: String?) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Tiêu đề công việc
-        Text(
-            text = "TUYỂN SV LÀM PART TIME",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            color = Color.Black
-        )
+        jobTitle?.let {
+            Text(
+                text = it,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = Color.Black
+            )
+        }
         Spacer(modifier = Modifier.height(4.dp))
 
         // Mức lương
