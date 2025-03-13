@@ -32,35 +32,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.model.Job
+import com.mobile.jobsearchapplication.ui.screens.components.BackButton
+import com.mobile.jobsearchapplication.ui.screens.components.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.screens.components.Screen
 
 @Composable
 fun PostFilterScreen(navController: NavController, query: String) {
     var selectedFilter by remember { mutableStateOf("Tất cả") }  // Trạng thái lưu bộ lọc
 
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = { navController.navigate(Screen.Home.route) }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBackIosNew,
-                    contentDescription = null
-                )
-            }
-
-            Spacer(Modifier.weight(0.6f))
-            Text(query, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.weight(1f))
+    BaseScreen (
+        title = query,
+        actionsTop = { BackButton(navController) },
+        actionsBot = {
+            BottomNavBarCustom(navController)
         }
+    )
+    {
 
-        // Truyền selectedFilter vào FilterSection
-        FilterSection(selectedFilter = selectedFilter) { selected ->
-            selectedFilter = selected
-        }
     }
 }
 

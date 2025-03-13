@@ -25,7 +25,9 @@ import com.mobile.jobsearchapplication.viewmodel.PostViewModel
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
-        "Đăng tin"
+        actionsTop = { BackButton(navController) },
+        title = "Đăng tin"
+
     ) { padding ->
         Column(
             modifier = Modifier
@@ -33,19 +35,7 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // 🟢 Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "Đăng tin", fontSize = 20.sp, color = Color(0xFFFFA500))
-                IconButton(onClick = { /* Đóng màn hình */ }) {
-                    Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Close")
-                }
-            }
-
-            Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // 🟢 Thông tin nhà tuyển dụng
             Text(text = "THÔNG TIN NHÀ TUYỂN DỤNG", fontSize = 16.sp, color = Color.Gray)

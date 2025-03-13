@@ -1,7 +1,6 @@
 package com.mobile.jobsearchapplication.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,14 +10,15 @@ import com.mobile.jobsearchapplication.ui.screens.components.*
 
 @Composable
 fun UserScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
-    Scaffold(
-    ) { paddingValues ->
+    BaseScreen (
+        title = "Hồ sơ của bạn",
+        actionsBot = { BottomNavBarCustom(navController) }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
         ) {
-            Header(navController)
             MenuList(viewModel, navController)
         }
     }

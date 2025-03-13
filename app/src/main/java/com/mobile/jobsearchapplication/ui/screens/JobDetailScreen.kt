@@ -21,11 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.mobile.jobsearchapplication.ui.screens.components.BackButton
 
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
-        actionsTop = { TopBarIcon() },
+        actionsTop = {
+            BackButton(navController)
+            TopBarIcon()
+        },
         actionsBot = { BottomActionBar() }
     ) { padding ->
         Column(

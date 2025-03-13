@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 
 // Định nghĩa các màn hình
 sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
@@ -49,7 +50,7 @@ sealed class Screen(val route: String, val icon: ImageVector, val title: String)
 val bottomNavItems = listOf(Screen.Home, Screen.PostJob, Screen.Notifications, Screen.Account)
 
 @Composable
-fun BottomBarCustom(navController: NavController) {
+fun BottomNavBarCustom(navController: NavController) {
     val currRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Box(
@@ -72,7 +73,7 @@ fun BottomBarCustom(navController: NavController) {
         ) {
             bottomNavItems.forEach { screen ->
                 if (screen.route == currRoute)
-                    CurrIconBottomNav()
+                    CurrIconBottomNav(screen.route, screen.icon, screen.title, navController)
                 else
                     IconBottonNav(screen.route, screen.icon, screen.title, navController)
             }
@@ -86,11 +87,11 @@ fun IconBottonNav(route: String, icon: ImageVector, label: String, navController
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IconButton(
-            onClick = {navController.navigate((route)) {
+            onClick = { navController.navigate((route)) {
                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                 launchSingleTop = true
                 restoreState = true
-            }},
+            } },
             modifier = Modifier
                 .size(48.dp) // Tăng kích thước để chứa cả icon + text
                 .clip(CircleShape)
@@ -113,14 +114,19 @@ fun IconBottonNav(route: String, icon: ImageVector, label: String, navController
 }
 
 @Composable
-fun CurrIconBottomNav() {
+fun CurrIconBottomNav(route: String, icon: ImageVector, label: String, navController: NavController) {
     Box (
         modifier = Modifier
             .fillMaxHeight()
             .wrapContentWidth(Alignment.CenterHorizontally)
     ) {
         IconButton(
-            onClick = {},
+            onClick = { navController.navigate((route)) {
+                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+            },
             modifier = Modifier
                 .size(56.dp) // Đặt kích thước cho nút tròn
                 .offset(y = (-10).dp)
@@ -129,15 +135,15 @@ fun CurrIconBottomNav() {
                 .border(1.dp, Color(0xFF6C37B4), CircleShape)
         ) {
             Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Home",
+                imageVector = icon,
+                contentDescription = label,
                 modifier = Modifier.size(44.dp),
                 tint = Color(0xFF340E64)
             )
         }
 
         Text(
-            text = "Trang chủ",
+            text = label,
             color = Color(0xFF562B88),
             fontSize = 12.sp,
             modifier = Modifier
@@ -150,6 +156,7 @@ fun CurrIconBottomNav() {
 @Composable
 fun Prev() {
     MaterialTheme {
-//        BottomBarCustom(navController = Co)
+        val navController = rememberNavController()
+        BottomNavBarCustom(navController)
     }
 }
