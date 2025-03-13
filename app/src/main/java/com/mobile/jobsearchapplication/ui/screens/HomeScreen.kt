@@ -277,13 +277,15 @@ fun ButtonForJobItem() {
             )
         }
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+        }) {
             Icon(
                 imageVector = Icons.Filled.Send,
-                contentDescription = "SendButton",
+                contentDescription = "Xem chi tiết công việc",
                 tint = Color.Blue
             )
         }
+
     }
 }
 

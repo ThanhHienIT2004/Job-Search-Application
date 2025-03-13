@@ -31,6 +31,11 @@ fun MainScreen() {
                 val query = backStackEntry.arguments?.getString("query") ?: ""
                 PostFilterScreen(navController, query)
             }
+
+            composable("job_detail_screen/{jobId}") { backStackEntry ->
+                val jobId = backStackEntry.arguments?.getString("jobId") ?: "Không xác định"
+                JobDetailScreen(jobId)
+            }
         }
     }
 }
