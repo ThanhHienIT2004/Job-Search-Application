@@ -1,142 +1,263 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.R
+import androidx.navigation.NavHostController
 
 @Composable
-fun JobDetailScreen(jobId: String) {
-    Scaffold(
-        topBar = {
-            JobDetailTopBar()
-        },
-        bottomBar = {
-            JobDetailBottomBar()
-        }
-    ) { paddingValues ->
+fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
+    BaseScreen(
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
+        actionsTop = { TopBarIcon() },
+        actionsBot = { BottomActionBar() }
+    ) { padding ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp)
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(padding)
+        ){
+            // Nội dung chi tiết công việc
+            JobDetailContent(jobTitle)
+        }
+    }
+}
+
+
+@Composable
+fun BottomActionBar(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .background(Color(0xFFF6F0FF)) // Màu nền nhạt
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Nút gọi
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý gọi */ }
+                .padding(horizontal = 8.dp)
         ) {
-            // Placeholder Image
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(Color.LightGray)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_image),
-                    contentDescription = "Job Image",
-                    modifier = Modifier.align(Alignment.Center),
-                    tint = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Job Title & Salary
-            Text(
-                text = "TUYỂN SV LÀM PART TIME",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+            Icon(
+                imageVector = Icons.Default.Call,
+                contentDescription = "Gọi",
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
             )
             Text(
-                text = "35.000 - 40.000 đ / ngày",
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Job Description
-            Text(
-                text = "Body text for your whole article or post. We’ll put in some lorem ipsum to show how a filled-out page might look:",
-                fontSize = 14.sp,
+                text = "Gọi",
+                fontSize = 12.sp,
                 color = Color.Black
+            )
+        }
+
+        // Nút chat
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý chat */ }
+                .padding(horizontal = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Chat,
+                contentDescription = "Chat",
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = "Chat",
+                fontSize = 12.sp,
+                color = Color.Black
+            )
+        }
+
+        // Nút ứng tuyển
+        Button(
+            onClick = { /* TODO: Xử lý ứng tuyển */ },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFF6F61) // Màu cam đỏ
+            ),
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.height(48.dp)
+        ) {
+            Text(
+                text = "Ứng tuyển",
+                color = Color.White,
+                fontSize = 14.sp
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun JobDetailTopBar() {
-    TopAppBar(
-        title = {},
-        navigationIcon = {
-            IconButton(onClick = { /* TODO: Xử lý quay lại */ }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Back"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { /* TODO: Xử lý yêu thích */ }) {
-                Icon(
-                    imageVector = Icons.Filled.AddCircle,
-                    contentDescription = "Favorite"
-                )
-            }
-            IconButton(onClick = { /* TODO: Xử lý chia sẻ */ }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = "Share"
-                )
-            }
-        }
+fun TopBarIcon() {
+    Icon(
+        imageVector = Icons.Default.FavoriteBorder,
+        contentDescription = "Like",
+        modifier = Modifier
+            .size(24.dp)
+            .clickable { /* TODO: Xử lý yêu thích */ }
+    )
+    Spacer(modifier = Modifier.width(16.dp))
+    Icon(
+        imageVector = Icons.Default.Share,
+        contentDescription = "Share",
+        modifier = Modifier
+            .size(24.dp)
+            .clickable { /* TODO: Xử lý chia sẻ */ }
     )
 }
 
 @Composable
-fun JobDetailBottomBar() {
+fun JobDetailContent(jobTitle: String?) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        // Ảnh minh họa (tạm dùng Box làm ảnh placeholder)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .background(Color.LightGray)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Image,
+                contentDescription = "Placeholder",
+                modifier = Modifier
+                    .size(48.dp)
+                    .align(Alignment.Center),
+                tint = Color.Gray
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Tiêu đề công việc
+        jobTitle?.let {
+            Text(
+                text = it,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = Color.Black
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Mức lương
+        Text(
+            text = "35.000 - 40.000 đ / ngày",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Mô tả công việc
+        Text(
+            text = "Body text for your whole article or post. We’ll put in some lorem ipsum to show how a filled-out page might look:",
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+    }
+}
+
+@Composable
+fun BottomActionBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFEDE7F6)) // Màu nền nhẹ
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .height(64.dp)
+            .background(Color(0xFFF6F0FF)) // Màu nền nhạt
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Nút gọi
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý gọi */ }
+                .padding(horizontal = 8.dp)
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_call),
+                imageVector = Icons.Default.Call,
                 contentDescription = "Gọi",
-                tint = Color.Black
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
             )
-            Text(text = "Gọi", fontSize = 12.sp, color = Color.Black)
+            Text(
+                text = "Gọi",
+                fontSize = 12.sp,
+                color = Color.Black
+            )
         }
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Nút chat
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .clickable { /* TODO: Xử lý chat */ }
+                .padding(horizontal = 8.dp)
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_chat),
+                imageVector = Icons.Default.Chat,
                 contentDescription = "Chat",
-                tint = Color.Black
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
             )
-            Text(text = "Chat", fontSize = 12.sp, color = Color.Black)
+            Text(
+                text = "Chat",
+                fontSize = 12.sp,
+                color = Color.Black
+            )
         }
 
+        // Nút ứng tuyển
         Button(
             onClick = { /* TODO: Xử lý ứng tuyển */ },
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1C4E9))
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFF6F61) // Màu cam đỏ
+            ),
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.height(48.dp)
         ) {
-            Text(text = "Ứng tuyển", fontSize = 16.sp, color = Color.Black)
+            Text(
+                text = "Ứng tuyển",
+                color = Color.White,
+                fontSize = 14.sp
+            )
         }
+
     }
 }
+//TopBar()	Thanh điều hướng trên cùng với icon Back, Like và Share.
+//JobDetailContent()	Nội dung chi tiết công việc: ảnh, tiêu đề, lương, mô tả.
+//BottomActionBar()	Thanh hành động phía dưới gồm các nút: Gọi, Chat và Ứng tuyển.
+//Modifier.clickable	Cho phép click vào các phần tử.
+//background()	Đặt màu nền cho phần tử.
+//Button	Tạo nút bấm với màu sắc tuỳ chỉnh.
+//Spacer	Tạo khoảng cách giữa các phần tử.

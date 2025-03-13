@@ -20,11 +20,13 @@ fun MainScreen() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Screen.Home.route) { HomeScreen(navController) }
-            composable(Screen.PostJob.route) { PostScreen() }
+            composable(Screen.PostJob.route) { PostScreen(navController) }
             composable(Screen.Notifications.route) { NotificationsScreen(navController) }
             composable(Screen.Account.route) { UserScreen(navController) }
             composable("detail_user_screen") { DetailUserScreen(navController) }
             composable("login_register") { LoginRegisterScreen(navController) }
+            composable("post_faverite") { PostFaveriteScreen(navController) }
+
 
 //            composable("detail_job_screen") { JobDetailScreen(navController) }
             composable("adv_job_search/{query}") { backStackEntry ->

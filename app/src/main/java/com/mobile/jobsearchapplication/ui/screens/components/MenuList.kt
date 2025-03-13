@@ -40,5 +40,7 @@ fun MenuItemRow(item: com.mobile.jobsearchapplication.model.MenuItem, navControl
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = item.title, fontSize = 18.sp)
     }
+
+
 }
 
