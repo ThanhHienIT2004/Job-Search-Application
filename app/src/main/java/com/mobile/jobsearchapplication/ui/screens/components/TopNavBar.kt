@@ -3,6 +3,7 @@ package com.mobile.jobsearchapplication.ui.screens.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -15,6 +16,18 @@ fun BackButton(navController: NavController) {
     ) {
         Icon(
             imageVector = Icons.Filled.Close,
+            contentDescription = "BtnBack"
+        )
+    }
+}
+
+@Composable
+fun FilterButton() {
+    IconButton(
+        onClick = {  }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.FilterList,
             contentDescription = "BtnBack"
         )
     }

@@ -42,7 +42,7 @@ fun BaseScreen (
                 modifier = Modifier.height(64.dp),
                 title = { Text(title, fontSize = 32.sp, color = Color.White) },
                 actions = actionsTop,
-                backgroundColor = Color(0xFF9D79D0)
+                backgroundColor = Color(0xFFC1A9E5)
             )
         },
         bottomBar = {

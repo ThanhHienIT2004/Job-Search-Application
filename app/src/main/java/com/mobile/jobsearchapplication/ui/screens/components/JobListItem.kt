@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun JobListItem(navController: NavController, jobTitle: String) {
@@ -36,31 +37,27 @@ fun JobListItem(navController: NavController, jobTitle: String) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Image Placeholder
-            Surface(
-                modifier = Modifier
-                    .size(60.dp)
-                    .align(Alignment.CenterVertically),
-                shape = RoundedCornerShape(8.dp),
-                color = Color.LightGray
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = jobTitle.first().uppercase(),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                // Image Placeholder
+                Surface(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .align(Alignment.CenterVertically),
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color.LightGray
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = jobTitle.first().uppercase(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // Content
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
                 Text(
                     text = jobTitle,
                     fontWeight = FontWeight.Bold,
@@ -84,6 +81,18 @@ fun JobListItem(navController: NavController, jobTitle: String) {
                         color = Color.Gray
                     )
                 }
+            }
+
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Content
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -161,10 +170,11 @@ fun ActionButtons(modifier: Modifier = Modifier) {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun JobListItemPreview() {
-//    MaterialTheme {
-//        JobListItem(jobTitle = "Mobile Developer")
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun JobListItemPreview() {
+    val navController = rememberNavController()
+    MaterialTheme {
+        JobListItem(navController, jobTitle = "Mobile Developer")
+    }
+}
