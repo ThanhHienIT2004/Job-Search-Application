@@ -32,20 +32,9 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            // 🟢 Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "Đăng tin", fontSize = 20.sp, color = Color(0xFFFFA500))
-                IconButton(onClick = { /* Đóng màn hình */ }) {
-                    Icon(painter = painterResource(id = R.drawable.ic_close), contentDescription = "Close")
-                }
-            }
 
             Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
@@ -132,19 +121,7 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                 }
             }
 
-
-            Text(text = "Giới tính", modifier = Modifier.padding(top = 8.dp))
-            Row {
-                listOf("Không yêu cầu", "Nam", "Nữ").forEach { option ->
-                    Row(
-                        modifier = Modifier.clickable { viewModel.gender = option }.padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = viewModel.gender == option, onClick = { viewModel.gender = option })
-                        Text(text = option)
-                    }
-                }
-            }
+            DropdownMenuField(label = "Giới tính", options = listOf("Không yêu cầu", "Nam", "Nữ"), selectedOption = viewModel.gender) { viewModel.gender = it }
 
             DropdownMenuField(label = "Trình độ học vấn", options = listOf("Không yêu cầu", "Trung cấp", "Cao đẳng", "Đại học"), selectedOption = viewModel.educationLevel) { viewModel.educationLevel = it }
             DropdownMenuField(label = "Kinh nghiệm làm việc", options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm"), selectedOption = viewModel.experience) { viewModel.experience = it }

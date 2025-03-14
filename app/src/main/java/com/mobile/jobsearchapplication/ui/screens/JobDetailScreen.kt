@@ -3,6 +3,7 @@ package com.mobile.jobsearchapplication.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,7 +12,6 @@ import androidx.compose.ui.unit.dp
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -22,12 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
+
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
-        actionsTop = { TopBarIcon() },
         actionsBot = { BottomActionBar() }
     ) { padding ->
         Column(
@@ -113,77 +113,100 @@ fun BottomActionBar(modifier: Modifier = Modifier) {
 }
 
 
-@Composable
-fun TopBarIcon() {
-    Icon(
-        imageVector = Icons.Default.FavoriteBorder,
-        contentDescription = "Like",
-        modifier = Modifier
-            .size(24.dp)
-            .clickable { /* TODO: Xử lý yêu thích */ }
-    )
-    Spacer(modifier = Modifier.width(16.dp))
-    Icon(
-        imageVector = Icons.Default.Share,
-        contentDescription = "Share",
-        modifier = Modifier
-            .size(24.dp)
-            .clickable { /* TODO: Xử lý chia sẻ */ }
-    )
-}
 
 @Composable
 fun JobDetailContent(jobTitle: String?) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Ảnh minh họa (tạm dùng Box làm ảnh placeholder)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .background(Color.LightGray)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Image,
-                contentDescription = "Placeholder",
+        item {
+            // Ảnh minh họa (tạm dùng Box làm ảnh placeholder)
+            Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.Center),
-                tint = Color.Gray
-            )
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .background(Color.LightGray)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Image,
+                    contentDescription = "Placeholder",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.Center),
+                    tint = Color.Gray
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
 
-        // Tiêu đề công việc
-        jobTitle?.let {
+        item {
+            // Tiêu đề công việc
+            jobTitle?.let {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.Black
+                )
+            }
+        }
+
+        item {
+            // Mức lương
             Text(
-                text = it,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black
+                text = "35.000 - 40.000 đ / ngày",
+                fontSize = 16.sp,
+                color = Color.Gray
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
 
-        // Mức lương
-        Text(
-            text = "35.000 - 40.000 đ / ngày",
-            fontSize = 16.sp,
-            color = Color.Gray
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Mô tả công việc
-        Text(
-            text = "Body text for your whole article or post. We’ll put in some lorem ipsum to show how a filled-out page might look:",
-            fontSize = 14.sp,
-            color = Color.DarkGray
-        )
+        item {
+            // Mô tả công việc
+            Text(
+                text = """Body text for yo
+                ur whole artic
+                
+                
+                
+                
+                
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                f
+                ff
+                f
+                
+                
+                
+                
+                le or
+                 post. We’ll 
+                 
+                 put in som
+                  lorem ipsu
+                  
+                  m to sho
+                  w how a filled-out 
+                  page might loo
+                  k:""",
+                fontSize = 14.sp,
+                color = Color.DarkGray
+            )
+        }
     }
 }
+
 
 @Composable
 fun BottomActionBar() {
@@ -201,7 +224,7 @@ fun BottomActionBar() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable { /* TODO: Xử lý gọi */ }
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 10.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Call,
