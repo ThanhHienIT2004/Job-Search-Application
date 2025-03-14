@@ -27,7 +27,6 @@ fun MainScreen() {
             composable("login_register") { LoginRegisterScreen(navController) }
             composable("post_faverite") { PostFaveriteScreen(navController) }
 
-
             composable("detail_job_screen") { JobDetailScreen(
                 navController,
                 jobTitle = TODO()
