@@ -1,112 +1,132 @@
-//package com.mobile.jobsearchapplication.ui.screens
-//
-//
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.border
-//import androidx.compose.foundation.clickable
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.material3.*
-//import androidx.compose.runtime.*
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.text.font.FontWeight
-//import androidx.navigation.NavHostController
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import com.mobile.jobsearchapplication.model.Job
-//import androidx.lifecycle.viewmodel.compose.viewModel
-//import com.mobile.jobsearchapplication.ui.components.JobList
-//import com.mobile.jobsearchapplication.viewmodel.JobViewModel
-//
-//@Composable
-//fun SearchScreen(navController: NavHostController) {
-//    val jobViewModel: JobViewModel = viewModel()
-//    val jobs by jobViewModel.jobs.collectAsState()
-//
-//    var searchText by remember { mutableStateOf("") }
-//
-//    Column(modifier = Modifier.fillMaxSize()) {
-//        // Dùng lại SearchBar từ HomeScreen
-//        SearchBar(
-//            searchText = searchText,
-//            onSearchTextChanged = {
-//                searchText = it
-//                jobViewModel.searchJobs(it)
-//            }
-//        )
-//
-//        // Lọc công việc và hiển thị danh sách
-//        JobList(jobs = jobs)
-//    }
-//
-//    // Tải danh sách công việc khi vào màn hình
-//    LaunchedEffect(Unit) {
-//        jobViewModel.loadJobs()
-//    }
-//}
-//
-//
-//
-//@Composable
-//fun LocationFilter() {
-//    val locations = listOf("HCM", "Cần Thơ", "Hà Nội")
-//    var selectedLocation by remember { mutableStateOf(locations[0]) }
-//
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 16.dp)
-//            .background(Color(0xFFEFEFEF), shape = RoundedCornerShape(16.dp)),
-//        horizontalArrangement = Arrangement.SpaceEvenly
-//    ) {
-//        locations.forEach { location ->
-//            Text(
-//                text = location,
-//                modifier = Modifier
-//                    .padding(8.dp)
-//                    .clickable { selectedLocation = location }
-//                    .background(
-//                        if (selectedLocation == location) Color.Blue else Color.Transparent,
-//                        shape = RoundedCornerShape(16.dp)
-//                    )
-//                    .padding(horizontal = 16.dp, vertical = 8.dp),
-//                color = if (selectedLocation == location) Color.White else Color.Black,
-//                fontWeight = FontWeight.Bold
-//            )
-//        }
-//    }
-//}
-//
-//@Composable
-//fun JobTypeFilter() {
-//    val types = listOf("Tất cả", "Phù hợp nhất", "Gần nhất")
-//    var selectedType by remember { mutableStateOf(types[0]) }
-//
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 16.dp, vertical = 8.dp),
-//        horizontalArrangement = Arrangement.SpaceEvenly
-//    ) {
-//        types.forEach { type ->
-//            Text(
-//                text = type,
-//                modifier = Modifier
-//                    .padding(4.dp)
-//                    .clickable { selectedType = type }
-//                    .border(
-//                        width = 1.dp,
-//                        color = if (selectedType == type) Color.Blue else Color.Gray,
-//                        shape = RoundedCornerShape(16.dp)
-//                    )
-//                    .padding(horizontal = 16.dp, vertical = 8.dp),
-//                color = if (selectedType == type) Color.Blue else Color.Black
-//            )
-//        }
-//    }
-//}
-//
+package com.mobile.jobsearchapplication.ui.screens
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import com.mobile.jobsearchapplication.R
+
+@Composable
+fun SearchScreen(navController: NavController) {
+    var searchText by remember { mutableStateOf("") }
+    val recentSearches = listOf(
+        "Cộng Đồng Albion Online Việt Nam",
+        "Kiệt Tuấn",
+        "BT Thu Anh",
+        "Linh Xinh",
+        "BrilliantCrypto Việt Nam",
+        "Cộng Đồng Google Ads Việt Nam",
+        "kim soo hyun",
+        "Cộng đồng Auto C# Việt Nam - Ktea",
+        "chế độ choncc",
+        "Cộng đồng Automation Browser",
+        "Ngọc Trinh",
+        "tai nạn của đàm vĩnh hưng",
+        "BLACK MMO",
+        "câu cá albion online"
+    )
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        // Thanh tìm kiếm
+        TextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            placeholder = { Text("Tìm kiếm", fontSize = 16.sp) },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color.Gray
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clip(RoundedCornerShape(40.dp)),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color(0xFF2E2E2E),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.Gray
+            )
+        )
+
+        Text(
+            text = "Mới đây",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            modifier = Modifier.padding(8.dp)
+        )
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(recentSearches.filter { it.contains(searchText, ignoreCase = true) }) { item ->
+                SearchItem(item) {
+                    searchText = it
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchItem(title: String, onSelect: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelect(title) }
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Avatar hoặc Icon (nếu không có hình thì dùng Icon mặc định)
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground), // Thay bằng hình thực tế trong drawable
+            contentDescription = "Avatar",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column {
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                color = Color.White
+            )
+            Text(
+                text = "9+ thông tin mới", // Nội dung phụ
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_delete_24), // Dấu ba chấm
+            contentDescription = "More",
+            tint = Color.Gray,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
