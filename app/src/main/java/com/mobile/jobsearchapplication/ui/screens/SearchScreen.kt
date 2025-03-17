@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.screens.components.BackButton
 
 @Composable
 fun SearchScreen(navController: NavController) {
@@ -43,30 +44,35 @@ fun SearchScreen(navController: NavController) {
     )
 
     Column(modifier = Modifier.fillMaxSize()) {
-
-        // Thanh tìm kiếm
-        TextField(
-            value = searchText,
-            onValueChange = { searchText = it },
-            placeholder = { Text("Tìm kiếm", fontSize = 16.sp) },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = Color.Gray
+        Row(){
+            BackButton(navController)
+                // Thanh tìm kiếm
+                TextField(
+                    value = searchText,
+                    onValueChange = { searchText = it },
+                    placeholder = { Text("Tìm kiếm", fontSize = 16.sp) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(40.dp)),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color(0xFF2E2E2E),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.Gray
+                    )
                 )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clip(RoundedCornerShape(40.dp)),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color(0xFF2E2E2E),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.Gray
-            )
-        )
+            }
+        }
+
+
 
         Text(
             text = "Mới đây",
@@ -84,7 +90,7 @@ fun SearchScreen(navController: NavController) {
             }
         }
     }
-}
+
 
 @Composable
 fun SearchItem(title: String, onSelect: (String) -> Unit) {
