@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mobile.jobsearchapplication.ui.screens.components.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.screens.components.JobListItem
+import com.mobile.jobsearchapplication.ui.screens.components.PostItemList
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
@@ -156,7 +156,7 @@ fun RecommendedJobsList(navController: NavController) {
             val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
 
             items(jobs.size) { index ->
-                JobListItem(navController, jobTitle = jobs[index])
+                PostItemList(navController, jobTitle = jobs[index])
             }
         }
     }
