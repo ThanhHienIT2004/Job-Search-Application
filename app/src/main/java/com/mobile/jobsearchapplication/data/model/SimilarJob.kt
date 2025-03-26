@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.model
+package com.mobile.jobsearchapplication.data.model
 
 data class SimilarJob(
     val id: Int,

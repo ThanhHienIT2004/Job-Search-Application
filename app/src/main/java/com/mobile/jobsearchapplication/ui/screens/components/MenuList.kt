@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.mobile.jobsearchapplication.data.model.MenuItem
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 
 @Composable
@@ -24,7 +25,7 @@ fun MenuList(viewModel: UserViewModel = viewModel(), navController: NavControlle
 
 
 @Composable
-fun MenuItemRow(item: com.mobile.jobsearchapplication.model.MenuItem, navController: NavController) {
+fun MenuItemRow(item: MenuItem, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

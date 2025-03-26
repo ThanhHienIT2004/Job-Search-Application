@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,8 +29,9 @@ import com.mobile.jobsearchapplication.viewmodel.PostViewModel
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
         "Đăng tin",
-        true,
-        onBackClick = { navController.navigate("home_screen")}
+        actionsTop ={
+            
+        }
     ) { padding ->
         Column(
             modifier = Modifier

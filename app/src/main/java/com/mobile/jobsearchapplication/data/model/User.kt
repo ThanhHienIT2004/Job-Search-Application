@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.model
+package com.mobile.jobsearchapplication.data.model
 
 import java.time.LocalDate
 

@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Business
-import com.mobile.jobsearchapplication.model.JobCategory
+import com.mobile.jobsearchapplication.data.model.JobCategory
 
 class HomeViewModel : ViewModel() {
 

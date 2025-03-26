@@ -40,13 +40,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.model.SimilarJob
+import com.mobile.jobsearchapplication.data.model.SimilarJob
 
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
-        showBackButton = true,
-        onBackClick = { navController.popBackStack() },
         actionsBot = { BottomActionBar() }
     ) { padding ->
         Column(
