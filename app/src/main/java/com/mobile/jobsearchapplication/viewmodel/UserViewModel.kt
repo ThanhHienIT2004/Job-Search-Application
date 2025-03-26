@@ -17,8 +17,8 @@ import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.screens.components.*
 
-import com.mobile.jobsearchapplication.model.MenuItem
-import com.mobile.jobsearchapplication.model.BottomNavItem
+import com.mobile.jobsearchapplication.data.model.MenuItem
+import com.mobile.jobsearchapplication.data.model.BottomNavItem
 
 class UserViewModel : ViewModel() {
 

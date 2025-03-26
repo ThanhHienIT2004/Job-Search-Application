@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.model.NotificationData
+import com.mobile.jobsearchapplication.data.model.NotificationData
 
 @Composable
 fun NotificationItem(notification: NotificationData) {

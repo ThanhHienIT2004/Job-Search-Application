@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.model.Job
+import com.mobile.jobsearchapplication.data.model.Job
 import com.mobile.jobsearchapplication.ui.screens.components.BackButton
 import com.mobile.jobsearchapplication.ui.screens.components.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.screens.components.FilterButton

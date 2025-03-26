@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.model.NotificationData
+import com.mobile.jobsearchapplication.data.model.NotificationData
 import com.mobile.jobsearchapplication.utils.NotificationUtils.getRelativeDate
 
 
