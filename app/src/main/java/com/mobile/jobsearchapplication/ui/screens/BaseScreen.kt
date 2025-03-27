@@ -1,6 +1,6 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import androidx.compose.foundation.background
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -32,6 +31,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BaseScreen (
     title: String = "",
+    showBackButton: Boolean = false,
+    onBackClick: (() -> Unit)? = null,
     actionsTop: @Composable (RowScope.() -> Unit) = {},
     actionsBot: @Composable (RowScope.() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit
