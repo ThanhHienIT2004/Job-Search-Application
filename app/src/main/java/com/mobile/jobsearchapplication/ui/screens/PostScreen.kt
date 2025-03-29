@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,14 +18,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.screens.components.*
-import com.mobile.jobsearchapplication.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.components.*
+import com.mobile.jobsearchapplication.data.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.CustomTextField
+import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
 
 
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
-        "Đăng tin",
         actionsTop ={
             
         }

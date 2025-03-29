@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.ui.screens.components.PostItemList
-import com.mobile.jobsearchapplication.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.components.PostItemList
+import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
 
 @Composable
 fun PostFaveriteScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {

@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+//    id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -36,10 +39,17 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -65,6 +75,14 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidbrowserhelper)
     implementation(libs.androidx.compose.material)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -6,10 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.screens.components.NotificationSection
+import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
-import com.mobile.jobsearchapplication.viewmodel.NotificationViewModel
+import com.mobile.jobsearchapplication.data.viewmodel.NotificationViewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)

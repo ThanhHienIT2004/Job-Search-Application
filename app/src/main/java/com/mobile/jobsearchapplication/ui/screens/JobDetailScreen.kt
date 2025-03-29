@@ -1,6 +1,5 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.SimilarJob
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
