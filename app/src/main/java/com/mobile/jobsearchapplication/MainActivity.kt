@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.mobile.jobsearchapplication.ui.screens.components.MainScreen
+import com.mobile.jobsearchapplication.ui.navigation.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +25,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen()
+
         }
+
     }
 }
