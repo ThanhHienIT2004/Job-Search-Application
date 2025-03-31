@@ -45,8 +45,8 @@ import com.mobile.jobsearchapplication.model.SimilarJob
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
-        showBackButton = true,
-        onBackClick = { navController.popBackStack() },
+//        showBackButton = true,
+//        onBackClick = { navController.popBackStack() },
         actionsBot = { BottomActionBar() }
     ) { padding ->
         Column(

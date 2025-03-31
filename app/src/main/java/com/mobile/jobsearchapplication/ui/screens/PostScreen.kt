@@ -26,8 +26,8 @@ import com.mobile.jobsearchapplication.viewmodel.PostViewModel
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
         "Đăng tin",
-        true,
-        onBackClick = { navController.navigate("home_screen")}
+//        true,
+//        onBackClick = { navController.navigate("home_screen")}
     ) { padding ->
         Column(
             modifier = Modifier
