@@ -31,6 +31,7 @@ fun BaseScreen (
             actionsTop?.let {
                 Row (
                     modifier = Modifier.fillMaxWidth().height(64.dp),
+
                 ) {
                     actionsTop()
                 }

@@ -10,6 +10,7 @@ import com.mobile.jobsearchapplication.ui.screens.NotificationsScreen
 import com.mobile.jobsearchapplication.ui.screens.PostFaveriteScreen
 import com.mobile.jobsearchapplication.ui.screens.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.screens.PostScreen
+import com.mobile.jobsearchapplication.ui.screens.SearchScreen
 import com.mobile.jobsearchapplication.ui.screens.UserScreen
 
 @Composable
@@ -18,7 +19,7 @@ fun MainScreen() {
 
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "home_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
         composable("post_screen") { PostScreen(navController) }
@@ -28,6 +29,8 @@ fun MainScreen() {
         composable("login_register") { AuthScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
         composable("login") {  AuthScreen(navController) }
+        composable("search_screen") {  SearchScreen(navController) }
+
 
 
 //            composable("detail_job_screen") { JobDetailScreen(navController) }
