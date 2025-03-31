@@ -12,24 +12,30 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.ui.screens.components.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.screens.components.JobListItem
-import com.mobile.jobsearchapplication.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.PostItemList
+import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = { SearchBar()  },
+        actionsTop = {
+            SearchBar(
+                navController = navController,
+                onMenuClicked = {
+                    println("Menu clicked")
+                }
+            )
+        },
         actionsBot = { BottomNavBarCustom(navController) }
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
         ) {
             // Danh mục công việc theo nghề
@@ -39,39 +45,9 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
             RecommendedJobsList(navController)
         }
     }
-
 }
 
-@Composable
-fun SearchBar() {
-    var searchText by remember { mutableStateOf("") }
-    TextField(
-        value = searchText,
-        onValueChange = { searchText = it },
-        placeholder = { Text("Tìm kiếm việc làm...", fontSize = 12.sp) },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Menu"
-            )
-        },
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search"
-            )
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp),
-        shape = RoundedCornerShape(40.dp),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent, // Xóa underline khi focus
-            unfocusedIndicatorColor = Color.Transparent, // Xóa underline khi không focus
-            disabledIndicatorColor = Color.Transparent
-        )
-    )
-}
+
 
 // ---------------
 
@@ -181,7 +157,7 @@ fun RecommendedJobsList(navController: NavController) {
             val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
 
             items(jobs.size) { index ->
-                JobListItem(navController, jobTitle = jobs[index])
+                PostItemList(navController, jobTitle = jobs[index])
             }
         }
     }

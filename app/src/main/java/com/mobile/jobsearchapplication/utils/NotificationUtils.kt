@@ -1,6 +1,6 @@
 package com.mobile.jobsearchapplication.utils
 
-import com.mobile.jobsearchapplication.model.NotificationData
+import com.mobile.jobsearchapplication.data.model.NotificationData
 import kotlinx.datetime.*
 
 object NotificationUtils {

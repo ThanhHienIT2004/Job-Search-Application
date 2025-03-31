@@ -18,24 +18,28 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.screens.components.*
-import com.mobile.jobsearchapplication.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.components.*
+import com.mobile.jobsearchapplication.data.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.CustomTextField
+import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
 
 
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = { BackButton(navController) },
-        title = "Đăng tin"
-
+        "Đăng tin",
+//        true,
+//        onBackClick = { navController.navigate("home_screen")}
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
             // 🟢 Thông tin nhà tuyển dụng
             Text(text = "THÔNG TIN NHÀ TUYỂN DỤNG", fontSize = 16.sp, color = Color.Gray)
@@ -120,19 +124,7 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                 }
             }
 
-
-            Text(text = "Giới tính", modifier = Modifier.padding(top = 8.dp))
-            Row {
-                listOf("Không yêu cầu", "Nam", "Nữ").forEach { option ->
-                    Row(
-                        modifier = Modifier.clickable { viewModel.gender = option }.padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = viewModel.gender == option, onClick = { viewModel.gender = option })
-                        Text(text = option)
-                    }
-                }
-            }
+            DropdownMenuField(label = "Giới tính", options = listOf("Không yêu cầu", "Nam", "Nữ"), selectedOption = viewModel.gender) { viewModel.gender = it }
 
             DropdownMenuField(label = "Trình độ học vấn", options = listOf("Không yêu cầu", "Trung cấp", "Cao đẳng", "Đại học"), selectedOption = viewModel.educationLevel) { viewModel.educationLevel = it }
             DropdownMenuField(label = "Kinh nghiệm làm việc", options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm"), selectedOption = viewModel.experience) { viewModel.experience = it }
