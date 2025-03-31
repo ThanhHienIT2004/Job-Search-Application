@@ -18,8 +18,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.screens.components.*
-import com.mobile.jobsearchapplication.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.components.*
+import com.mobile.jobsearchapplication.data.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.CustomTextField
+import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
 
 
 @Composable
