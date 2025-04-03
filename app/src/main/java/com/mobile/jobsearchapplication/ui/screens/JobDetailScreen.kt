@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -31,7 +30,9 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.WorkOff
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,17 +42,20 @@ import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.SimilarJob
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.ui.theme.LightPurple
 
 @Composable
 fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
     BaseScreen(
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
         actionsBot = { BottomActionBar() }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(padding)
         ){
             // Nội dung chi tiết công việc
             JobDetailContent(jobTitle)
@@ -64,7 +68,7 @@ fun JobDetailContent(jobTitle: String?) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(start = 12.dp, end = 12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
@@ -269,77 +273,83 @@ fun JobDetailContent(jobTitle: String?) {
 
     }
 }
-
 @Composable
 fun BottomActionBar() {
-    Row(
+    Surface(
+        color = LightBlue,
+        shape = RoundedCornerShape(32.dp),
+        shadowElevation = 50.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
-            .background(Color(0xFFF6F0FF)) // Màu nền nhạt
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(56.dp)
     ) {
-        // Nút gọi
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
             modifier = Modifier
-                .clickable { /* TODO: Xử lý gọi */ }
-                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+                .background(LightPurple),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Default.Call,
-                contentDescription = "Gọi",
-                tint = Color.Black,
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                text = "Gọi",
-                fontSize = 12.sp,
-                color = Color.Black
-            )
-        }
+            // Nút gọi
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { /* TODO: Xử lý gọi */ }
+                    .padding(horizontal = 10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Call,
+                    contentDescription = "Gọi",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = "Gọi",
+                    fontSize = 12.sp,
+                    color = Color.White
+                )
+            }
 
-        // Nút chat
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable { /* TODO: Xử lý chat */ }
-                .padding(horizontal = 8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Chat,
-                contentDescription = "Chat",
-                tint = Color.Black,
-                modifier = Modifier.size(24.dp)
-            )
-            Text(
-                text = "Chat",
-                fontSize = 12.sp,
-                color = Color.Black
-            )
-        }
+            // Nút chat
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { /* TODO: Xử lý chat */ }
+                    .padding(horizontal = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Chat,
+                    contentDescription = "Chat",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = "Chat",
+                    fontSize = 12.sp,
+                    color = Color.White
+                )
+            }
 
-        // Nút ứng tuyển
-        Button(
-            onClick = { /* TODO: Xử lý ứng tuyển */ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFF6F61) // Màu cam đỏ
-            ),
-            shape = RoundedCornerShape(50),
-            modifier = Modifier.height(48.dp)
-        ) {
-            Text(
-                text = "Ứng tuyển",
-                color = Color.White,
-                fontSize = 14.sp
-            )
+            // Nút ứng tuyển
+            Button(
+                onClick = { /* TODO: Xử lý ứng tuyển */ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFF6F61)
+                ),
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .height(48.dp)
+                    .padding(end = 8.dp)
+            ) {
+                Text(
+                    text = "Ứng tuyển",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
         }
-
     }
 }
-
 @Composable
 fun InfoItem(
     icon: ImageVector,

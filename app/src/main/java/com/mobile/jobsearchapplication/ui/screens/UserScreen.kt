@@ -14,6 +14,7 @@ import com.mobile.jobsearchapplication.ui.components.*
 @Composable
 fun UserScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     BaseScreen (
+        title = "Cá nhân",
         actionsBot = { BottomNavBarCustom(navController) }
     ) { padding ->
         Column(

@@ -2,161 +2,157 @@
 
 package com.mobile.jobsearchapplication.ui.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.ui.theme.LightBlue70
+import com.mobile.jobsearchapplication.ui.theme.White70
 
 // Định nghĩa các màn hình
-sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
-    object Home : Screen("home_screen", Icons.Filled.Home, "Trang chủ")
-    object PostJob : Screen("post_screen", Icons.Filled.AddCircle, "Đăng tin")
-    object Notifications : Screen("notifications", Icons.Filled.Notifications, "Thông báo")
-    object Account : Screen("account", Icons.Filled.AccountCircle, "Tài khoản")
+sealed class Screen(val route: String, val icon: ImageVector) {
+    object Home : Screen("home_screen", Icons.Filled.Home)
+    object PostedJob : Screen("posted_screen", Icons.Filled.Article)
+    object PostJob : Screen("post_screen", Icons.Filled.AddCircle)
+    object Notifications : Screen("notifications", Icons.Filled.Notifications)
+    object Account : Screen("account", Icons.Filled.AccountCircle)
 }
 
-val bottomNavItems = listOf(Screen.Home, Screen.PostJob, Screen.Notifications, Screen.Account)
+val bottomNavItems = listOf(Screen.Home, Screen.PostedJob, Screen.PostJob, Screen.Notifications, Screen.Account)
 
 @Composable
 fun BottomNavBarCustom(navController: NavController) {
     val currRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    Surface(
+        color = LightBlue,
+        shape = RoundedCornerShape(32.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .shadow(50.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
+            horizontalArrangement = Arrangement.SpaceEvenly, // Căn đều các icon
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            bottomNavItems.forEach { screen ->
+                if (screen.route == currRoute) {
+                    CurrIconBottomNav(screen.route, screen.icon, navController)
+                } else {
+                    IconBottomNav(screen.route, screen.icon, navController)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun IconBottomNav(route: String, icon: ImageVector, navController: NavController) {
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 1.2f else 1f,
+        animationSpec = tween(200),
+        label = "scaleAnimation"
+    )
+
+    IconButton(
+        onClick = {
+            isPressed = true
+            navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .scale(scale) // Áp dụng hiệu ứng scale
+            .background(Color.Transparent)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        tryAwaitRelease()
+                        isPressed = false
+                    }
+                )
+            }
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = route,
+            tint = Color.White,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+
+@Composable
+fun CurrIconBottomNav(route: String, icon: ImageVector, navController: NavController) {
+    val scale by animateFloatAsState(
+        targetValue = 1.2f, // Phóng to khi chọn
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "scaleAnimation"
+    )
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-    ) {
-        // Bottom Bar
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .align(Alignment.BottomCenter),
-            color = Color(0xFFE0D4F5)
-        ) {}
-
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            bottomNavItems.forEach { screen ->
-                if (screen.route == currRoute)
-                    CurrIconBottomNav(screen.route, screen.icon, screen.title, navController)
-                else
-                    IconBottonNav(screen.route, screen.icon, screen.title, navController)
-            }
-        }
-    }
-}
-
-@Composable
-fun IconBottonNav(route: String, icon: ImageVector, label: String, navController: NavController) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+            .size(50.dp) // Kích thước tăng nhẹ để tạo điểm nhấn
+            .clip(CircleShape)
+            .background(Color.White) // Làm nổi bật icon được chọn
+            .scale(scale),
+        contentAlignment = Alignment.Center
     ) {
         IconButton(
-            onClick = { navController.navigate((route)) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            } },
-            modifier = Modifier
-                .size(48.dp) // Tăng kích thước để chứa cả icon + text
-                .clip(CircleShape)
-                .background(Color(0xFFFBFBFC))
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                modifier = Modifier.size(30.dp),
-                tint = Color(0xFF562B88)
-            )
-
-        }
-        Text(
-            text = label,
-            color = Color(0xFF562B88),
-            fontSize = 10.sp,
-        )
-    }
-}
-
-@Composable
-fun CurrIconBottomNav(route: String, icon: ImageVector, label: String, navController: NavController) {
-    Box (
-        modifier = Modifier
-            .fillMaxHeight()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-    ) {
-        IconButton(
-            onClick = { navController.navigate((route)) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
+            onClick = {
+                navController.navigate(route) {
+                    restoreState = true
+                }
             },
-            modifier = Modifier
-                .size(56.dp) // Đặt kích thước cho nút tròn
-                .offset(y = (-10).dp)
-                .clip(CircleShape)
-                .background(Color.White)
-                .border(1.dp, Color(0xFF6C37B4), CircleShape)
+            modifier = Modifier.size(40.dp)
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = label,
-                modifier = Modifier.size(44.dp),
-                tint = Color(0xFF340E64)
+                contentDescription = route,
+                tint = LightBlue,
+                modifier = Modifier.size(28.dp) // Tăng nhẹ icon để tạo sự khác biệt
             )
         }
-
-        Text(
-            text = label,
-            color = Color(0xFF562B88),
-            fontSize = 12.sp,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Prev() {
-    MaterialTheme {
-        val navController = rememberNavController()
-        BottomNavBarCustom(navController)
     }
 }
