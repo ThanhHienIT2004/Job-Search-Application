@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.data.model.MenuItem
-import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.UserViewModel
 
 @Composable
 fun MenuList(viewModel: UserViewModel = viewModel(), navController: NavController) {

@@ -1,30 +1,55 @@
 package com.mobile.jobsearchapplication.ui.features.auth
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.auth
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
+data class AuthState(
+    val isSuccessLogin: Boolean = false,
+    val isStatusButton: Boolean = true,
+    val isFirstLoad: Boolean = true,
+    val isDraggingButton: Boolean = false,
+    val textButton: String = "Đăng nhập"
+)
 
 class AuthViewModel : BaseViewModel() {
-    var isLogin by mutableStateOf(true)
-        private set
-    var isShowGuide by mutableStateOf(true)
 
-    var textButtonLogin by mutableStateOf("Đăng nhập")
-        private set
+    private val _authState = MutableStateFlow(AuthState())
+    val authState = _authState.asStateFlow()
 
-    var isReverseRow by mutableStateOf(false)
-        private set
+
+    private val _user = MutableStateFlow<FirebaseUser?>(null)
+    val user = _user.asStateFlow()
 
     // thay đổi trạng thái khi keo nút
-    fun onDragLogin(state: Boolean) {
-        isLogin = state
-        isShowGuide = state
-        textButtonLogin = if (state) "Đăng nhập" else "Đăng kí"
-        isReverseRow = !state
+    fun onDragButton(state: Boolean) {
+        _authState.value = _authState.value.copy(
+            isStatusButton = state,
+            isFirstLoad = false,
+            isDraggingButton = !state,
+            textButton = if(state) "Đăng nhập" else "Đăng kí"
+        )
     }
 
+    fun onFirstLoad() {
+        _authState.value = _authState.value.copy(isFirstLoad = false)
+    }
+
+    fun onDragging() {
+        _authState.value = _authState.value.copy(isDraggingButton = true)
+    }
+
+    fun onSuccessLogin() {
+        _authState.value = _authState.value.copy(isSuccessLogin = true)
+    }
 
     // tạo button đăng nhâp khác
     sealed class IConSingUp(val icon: Int, val text: String) {
@@ -33,5 +58,4 @@ class AuthViewModel : BaseViewModel() {
     }
 
     val iConSingUpItems =  listOf(IConSingUp.Google, IConSingUp.Facebook)
-
 }

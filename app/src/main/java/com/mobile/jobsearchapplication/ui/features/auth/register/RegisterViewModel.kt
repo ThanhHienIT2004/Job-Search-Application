@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.mobile.jobsearchapplication.data.service.auth.AuthServiceImpl
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

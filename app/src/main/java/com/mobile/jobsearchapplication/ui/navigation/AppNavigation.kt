@@ -18,7 +18,7 @@ fun MainScreen() {
 
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "home_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
         composable("post_screen") { PostScreen(navController) }

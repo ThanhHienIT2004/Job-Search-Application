@@ -5,7 +5,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.MenuList

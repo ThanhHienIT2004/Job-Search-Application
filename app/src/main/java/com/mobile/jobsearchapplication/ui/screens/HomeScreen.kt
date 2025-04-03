@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.PostItemList
-import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @Composable

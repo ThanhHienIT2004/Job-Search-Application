@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.data.viewmodel
+package com.mobile.jobsearchapplication.ui.viewmodel
 
 import androidx.compose.foundation.clickable
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.UserViewModel
 import com.mobile.jobsearchapplication.ui.components.*
 
 import com.mobile.jobsearchapplication.data.model.MenuItem

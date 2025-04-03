@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
-import com.mobile.jobsearchapplication.data.viewmodel.NotificationViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.NotificationViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 

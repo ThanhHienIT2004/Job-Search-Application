@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.data.service.auth
+package com.mobile.jobsearchapplication.data.repository.auth
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth

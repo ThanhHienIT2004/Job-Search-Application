@@ -1,6 +1,6 @@
-package com.mobile.jobsearchapplication.data.retrofit
+package com.mobile.jobsearchapplication.config
 
-import com.mobile.jobsearchapplication.data.api.IAuthApi
+import com.mobile.jobsearchapplication.data.api.auth.AuthApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,5 +14,5 @@ object RetrofitInstance {
             .build()
     }
 
-    val authApi: IAuthApi by lazy { retrofit.create(IAuthApi::class.java) }
+    val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
 }

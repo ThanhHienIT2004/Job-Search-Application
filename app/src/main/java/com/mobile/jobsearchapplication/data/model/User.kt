@@ -16,13 +16,12 @@ data class Address(
 )
 
 data class User(
-    val id: String,                 // ID người dùng
-    val fullName: String,           // Họ và tên
-    val userName: String,           // Tên đăng nhập (duy nhất)
-    val password: CharArray,        // Mật khẩu (cần được xóa sau khi dùng)
-    val gender: Gender,             // Giới tính (dùng Enum thay vì String)
-    val phone: String,              // Số điện thoại (String để hỗ trợ mã quốc gia)
-    val email: String,              // Email
-    val address: Address,           // Địa chỉ (tách thành class riêng)
-    val birthDay: LocalDate         // Ngày sinh (Dùng LocalDate để dễ tính toán)
+    val id: String,
+    val fullName: String,
+    val userName: String,
+    val gender: Gender,
+    val phone: String,
+    val email: String,
+    val address: Address,
+    val birthDay: LocalDate
 )
