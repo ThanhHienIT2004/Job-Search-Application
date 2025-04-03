@@ -32,11 +32,10 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
             )
         },
         actionsBot = { BottomNavBarCustom(navController) }
-    ) { padding ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             // Danh mục công việc theo nghề
             JobCategorySection(navController)
@@ -148,7 +147,7 @@ fun JobCategoryItem(category: String, isCheckedIconJob: Boolean, onToggleIconJob
 fun RecommendedJobsList(navController: NavController) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp, 0.dp)) {
         TitleSection("Việc dành cho bạn", isExpanded = isExpanded) {
             isExpanded = it
         }

@@ -3,6 +3,7 @@ package com.mobile.jobsearchapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.MaterialTheme
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.mobile.jobsearchapplication.ui.navigation.MainScreen

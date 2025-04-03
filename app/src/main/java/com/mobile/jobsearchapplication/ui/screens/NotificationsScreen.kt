@@ -28,6 +28,15 @@ fun NotificationsScreen(
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
     BaseScreen(
+        title = "Thông báo",
+                actionsTop = {
+            SearchBar(
+                navController = navController,
+                onMenuClicked = {
+                    println("Menu clicked")
+                }
+            )
+        },
         actionsBot = { BottomNavBarCustom(navController) }
     ) { paddingValues ->
         Column(
@@ -53,10 +62,10 @@ fun NotificationsScreen(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewNotificationsScreen() {
-    val fakeNavController = rememberNavController()
-    NotificationsScreen(navController = fakeNavController)
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewNotificationsScreen() {
+//    val fakeNavController = rememberNavController()
+//    NotificationsScreen(navController = fakeNavController)
+//}

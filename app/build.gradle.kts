@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.32.0")
+
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
