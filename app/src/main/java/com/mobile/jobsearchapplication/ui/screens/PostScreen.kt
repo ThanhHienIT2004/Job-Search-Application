@@ -24,7 +24,6 @@ import com.mobile.jobsearchapplication.ui.viewmodel.PostViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.CustomTextField
 import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
-import com.mobile.jobsearchapplication.data.viewmodel.PostViewModel
 
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
