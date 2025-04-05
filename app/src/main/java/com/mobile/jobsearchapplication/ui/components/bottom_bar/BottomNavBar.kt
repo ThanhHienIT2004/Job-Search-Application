@@ -1,6 +1,6 @@
 @file:JvmName("BottomNavBarKt")
 
-package com.mobile.jobsearchapplication.ui.components
+package com.mobile.jobsearchapplication.ui.components.bottom_bar
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
-import com.mobile.jobsearchapplication.ui.theme.LightBlue70
-import com.mobile.jobsearchapplication.ui.theme.White70
 
 // Định nghĩa các màn hình
 sealed class Screen(val route: String, val icon: ImageVector) {
@@ -49,15 +47,24 @@ sealed class Screen(val route: String, val icon: ImageVector) {
     object Account : Screen("account", Icons.Filled.AccountCircle)
 }
 
-val bottomNavItems = listOf(Screen.Home, Screen.PostedJob, Screen.PostJob, Screen.Notifications, Screen.Account)
+val bottomNavItems = listOf(
+    Screen.Home,
+    Screen.PostedJob,
+    Screen.PostJob,
+    Screen.Notifications,
+    Screen.Account
+)
 
 @Composable
-fun BottomNavBarCustom(navController: NavController) {
+fun BottomNavBarCustom(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val currRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     Surface(
         color = LightBlue,
         shape = RoundedCornerShape(32.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .shadow(50.dp)

@@ -53,7 +53,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.features.auth.login.LoginScreen
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterScreen
-import com.mobile.jobsearchapplication.utils.DeviceWidthUtils
+import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 import com.mobile.jobsearchapplication.utils.GoogleSignInUtils
 
 @Composable
@@ -114,13 +114,13 @@ fun ToggleButtonAuth(
     viewModel: AuthViewModel = viewModel()
 ) {
     val authState by viewModel.authState.collectAsState()
-    val maxDeviceWidth = DeviceWidthUtils.deviceWidthInPx()
+    val maxDeviceWidth = DeviceSizeUtils.deviceWidthInPx()
     var offsetXButton by remember { mutableFloatStateOf(0f) }
     val offsetXBegin = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
         while (authState.isFirstLoad) {
-            repeat(2){
+            repeat(1){
                 offsetXBegin.animateTo(maxDeviceWidth / 19f, animationSpec = tween(500))
                 offsetXBegin.animateTo(0f, animationSpec = tween(1500))
             }
@@ -190,7 +190,6 @@ fun IconSingUpAuth(
             }
         }
     }
-
 
     Row(
         modifier = Modifier

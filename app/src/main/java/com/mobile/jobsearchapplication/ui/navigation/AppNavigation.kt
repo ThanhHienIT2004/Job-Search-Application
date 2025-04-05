@@ -15,7 +15,7 @@ import com.mobile.jobsearchapplication.ui.screens.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.screens.PostScreen
 import com.mobile.jobsearchapplication.ui.screens.PostedScreen
 import com.mobile.jobsearchapplication.ui.screens.SearchScreen
-import com.mobile.jobsearchapplication.ui.screens.UserScreen
+import com.mobile.jobsearchapplication.ui.features.user.UserScreen
 
 @Composable
 fun MainScreen() {
@@ -41,10 +41,9 @@ fun MainScreen() {
         composable("notifications") { NotificationsScreen(navController) }
         composable("account") { UserScreen(navController) }
         composable("detail_user_screen") { DetailUserScreen(navController) }
-        composable("login_register") { AuthScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
         composable("posted_screen") {  PostedScreen(navController) }
-        composable("login") {  AuthScreen(navController) }
+        composable("auth_screen") {  AuthScreen(navController) }
         composable("search_screen") {  SearchScreen(navController) }
 
 

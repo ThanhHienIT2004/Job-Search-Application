@@ -8,9 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.BackButton
-import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.components.FilterButton
+import com.mobile.jobsearchapplication.ui.components.top_bar.BackButton
+import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.top_bar.FilterButton
 
 @Composable
 fun PostFilterScreen(navController: NavController, query: String) {

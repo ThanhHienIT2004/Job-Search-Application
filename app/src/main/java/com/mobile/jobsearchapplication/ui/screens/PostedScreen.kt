@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 
 
 @Composable

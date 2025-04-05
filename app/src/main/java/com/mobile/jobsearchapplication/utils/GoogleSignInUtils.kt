@@ -51,9 +51,8 @@ class GoogleSignInUtils {
                                 val credential = GoogleAuthProvider.getCredential(googleTokenId, null)
                                 val user = auth.signInWithCredential(credential).await().user
                                 user?.let {
-                                    if (it.isAnonymous.not()) {
-                                        login.invoke()
-                                    }
+                                    login.invoke()
+                                    SharedPreferencesUtils.saveUserLoggedInState(context, true, user.uid)
                                 }
                             }
                         }
