@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,26 +20,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.components.*
-import com.mobile.jobsearchapplication.data.viewmodel.PostViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.PostViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.CustomTextField
 import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
 
-
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
-        actionsTop ={
-            
-        }
-    ) { padding ->
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
+        title = "Đăng tin"
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-
             Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
 
             // 🟢 Thông tin nhà tuyển dụng
@@ -68,10 +67,7 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                 }
             }
 
-
-
             CustomTextField(label = "Tên hộ kinh doanh", value = "") {}
-
             CustomTextField(label = "Địa chỉ", value = "") {}
 
             Box(modifier = Modifier.fillMaxWidth().height(100.dp).clickable { /* Chọn ảnh */ }) {
@@ -84,15 +80,14 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
 
             CustomTextField(label = "Tiêu đề tin đăng", value = viewModel.title) { viewModel.title = it }
 
-
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CustomTextField(
                     label = "Số lượng tuyển dụng",
                     value = viewModel.jobQuantity,
                     modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 ) {
-                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                    if (it.all { char -> char.isDigit() }) {
                         viewModel.jobQuantity = it
                     }
                 }
@@ -105,9 +100,9 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                     label = "Lương tối thiểu",
                     value = viewModel.salaryMin,
                     modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 ) {
-                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                    if (it.all { char -> char.isDigit() }) {
                         viewModel.salaryMin = it
                     }
                 }
@@ -116,16 +111,15 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                     label = "Lương tối đa",
                     value = viewModel.salaryMax,
                     modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) // Bật bàn phím số
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 ) {
-                    if (it.all { char -> char.isDigit() }) { // Chỉ cho nhập số
+                    if (it.all { char -> char.isDigit() }) {
                         viewModel.salaryMax = it
                     }
                 }
             }
 
             DropdownMenuField(label = "Giới tính", options = listOf("Không yêu cầu", "Nam", "Nữ"), selectedOption = viewModel.gender) { viewModel.gender = it }
-
             DropdownMenuField(label = "Trình độ học vấn", options = listOf("Không yêu cầu", "Trung cấp", "Cao đẳng", "Đại học"), selectedOption = viewModel.educationLevel) { viewModel.educationLevel = it }
             DropdownMenuField(label = "Kinh nghiệm làm việc", options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm"), selectedOption = viewModel.experience) { viewModel.experience = it }
 

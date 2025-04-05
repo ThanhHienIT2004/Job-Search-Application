@@ -4,15 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
-import com.mobile.jobsearchapplication.data.viewmodel.NotificationViewModel
+import com.mobile.jobsearchapplication.ui.viewmodel.NotificationViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,6 +26,15 @@ fun NotificationsScreen(
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
     BaseScreen(
+        title = "Thông báo",
+                actionsTop = {
+            SearchBar(
+                navController = navController,
+                onMenuClicked = {
+                    println("Menu clicked")
+                }
+            )
+        },
         actionsBot = { BottomNavBarCustom(navController) }
     ) { paddingValues ->
         Column(
@@ -53,10 +60,10 @@ fun NotificationsScreen(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewNotificationsScreen() {
-    val fakeNavController = rememberNavController()
-    NotificationsScreen(navController = fakeNavController)
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewNotificationsScreen() {
+//    val fakeNavController = rememberNavController()
+//    NotificationsScreen(navController = fakeNavController)
+//}

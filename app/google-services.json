@@ -12,7 +12,20 @@
           "package_name": "com.mobile.jobsearchapplication"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "658252124828-qlpi6htb8gh12j1rjtabcjs95dnv5ljf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.jobsearchapplication",
+            "certificate_hash": "2c7748876edcd1deacd6fc893774e548fc7152b6"
+          }
+        },
+        {
+          "client_id": "658252124828-jgu5kjikfn1nfj83phu3vkk9kr9e4gs2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBvLp5BYgD9kBE5RbRlgtrLvDzZP_iB_d0"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658252124828-jgu5kjikfn1nfj83phu3vkk9kr9e4gs2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

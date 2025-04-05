@@ -1,7 +1,6 @@
-package com.mobile.jobsearchapplication.ui.components
+package com.mobile.jobsearchapplication.ui.components.top_bar
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Icon

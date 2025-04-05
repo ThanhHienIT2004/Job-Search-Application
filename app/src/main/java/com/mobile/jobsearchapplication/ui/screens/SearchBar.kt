@@ -21,16 +21,16 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.End
     ) {
-        // Icon Menu
-        IconButton(onClick = onMenuClicked) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Menu",
-                tint = Color.Black
-            )
-        }
+//        // Icon Menu
+//        IconButton(onClick = onMenuClicked) {
+//            Icon(
+//                imageVector = Icons.Default.Menu,
+//                contentDescription = "Menu",
+//                tint = Color.White
+//            )
+//        }
 
         // Icon Search
         IconButton(onClick = {
@@ -43,7 +43,7 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
-                tint = Color.Black
+                tint = Color.White
             )
         }
     }

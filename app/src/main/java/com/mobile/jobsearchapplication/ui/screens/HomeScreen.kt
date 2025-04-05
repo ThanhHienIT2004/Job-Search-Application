@@ -15,9 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.ui.components.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.PostItemList
-import com.mobile.jobsearchapplication.data.viewmodel.UserViewModel
+import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @Composable
@@ -32,11 +32,10 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
             )
         },
         actionsBot = { BottomNavBarCustom(navController) }
-    ) { padding ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             // Danh mục công việc theo nghề
             JobCategorySection(navController)
@@ -46,10 +45,6 @@ fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewMode
         }
     }
 }
-
-
-
-// ---------------
 
 // hàm tạo tiêu đề cho từng section
 @Composable
@@ -148,7 +143,7 @@ fun JobCategoryItem(category: String, isCheckedIconJob: Boolean, onToggleIconJob
 fun RecommendedJobsList(navController: NavController) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp, 0.dp)) {
         TitleSection("Việc dành cho bạn", isExpanded = isExpanded) {
             isExpanded = it
         }

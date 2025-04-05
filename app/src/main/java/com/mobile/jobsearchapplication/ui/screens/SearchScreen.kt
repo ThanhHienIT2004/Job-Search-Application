@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.BackButton
+import com.mobile.jobsearchapplication.ui.components.top_bar.BackButton
 
 @Composable
 fun SearchScreen(navController: NavController) {

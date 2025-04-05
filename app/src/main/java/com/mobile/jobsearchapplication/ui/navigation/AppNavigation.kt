@@ -1,5 +1,8 @@
 package com.mobile.jobsearchapplication.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.*
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
@@ -10,8 +13,9 @@ import com.mobile.jobsearchapplication.ui.screens.NotificationsScreen
 import com.mobile.jobsearchapplication.ui.screens.PostFaveriteScreen
 import com.mobile.jobsearchapplication.ui.screens.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.screens.PostScreen
+import com.mobile.jobsearchapplication.ui.screens.PostedScreen
 import com.mobile.jobsearchapplication.ui.screens.SearchScreen
-import com.mobile.jobsearchapplication.ui.screens.UserScreen
+import com.mobile.jobsearchapplication.ui.features.user.UserScreen
 
 @Composable
 fun MainScreen() {
@@ -22,13 +26,24 @@ fun MainScreen() {
         startDestination = "home_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
-        composable("post_screen") { PostScreen(navController) }
+
+        // Hiệu ứng trượt từ dưới lên khi vào màn hình "PostJob"
+        composable(("post_screen"),
+            enterTransition = {
+                slideInVertically(initialOffsetY = { it }, animationSpec = tween(1200))
+            },
+            exitTransition = {
+                slideOutVertically(targetOffsetY = { it }, animationSpec = tween(1200))
+            }
+
+        ) { PostScreen(navController) }
+
         composable("notifications") { NotificationsScreen(navController) }
         composable("account") { UserScreen(navController) }
         composable("detail_user_screen") { DetailUserScreen(navController) }
-        composable("login_register") { AuthScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
-        composable("login") {  AuthScreen(navController) }
+        composable("posted_screen") {  PostedScreen(navController) }
+        composable("auth_screen") {  AuthScreen(navController) }
         composable("search_screen") {  SearchScreen(navController) }
 
 

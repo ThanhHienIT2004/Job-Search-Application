@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.data.viewmodel
+package com.mobile.jobsearchapplication.ui.viewmodel
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
