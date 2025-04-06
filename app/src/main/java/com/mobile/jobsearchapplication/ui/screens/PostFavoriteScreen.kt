@@ -14,10 +14,10 @@ import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 fun PostFaveriteScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        TitleSection("Việc dành cho bạn", isExpanded = isExpanded) {
-            isExpanded = it
-        }
+                                                                                                                                   Column(modifier = Modifier.padding(16.dp)) {
+//        TitleSection("Việc dành cho bạn", isExpanded = isExpanded) {
+//            isExpanded = it
+//        }
 
         LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
             val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")

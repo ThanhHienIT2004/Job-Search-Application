@@ -1,44 +1,27 @@
 {
   "project_info": {
-    "project_number": "658252124828",
-    "project_id": "job-search-application-462dd",
-    "storage_bucket": "job-search-application-462dd.firebasestorage.app"
+    "project_number": "321540371044",
+    "firebase_url": "https://job-search-d605e-default-rtdb.firebaseio.com",
+    "project_id": "job-search-d605e",
+    "storage_bucket": "job-search-d605e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:658252124828:android:055f2ccc87e907ecf5d359",
+        "mobilesdk_app_id": "1:321540371044:android:cd2416db2a12c878096571",
         "android_client_info": {
           "package_name": "com.mobile.jobsearchapplication"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "658252124828-qlpi6htb8gh12j1rjtabcjs95dnv5ljf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mobile.jobsearchapplication",
-            "certificate_hash": "2c7748876edcd1deacd6fc893774e548fc7152b6"
-          }
-        },
-        {
-          "client_id": "658252124828-jgu5kjikfn1nfj83phu3vkk9kr9e4gs2.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBvLp5BYgD9kBE5RbRlgtrLvDzZP_iB_d0"
+          "current_key": "AIzaSyDPJTF6T1ZEJM_jfZ9V-8zH3CSQVbndED0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "658252124828-jgu5kjikfn1nfj83phu3vkk9kr9e4gs2.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
