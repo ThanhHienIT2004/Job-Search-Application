@@ -30,15 +30,15 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.WorkOff
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.SimilarJob
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
@@ -46,7 +46,7 @@ import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 
 @Composable
-fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
+fun JobDetailScreen(jobId: String, navController: NavHostController) {
     BaseScreen(
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
@@ -58,13 +58,13 @@ fun JobDetailScreen(navController: NavHostController, jobTitle: String) {
                 .background(Color.White)
         ){
             // Nội dung chi tiết công việc
-            JobDetailContent(jobTitle)
+            JobDetailContent(jobId)
         }
     }
 }
 
 @Composable
-fun JobDetailContent(jobTitle: String?) {
+fun JobDetailContent(jobId: String) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -79,20 +79,21 @@ fun JobDetailContent(jobTitle: String?) {
                     .height(150.dp)
                     .background(Color.LightGray)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Image,
-                    contentDescription = "Placeholder",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center),
-                    tint = Color.Gray
-                )
+//                AsyncImage(
+//                    model = painterResource(id = R.drawable.error),
+//                    contentDescription = "Job Image",
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    contentScale = ContentScale.FillWidth,
+//                    placeholder = painterResource(id = R.drawable.placeholder),  // Thêm placeholder nếu cần
+//                    error = painterResource(id = R.drawable.error)  // Thêm image khi lỗi tải
+//                )
             }
         }
 
         item {
             // Tiêu đề công việc
-            jobTitle?.let {
+            jobId.let {
                 Text(
                     text = it,
                     fontWeight = FontWeight.Bold,

@@ -1,27 +1,22 @@
 package com.mobile.jobsearchapplication.data.model
 
-import java.time.LocalDate
-
-// Enum cho giới tính
-enum class Gender {
-    MALE, FEMALE, OTHER
-}
-
-// Định nghĩa địa chỉ thành một data class
-data class Address(
-    val street: String,
-    val city: String,
-    val state: String,
-    val country: String
-)
+import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class User(
-    val id: String,
-    val fullName: String,
-    val userName: String,
-    val gender: Gender,
-    val phone: String,
+    val id: UUID,
+    val name: String,
     val email: String,
-    val address: Address,
-    val birthDay: LocalDate
+    @SerializedName("password_hash") val passwordHash: String,
+    val role: String,
+    @SerializedName("phone_number") val phoneNumber: String?,
+    @SerializedName("profile_picture") val profilePicture: String?,
+    val gender: String,
+    val bio: String?,
+    val location: String?,
+    @SerializedName("cv_url") val cvUrl: String?,
+    val education: String?,
+    val experience: String?,
+    val skills: String?,
+    @SerializedName("created_at") val createdAt: Date
 )

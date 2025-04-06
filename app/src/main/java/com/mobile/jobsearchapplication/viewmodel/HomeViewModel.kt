@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.viewmodel
+package com.mobile.jobsearchapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.compose.material.icons.Icons
