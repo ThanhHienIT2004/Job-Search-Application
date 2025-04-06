@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 
@@ -29,8 +31,9 @@ fun BaseScreen(
     onBackClick: (() -> Unit)? = null,
     actionsTop: @Composable (RowScope.() -> Unit)? = null,
     actionsBot: @Composable (RowScope.() -> Unit)? = null,
+    showSearch: Boolean = false, // Thêm tham số để bật/tắt icon tìm kiếm
+    navController: NavController? = null, // Thêm NavController
     content: @Composable (PaddingValues) -> Unit
-
 ) {
     Scaffold(
         topBar = {
@@ -39,12 +42,11 @@ fun BaseScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(72.dp)
-                    .background( brush = Brush.linearGradient(
+                    .background(brush = Brush.linearGradient(
                         colors = listOf(LightBlue, LightPurple)
                     ))
                     .offset(y = 12.dp)
                 ,
-
             ) {
                 // Nút back (nếu có)
                 if (showBackButton) {
@@ -67,8 +69,8 @@ fun BaseScreen(
                     fontWeight = FontWeight.Bold,
                     color = White, // Tùy chỉnh màu nếu cần
                     textAlign = TextAlign.Start,
-
                 )
+                Spacer(modifier = Modifier.width(150.dp))
 
                 // ActionsTop (nếu có)
                 actionsTop?.let {
@@ -78,6 +80,20 @@ fun BaseScreen(
                         it()
                     }
                 } ?: Spacer(modifier = Modifier.width(48.dp)) // Giữ chỗ để cân bằng
+
+                // Thêm IconButton tìm kiếm
+                if (showSearch && navController != null) {
+                    IconButton(
+                        onClick = { navController.navigate("search_screen") },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Mở tìm kiếm",
+                            tint = Color.White
+                        )
+                    }
+                }
             }
         },
         bottomBar = {

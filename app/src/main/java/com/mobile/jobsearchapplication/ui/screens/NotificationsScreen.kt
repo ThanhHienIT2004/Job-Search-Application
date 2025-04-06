@@ -1,12 +1,15 @@
 package com.mobile.jobsearchapplication.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
@@ -25,18 +28,21 @@ fun NotificationsScreen(
     val groupedUserNotifications = NotificationUtils.groupNotificationsByDate(userNotifications)
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
+    // Thiết lập SearchScreen
+    val textFieldState = remember { TextFieldState("") }
+    var searchResults by remember { mutableStateOf(listOf<String>()) }
+    val onSearch: (String) -> Unit = { query ->
+        searchResults = listOf("Kết quả 1: $query", "Kết quả 2: $query") // Thay bằng logic thực tế
+    }
+
     BaseScreen(
         title = "Thông báo",
-                actionsTop = {
-            SearchBar(
-                navController = navController,
-                onMenuClicked = {
-                    println("Menu clicked")
-                }
-            )
-        },
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
+        showSearch = true, // Bật icon tìm kiếm
+        navController = navController,
         actionsBot = { BottomNavBarCustom(navController) }
-    ) { paddingValues ->
+    ){ paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,9 +55,7 @@ fun NotificationsScreen(
                 notifications = groupedUserNotifications,
                 modifier = Modifier.weight(1f)
             )
-
             Divider(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
-
             NotificationSection(
                 title = "Thông báo từ nhà tuyển dụng",
                 notifications = groupedRecruiterNotifications,
@@ -60,10 +64,10 @@ fun NotificationsScreen(
         }
     }
 }
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewNotificationsScreen() {
-//    val fakeNavController = rememberNavController()
-//    NotificationsScreen(navController = fakeNavController)
-//}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewNotificationsScreen() {
+    val fakeNavController = rememberNavController()
+    NotificationsScreen(navController = fakeNavController)
+}

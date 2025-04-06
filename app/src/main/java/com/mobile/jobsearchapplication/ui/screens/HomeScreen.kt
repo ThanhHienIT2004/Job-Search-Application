@@ -23,14 +23,11 @@ import com.mobile.jobsearchapplication.ui.base.BaseScreen
 @Composable
 fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = {
-            SearchBar(
-                navController = navController,
-                onMenuClicked = {
-                    println("Menu clicked")
-                }
-            )
-        },
+        title = "Thông báo",
+        showBackButton = true,
+        onBackClick = { navController.popBackStack() },
+        showSearch = true, // Bật icon tìm kiếm
+        navController = navController,
         actionsBot = { BottomNavBarCustom(navController) }
     ) {
         Column(
