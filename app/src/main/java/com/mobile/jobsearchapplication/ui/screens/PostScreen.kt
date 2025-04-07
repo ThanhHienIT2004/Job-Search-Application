@@ -1,7 +1,6 @@
 package com.mobile.jobsearchapplication.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,11 +18,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.*
-import com.mobile.jobsearchapplication.ui.viewmodel.PostViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.CustomTextField
 import com.mobile.jobsearchapplication.ui.components.DropdownMenuField
+import com.mobile.jobsearchapplication.viewmodel.PostViewModel
 
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {

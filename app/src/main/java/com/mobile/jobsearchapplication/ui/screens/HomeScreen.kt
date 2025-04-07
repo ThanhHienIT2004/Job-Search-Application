@@ -11,40 +11,129 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.model.Job
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.PostItemList
-import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.viewmodel.JobUiState
+import com.mobile.jobsearchapplication.viewmodel.JobViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
+fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = {
-            SearchBar(
+        actionsBot = {
+            BottomNavBarCustom(
                 navController = navController,
-                onMenuClicked = {
-                    println("Menu clicked")
-                }
+                hasUnreadNotifications = false // Giả sử không có thông báo
             )
-        },
-        actionsBot = { BottomNavBarCustom(navController) }
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             // Danh mục công việc theo nghề
             JobCategorySection(navController)
 
-            // Danh sách việc làm gợi ý
-            RecommendedJobsList(navController)
+            when (val uiState = jobViewModel.uiState.collectAsState().value) {
+                is JobUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is JobUiState.Success -> {
+                    RecommendedJobsList(jobs = uiState.jobs, pageCount = uiState.pageCount, navController = navController)
+                }
+                is JobUiState.Error -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
         }
     }
 }
+
+@Composable
+fun RecommendedJobsList(jobs: List<Job>, pageCount: Int, navController: NavController) {
+    Column {
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(jobs) { job ->
+                JobItem(
+                    job = job,
+                    onClick = {
+                        navController.navigate("job_detail_screen/${job.id}")
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun JobItem(job: Job, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(165.dp)
+            .padding(end = 8.dp)
+            .clickable(onClick = onClick),  // Chỉ cần sử dụng onClick thay vì navController
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = LightBlue)
+    ) {
+        Column {
+            AsyncImage(
+                model = job.jobImage,
+                contentDescription = "Job Image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp),
+                contentScale = ContentScale.FillWidth,
+                placeholder = painterResource(id = R.drawable.placeholder),  // Thêm placeholder nếu cần
+                error = painterResource(id = R.drawable.error)  // Thêm image khi lỗi tải
+            )
+
+            Text(
+                text = job.title,
+                maxLines = 2,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp, top = 8.dp)  // Thêm padding trên
+            )
+
+            Text(
+                text = job.location,
+                fontSize = 11.sp,
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp)
+            )
+
+            Text(
+                text = if (job.salaryMin != null && job.salaryMax != null) {
+                    "${job.salaryMin} - ${job.salaryMax} ${job.currency}"
+                } else {
+                    "Salary not specified"
+                },
+                color = Color.Yellow,
+                fontSize = 11.sp,
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
+            )
+        }
+    }
+}
+
 
 // hàm tạo tiêu đề cho từng section
 @Composable
@@ -96,8 +185,7 @@ fun JobCategorySection(navController: NavController) {
                 }
             }
         } else {
-            LazyRow(modifier = Modifier.padding(top = 8.dp)) {
-
+            LazyRow{
                 items(categories.size) { index ->
                     JobCategoryItem(category = categories[index], isCheckedIconJob) { isChecked ->
                         isCheckedIconJob = isChecked
@@ -125,7 +213,8 @@ fun JobCategoryItem(category: String, isCheckedIconJob: Boolean, onToggleIconJob
         modifier = Modifier.padding(8.dp)
     ) {
         Surface(
-            modifier = Modifier.size(60.dp)
+            modifier = Modifier
+                .size(60.dp)
                 .clickable { onToggleIconJob(!isCheckedIconJob) }
             ,
             color = Color.LightGray,
@@ -157,5 +246,4 @@ fun RecommendedJobsList(navController: NavController) {
         }
     }
 }
-
 

@@ -55,9 +55,7 @@ fun UserScreen(
 
         BottomNavBarCustom(
             navController,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
+            hasUnreadNotifications = false
         )
     }
 }

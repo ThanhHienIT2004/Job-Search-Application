@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
+import com.google.firebase.FirebaseApp
 import com.mobile.jobsearchapplication.ui.navigation.MainScreen
 
 class MainActivity : ComponentActivity() {
@@ -11,6 +12,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MainScreen()
+            FirebaseApp.initializeApp(this)
+
         }
     }
 }
