@@ -5,7 +5,7 @@ import com.mobile.jobsearchapplication.ui.screens.Job
 
 // --- Firebase Service ---
 class FirebaseRealtimeService {
-    private val database = FirebaseDatabase.getInstance().refernce
+    private val database = FirebaseDatabase.getInstance().reference
 
     // Phương thức để thêm người dùng vào Firebase
     fun addUser(user: com.mobile.jobsearchapplication.ui.screens.User, onResult: (Boolean) -> Unit) {
