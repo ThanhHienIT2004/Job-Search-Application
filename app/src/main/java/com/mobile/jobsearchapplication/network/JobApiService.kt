@@ -2,9 +2,9 @@ package com.mobile.jobsearchapplication.network
 
 import com.mobile.jobsearchapplication.data.model.Company
 import com.mobile.jobsearchapplication.data.model.Job
+import com.mobile.jobsearchapplication.data.model.JobDetailResponse
 import com.mobile.jobsearchapplication.data.model.User
 import com.mobile.jobsearchapplication.network.responses.ApiResponse
-import com.mobile.jobsearchapplication.network.responses.JobDetailResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,7 +16,7 @@ interface JobApiService {
     suspend fun getJobs(): ApiResponse<Job>
     // Các phương thức khác giữ nguyên nếu cần
     @GET("jobs/{id}")
-    suspend fun getJobDetail(@Path("id") jobId: UUID): ApiResponse<JobDetailResponse>
+    suspend fun getJobDetail(@Path("id") jobId: String): JobDetailResponse<Job>
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: UUID): ApiResponse<User>

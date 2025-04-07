@@ -1,6 +1,5 @@
 package com.mobile.jobsearchapplication.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -18,14 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.Job
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.PostItemList
-import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.viewmodel.JobUiState
@@ -50,9 +47,7 @@ fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewMo
             // Danh mục công việc theo nghề
             JobCategorySection(navController)
 
-            val uiState = jobViewModel.uiState.collectAsState().value
-
-            when (uiState) {
+            when (val uiState = jobViewModel.uiState.collectAsState().value) {
                 is JobUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()

@@ -25,3 +25,8 @@ data class Job(
     @SerializedName("jobImage") val jobImage: String?,
     @SerializedName("createdAt") val createdAt: String // Thay vì Date vì API trả về String
 )
+
+data class JobDetailResponse<T>(
+    val data: Job, // Chỉ là một Job, không phải PaginatedData
+    val message: String
+)
