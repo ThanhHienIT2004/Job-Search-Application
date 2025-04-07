@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.data.model.NotificationData
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
 import com.mobile.jobsearchapplication.viewmodel.NotificationViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
@@ -42,22 +41,25 @@ fun NotificationsScreen(
     val groupedUserNotifications = NotificationUtils.groupNotificationsByDate(userNotifications)
     val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
 
+    // Giả lập trạng thái có thông báo chưa đọc để test
+    val hasUnreadNotifications by remember { mutableStateOf(true) } // Luôn true để hiện chấm đỏ
+
+    // Khi có dữ liệu thực tế, thay bằng:
+    // val hasUnreadNotifications by remember { derivedStateOf { viewModel.hasUnreadNotifications() } }
+    LaunchedEffect(Unit) {
+        viewModel.markAllAsRead()
+    }
     BaseScreen(
         title = "Thông báo",
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
         showSearch = true,
         navController = navController,
-        actionsBot = { BottomNavBarCustom(navController) },
-        // Thêm nút đỏ trên TopBar
-        actionsTop = {
-            IconButton(onClick = { /* Xử lý sự kiện nút đỏ */ }) {
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .background(Color.Red, shape = CircleShape)
-                )
-            }
+        actionsBot = {
+            BottomNavBarCustom(
+                navController = navController,
+                hasUnreadNotifications = hasUnreadNotifications
+            )
         }
     ) { paddingValues ->
         Column(

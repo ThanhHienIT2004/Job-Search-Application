@@ -34,13 +34,12 @@ import com.mobile.jobsearchapplication.viewmodel.JobViewModel
 @Composable
 fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewModel()) {
     BaseScreen(
-        actionsTop = {
-            SearchBar(
+        actionsBot = {
+            BottomNavBarCustom(
                 navController = navController,
-                onMenuClicked = { println("Menu clicked") }
+                hasUnreadNotifications = false // Giả sử không có thông báo
             )
-        },
-        actionsBot = { BottomNavBarCustom(navController) }
+        }
     ) {
         Column(
             modifier = Modifier

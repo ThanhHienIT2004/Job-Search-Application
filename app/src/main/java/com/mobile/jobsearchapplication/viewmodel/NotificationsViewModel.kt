@@ -34,6 +34,17 @@ class NotificationViewModel : ViewModel() {
         }
     }
 
+    // Đánh dấu tất cả thông báo là đã xem
+    fun markAllAsRead() {
+        _userNotifications.value = _userNotifications.value.map { it.copy(isRead = true) }
+        _recruiterNotifications.value = _recruiterNotifications.value.map { it.copy(isRead = true) }
+    }
+
+    // Kiểm tra xem có thông báo chưa đọc nào không
+    fun hasUnreadNotifications(): Boolean {
+        return _userNotifications.value.any { !it.isRead } || _recruiterNotifications.value.any { !it.isRead }
+    }
+
     fun groupNotificationsByDate(notifications: List<NotificationData>): Map<String, List<NotificationData>> {
         return notifications.groupBy { getRelativeDate(it.time) }
     }
