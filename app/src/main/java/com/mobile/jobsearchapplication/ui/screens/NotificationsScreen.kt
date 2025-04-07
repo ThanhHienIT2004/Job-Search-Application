@@ -27,7 +27,7 @@ import com.mobile.jobsearchapplication.data.model.NotificationData
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.components.NotificationSection
 import com.mobile.jobsearchapplication.utils.NotificationUtils
-import com.mobile.jobsearchapplication.ui.viewmodel.NotificationViewModel
+import com.mobile.jobsearchapplication.viewmodel.NotificationViewModel
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 
 @OptIn(ExperimentalMaterial3Api::class)

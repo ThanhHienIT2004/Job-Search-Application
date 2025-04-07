@@ -1,47 +1,27 @@
 package com.mobile.jobsearchapplication.data.model
-import java.time.LocalDate
+
+import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
+import java.util.*
 
 data class Job(
+    val id: UUID,
     val title: String,
-    val salary: String,
+    val description: String,
+    @SerializedName("salaryMin") val salaryMin: BigDecimal?,
+    @SerializedName("salaryMax") val salaryMax: BigDecimal?,
+    val currency: String,
     val location: String,
-    val description: String
+    @SerializedName("jobType") val jobType: String,
+    @SerializedName("experienceLevel") val experienceLevel: String,
+    @SerializedName("companyId") val companyId: UUID,
+    @SerializedName("postedBy") val postedBy: UUID,
+    val benefits: String?,
+    val quantity: Int,
+    @SerializedName("genderRequire") val genderRequire: String,
+    val deadline: String?, // Thay vì Date vì API trả về String
+    val status: String,
+    val requirements: String?,
+    @SerializedName("jobImage") val jobImage: String?,
+    @SerializedName("createdAt") val createdAt: String // Thay vì Date vì API trả về String
 )
-
-
-
-
-
-
-
-
-
-
-
-//data class Job(
-//    val id: String,                  // ID công việc (UUID hoặc do server cung cấp)
-//    val title: String,                // Tiêu đề công việc (VD: "Lập trình viên Android")
-//    val company: String,              // Tên công ty tuyển dụng
-//    val location: String,             // Địa điểm làm việc (VD: "Hà Nội, Việt Nam")
-//    val salary: String?,              // Mức lương (VD: "$1000 - $2000" hoặc null nếu không công khai)
-//    val jobType: JobType,             // Loại công việc (Toàn thời gian, bán thời gian, remote)
-//    val description: String,          // Mô tả công việc chi tiết
-//    val requirements: List<String>,   // Danh sách yêu cầu công việc
-//    val postedDate: LocalDate,        // Ngày đăng tuyển
-//    val deadline: LocalDate?,         // Hạn cuối nộp đơn (có thể null)
-//    val contactEmail: String,         // Email liên hệ
-//    val contactPhone: String?,        // Số điện thoại (có thể null)
-//    val isSaved: Boolean = false      // Đánh dấu công việc đã lưu hay chưa
-//)
-//
-//// Enum cho loại công việc
-//enum class JobType {
-//    FULL_TIME, PART_TIME, REMOTE, INTERNSHIP, CONTRACT
-//}
-
-
-
-
-
-
-
