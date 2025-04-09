@@ -225,7 +225,7 @@ fun IconSingUpAuth(
                         scope = scope,
                         launcher = launcher,
                         login = {
-//                            viewModel.onSuccessLogin()
+                            viewModel.onSuccessLogin()
                             Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         }
                     )
