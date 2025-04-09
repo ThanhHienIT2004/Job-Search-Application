@@ -23,7 +23,7 @@ fun PostFilterScreen(navController: NavController, query: String) {
             BackButton(navController)
         },
         actionsBot = {
-            BottomNavBarCustom(navController)
+            BottomNavBarCustom(navController,hasUnreadNotifications = false)
         }
     )
     {

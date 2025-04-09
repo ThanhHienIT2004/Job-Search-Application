@@ -15,9 +15,9 @@ fun PostedScreen(navController: NavHostController) {
         title = "Thông báo",
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
-//        showSearch = true, // Bật icon tìm kiếm
-//        navController = navController,
-        actionsBot = { BottomNavBarCustom(navController) }
+        showSearch = true, // Bật icon tìm kiếm
+        navController = navController,
+        actionsBot = { BottomNavBarCustom(navController,hasUnreadNotifications = false) }
     ) {
         Column(
             modifier = Modifier

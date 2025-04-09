@@ -58,7 +58,8 @@ val bottomNavItems = listOf(
 @Composable
 fun BottomNavBarCustom(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hasUnreadNotifications: Boolean
 ) {
     val currRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     Surface(
@@ -78,9 +79,9 @@ fun BottomNavBarCustom(
         ) {
             bottomNavItems.forEach { screen ->
                 if (screen.route == currRoute) {
-                    CurrIconBottomNav(screen.route, screen.icon, navController)
+                    CurrIconBottomNav(screen.route, screen.icon, navController,hasUnreadNotifications = hasUnreadNotifications && screen.route == Screen.Notifications.route)
                 } else {
-                    IconBottomNav(screen.route, screen.icon, navController)
+                    IconBottomNav(screen.route, screen.icon, navController,hasUnreadNotifications = hasUnreadNotifications && screen.route == Screen.Notifications.route)
                 }
             }
         }
@@ -88,7 +89,12 @@ fun BottomNavBarCustom(
 }
 
 @Composable
-fun IconBottomNav(route: String, icon: ImageVector, navController: NavController) {
+fun IconBottomNav(
+    route: String,
+    icon: ImageVector,
+    navController: NavController,
+    hasUnreadNotifications: Boolean
+) {
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 1.2f else 1f,
@@ -96,19 +102,11 @@ fun IconBottomNav(route: String, icon: ImageVector, navController: NavController
         label = "scaleAnimation"
     )
 
-    IconButton(
-        onClick = {
-            isPressed = true
-            navController.navigate(route) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
-        },
+    Box(
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
-            .scale(scale) // Áp dụng hiệu ứng scale
+            .scale(scale)
             .background(Color.Transparent)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -120,18 +118,41 @@ fun IconBottomNav(route: String, icon: ImageVector, navController: NavController
                 )
             }
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = route,
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
+        IconButton(
+            onClick = {
+                isPressed = true
+                navController.navigate(route) {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = route,
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        // Thêm chấm đỏ nếu có thông báo chưa xem
+        if (hasUnreadNotifications) {
+            Box(
+                modifier = Modifier
+                    .size(11.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-5).dp, y = 5.dp)
+                    .clip(CircleShape)
+                    .background(Color.Red)
+            )
+        }
     }
 }
 
 
 @Composable
-fun CurrIconBottomNav(route: String, icon: ImageVector, navController: NavController) {
+fun CurrIconBottomNav(route: String, icon: ImageVector, navController: NavController,hasUnreadNotifications:Boolean) {
     val scale by animateFloatAsState(
         targetValue = 1.2f, // Phóng to khi chọn
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
@@ -159,6 +180,17 @@ fun CurrIconBottomNav(route: String, icon: ImageVector, navController: NavContro
                 contentDescription = route,
                 tint = LightBlue,
                 modifier = Modifier.size(28.dp) // Tăng nhẹ icon để tạo sự khác biệt
+            )
+        }
+        if(hasUnreadNotifications){
+            Box(
+                modifier = Modifier
+                    .size(11.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-5).dp, y = 5.dp)
+                    .clip(CircleShape)
+                    .background(Color.Red)
+
             )
         }
     }

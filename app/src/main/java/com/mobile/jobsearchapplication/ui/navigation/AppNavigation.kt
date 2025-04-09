@@ -1,10 +1,14 @@
 package com.mobile.jobsearchapplication.ui.navigation
 
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.screens.HomeScreen
@@ -54,9 +58,24 @@ fun MainScreen() {
             PostFilterScreen(navController, query)
         }
 
-        composable("job_detail_screen/{query}") { backStackEntry ->
-            val query = backStackEntry.arguments?.getString("query") ?: ""
-            JobDetailScreen(navController, query)
+        composable(
+            route = "job_detail_screen/{jobId}",
+            arguments = listOf(navArgument("jobId") { type = NavType.StringType }),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth }, // Bắt đầu từ bên phải
+                    animationSpec = tween(700) // Thời gian animation: 300ms
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth }, // Thoát ra bên trái
+                    animationSpec = tween(700)
+                )
+            }
+        ) { backStackEntry ->
+            val jobId = backStackEntry.arguments?.getString("jobId")
+            JobDetailScreen(jobId = jobId ?: "", navController = navController)
         }
     }
 }
