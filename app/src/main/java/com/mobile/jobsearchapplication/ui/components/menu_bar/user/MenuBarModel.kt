@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.components.menu_bar
+package com.mobile.jobsearchapplication.ui.components.menu_bar.user
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArtTrack
@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 
 sealed class MenuBarUser(val icon: ImageVector, val title: String) {
-    data object Profile: MenuBarUser (Icons.Filled.Person, "Icon Profile")
-    data object Posts: MenuBarUser (Icons.Filled.ArtTrack, "Icon Posts")
-    data object Settings: MenuBarUser (Icons.Filled.Settings, "Icon Settings")
-    data object Logout: MenuBarUser (Icons.Filled.ExitToApp, "Icon Logout")
+    data object Profile: MenuBarUser(Icons.Filled.Person, "Icon Profile")
+    data object Posts: MenuBarUser(Icons.Filled.ArtTrack, "Icon Posts")
+    data object Settings: MenuBarUser(Icons.Filled.Settings, "Icon Settings")
+    data object Logout: MenuBarUser(Icons.Filled.ExitToApp, "Icon Logout")
 }
 
 open class MenuItemUser(val icon: ImageVector, val title: String, val route: String? = null, val action: (() -> Unit)? = {})

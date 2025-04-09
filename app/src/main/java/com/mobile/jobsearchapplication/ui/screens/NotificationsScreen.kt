@@ -39,8 +39,8 @@ fun NotificationsScreen(
         title = "Thông báo",
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
-        showSearch = true, // Bật icon tìm kiếm
-        navController = navController,
+//        showSearch = true, // Bật icon tìm kiếm
+//        navController = navController,
         actionsBot = { BottomNavBarCustom(navController) }
     ){ paddingValues ->
         Column(

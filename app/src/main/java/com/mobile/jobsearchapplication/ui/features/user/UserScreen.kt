@@ -5,10 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Login
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -28,7 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.components.menu_bar.MenuBarUser
+import com.mobile.jobsearchapplication.ui.components.menu_bar.user.MenuBarUser
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 
 @Composable
@@ -41,14 +37,14 @@ fun UserScreen(
             .fillMaxSize()
             .background(Color(0xFFB6C3E3))
     ) {
-        TopSectionUserScreen(navController)
+        TopUserScreen(navController)
 
-        CenterSectionUserScreen(
+        CenterUserScreen(
             navController,
             Modifier.align(Alignment.TopCenter)
         )
 
-        BottomSectionUserScreen(
+        BottomUserScreen(
             navController,
             Modifier.align(Alignment.BottomCenter)
         )
@@ -63,7 +59,7 @@ fun UserScreen(
 }
 
 @Composable
-fun TopSectionUserScreen(
+fun TopUserScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -92,11 +88,7 @@ fun TopSectionUserScreen(
 
             Column {
                 Text(
-                    if (userState.isLoggedIn) {
-                        userState.email
-                    } else {
-                        "Đăng nhập / Đăng kí"
-                    },
+                    text =  userState.email,
                     if (!userState.isLoggedIn) {
                         Modifier.clickable { navController.navigate("auth_screen") }
                     }else { modifier },
@@ -114,7 +106,7 @@ fun TopSectionUserScreen(
 }
 
 @Composable
-fun CenterSectionUserScreen(
+fun CenterUserScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -138,7 +130,7 @@ fun CenterSectionUserScreen(
 }
 
 @Composable
-fun BottomSectionUserScreen(
+fun BottomUserScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {

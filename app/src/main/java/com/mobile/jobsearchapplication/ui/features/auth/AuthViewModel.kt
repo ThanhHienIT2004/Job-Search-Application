@@ -1,16 +1,10 @@
 package com.mobile.jobsearchapplication.ui.features.auth
 
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 data class AuthState(
     val isSuccessLogin: Boolean = false,
@@ -21,10 +15,8 @@ data class AuthState(
 )
 
 class AuthViewModel : BaseViewModel() {
-
     private val _authState = MutableStateFlow(AuthState())
     val authState = _authState.asStateFlow()
-
 
     private val _user = MutableStateFlow<FirebaseUser?>(null)
     val user = _user.asStateFlow()

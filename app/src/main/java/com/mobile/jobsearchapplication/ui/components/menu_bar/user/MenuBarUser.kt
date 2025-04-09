@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.components.menu_bar
+package com.mobile.jobsearchapplication.ui.components.menu_bar.user
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
 
 @Composable
 fun MenuBarUser(
@@ -32,7 +30,7 @@ fun MenuBarUser(
 
 @Composable
 fun MainMenuItemUser() {
-    val viewModel: MenuBarViewModel = viewModel()
+    val viewModel: MenuBarUserViewModel = viewModel()
     val menuBarState by viewModel.menuBarState.collectAsState()
 
     viewModel.listMainMenuBarUser.forEach { item ->
@@ -40,7 +38,7 @@ fun MainMenuItemUser() {
             modifier = Modifier
                 .padding()
                 .clickable {
-                    viewModel.onMainMenuBar(item)
+                    viewModel.onMenuBarUser(item)
                 }
                 .then(
                     if (item == menuBarState.onMainMenuBar)
@@ -52,15 +50,10 @@ fun MainMenuItemUser() {
             elevation = CardDefaults.elevatedCardElevation(4.dp),
             shape = CircleShape
         ) {
-            Column(
-                Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    item.icon, contentDescription = item.title,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Icon(
+                item.icon, contentDescription = item.title,
+                modifier = Modifier.padding(12.dp).size(24.dp)
+            )
         }
     }
 }
@@ -69,10 +62,10 @@ fun MainMenuItemUser() {
 fun MenuItemUser(
     navController: NavController
 ) {
-    val viewModel: MenuBarViewModel = viewModel()
+    val viewModel: MenuBarUserViewModel = viewModel()
     val menuBarState by viewModel.menuBarState.collectAsState()
 
-    viewModel.getItemMenu(menuBarState.onMainMenuBar).forEach { item ->
+    viewModel.getMenuItemUser(menuBarState.onMainMenuBar).forEach { item ->
         Card(
             modifier = Modifier
                 .fillMaxWidth()

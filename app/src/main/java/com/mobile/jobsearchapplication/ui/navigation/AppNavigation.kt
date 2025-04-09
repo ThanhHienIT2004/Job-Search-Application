@@ -6,7 +6,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.*
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
-import com.mobile.jobsearchapplication.ui.screens.DetailUserScreen
+import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.screens.HomeScreen
 import com.mobile.jobsearchapplication.ui.screens.JobDetailScreen
 import com.mobile.jobsearchapplication.ui.screens.NotificationsScreen
@@ -40,7 +40,7 @@ fun MainScreen() {
 
         composable("notifications") { NotificationsScreen(navController) }
         composable("account") { UserScreen(navController) }
-        composable("detail_user_screen") { DetailUserScreen(navController) }
+        composable("profile_screen") { ProfileScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
         composable("posted_screen") {  PostedScreen(navController) }
         composable("auth_screen") {  AuthScreen(navController) }
