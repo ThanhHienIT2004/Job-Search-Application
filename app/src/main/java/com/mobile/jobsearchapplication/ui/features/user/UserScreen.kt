@@ -23,8 +23,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.components.menu_bar.user.MenuBarUser
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.menuBar.user.MenuBarUser
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 
 @Composable
@@ -32,27 +33,28 @@ fun UserScreen(
     navController: NavController,
     viewModel: UserViewModel = viewModel()
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFB6C3E3))
-    ) {
-        TopUserScreen(navController)
+    BaseScreen(
+        actionsBot = {
+            BottomNavBarCustom(navController)
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier.padding(padding)
+                .fillMaxSize()
+                .background(Color(0xFFB6C3E3))
+        ) {
+            TopUserScreen(navController)
 
-        CenterUserScreen(
-            navController,
-            Modifier.align(Alignment.TopCenter)
-        )
+            CenterUserScreen(
+                navController,
+                Modifier.align(Alignment.TopCenter)
+            )
 
-        BottomUserScreen(
-            navController,
-            Modifier.align(Alignment.BottomCenter)
-        )
-
-        BottomNavBarCustom(
-            navController,
-            hasUnreadNotifications = false
-        )
+            BottomUserScreen(
+                navController,
+                Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }
 

@@ -1,17 +1,14 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import com.mobile.jobsearchapplication.ui.components.text_field.auth.TextFieldAuthModel
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.lang.Error
 
 data class LoginState(
     var email: String = "",

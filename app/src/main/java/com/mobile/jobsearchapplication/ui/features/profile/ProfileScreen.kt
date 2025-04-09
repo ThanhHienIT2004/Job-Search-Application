@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -23,21 +22,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.icon.IconEditProfile
-import com.mobile.jobsearchapplication.ui.components.menu_bar.profile.MenuBarProfile
-import com.mobile.jobsearchapplication.ui.components.menu_bar.profile.MenuItemProfile
+import com.mobile.jobsearchapplication.ui.components.menuBar.profile.MenuBarProfile
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    BaseScreen(
-        showBackButton = true,
-        onBackClick = { navController.navigate("account") },
-        title = "Hồ sơ cá nhân"
-    ) { padding ->
+    BaseScreen { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.text_field.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
 
 @Composable
 fun LoginScreen(

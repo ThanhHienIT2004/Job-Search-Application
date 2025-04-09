@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.profile
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -29,7 +30,7 @@ data class ProfileState(
     val onIconChangedProfile: Boolean = false
 )
 
-class ProfileViewModel {
+class ProfileViewModel: ViewModel() {
     private val _profileTextState = MutableStateFlow(ProfileTextState())
     val profileTextState = _profileTextState.asStateFlow()
 

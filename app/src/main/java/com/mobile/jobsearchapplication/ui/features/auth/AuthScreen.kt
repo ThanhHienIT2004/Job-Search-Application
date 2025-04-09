@@ -54,6 +54,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.features.auth.login.LoginScreen
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterScreen
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
@@ -65,22 +67,31 @@ fun AuthScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF1F4FD))
-            .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
-        ) {
-            focusManager.clearFocus()
+    BaseScreen(
+        actionsTop = {},
+        actionsBot = {
+            BottomNavBarCustom(
+                navController
+            )
         }
-    ) {
-        TopBackgroundAuth(navController)
+    ) { padding ->
+        Column (
+            modifier = Modifier.padding(padding)
+                .fillMaxSize()
+                .background(Color(0xFFF1F4FD))
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    focusManager.clearFocus()
+                }
+        ) {
+            TopBackgroundAuth(navController)
 
-        Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(30.dp))
 
-        BotBackGroundAuth()
+            BotBackGroundAuth()
+        }
     }
 }
 
