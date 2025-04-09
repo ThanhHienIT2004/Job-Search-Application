@@ -18,7 +18,7 @@ class JobViewModel : ViewModel() {
         fetchJobs()
     }
 
-    fun fetchJobs() {
+    private fun fetchJobs() {
         viewModelScope.launch {
             _uiState.value = JobUiState.Loading
             try {
@@ -38,7 +38,7 @@ class JobViewModel : ViewModel() {
 }
 
 sealed class JobUiState {
-    object Loading : JobUiState()
+    data object Loading : JobUiState()
     data class Success(val jobs: List<Job>, val pageCount: Int) : JobUiState()
     data class Error(val message: String) : JobUiState()
 }

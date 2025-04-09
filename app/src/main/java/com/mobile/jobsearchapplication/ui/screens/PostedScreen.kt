@@ -12,7 +12,7 @@ import com.mobile.jobsearchapplication.ui.components.bottom_bar.BottomNavBarCust
 @Composable
 fun PostedScreen(navController: NavHostController) {
     BaseScreen(
-        title = "Thông báo",
+        title = "Việc đã đăng",
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
         showSearch = true, // Bật icon tìm kiếm

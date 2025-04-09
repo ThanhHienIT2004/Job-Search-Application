@@ -1,5 +1,7 @@
 package com.mobile.jobsearchapplication.ui.screens
 
+import android.hardware.lights.Light
+import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,29 +28,85 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.viewmodel.JobDetailUiState
+import com.mobile.jobsearchapplication.viewmodel.JobUiState
+import com.mobile.jobsearchapplication.viewmodel.JobViewModel
 
 @Composable
-fun JobDetailScreen(jobId: String, navController: NavHostController) {
+fun JobDetailScreen(jobId: String, navController: NavController) {
     val viewModel: JobDetailViewModel = viewModel()
-    
+
     LaunchedEffect(jobId) {
         viewModel.fetchJobDetail(jobId)
     }
-    
+
     BaseScreen(
         showBackButton = true,
         onBackClick = { navController.popBackStack() },
-        actionsBot = { BottomActionBar() }
+        actionsTop = {
+            Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
+
+            IconButton(onClick = { /* tim */ }) {
+                Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.White)
+            }
+            IconButton(onClick = { /* chuông */ }) {
+                Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
+            }
+            ThreeDotsMenu()
+        },
+        actionsBot = { BottomActionBar() },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
         ){
-            JobDetailContent(viewModel.uiState.collectAsState().value)
+            JobDetailContent(viewModel.uiState.collectAsState().value, navController)
+        }
+    }
+}
+
+@Composable
+fun ThreeDotsMenu() {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "Menu",
+                tint = Color.White
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Chỉnh sửa") },
+                onClick = {
+                    expanded = false
+                    // Xử lý chỉnh sửa
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Xoá") },
+                onClick = {
+                    expanded = false
+                    // Xử lý xoá
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Báo cáo") },
+                onClick = {
+                    expanded = false
+                    // Xử lý xoá
+                }
+            )
         }
     }
 }
@@ -130,7 +190,7 @@ fun BottomActionBar() {
 }
 
 @Composable
-fun JobDetailContent(uiState: JobDetailUiState) {
+fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
     when (uiState) {
         is JobDetailUiState.Loading -> {
             Box(
@@ -145,8 +205,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(bottom = 80 .dp),
                 ) {
                     item {
                         AsyncImage(
@@ -154,15 +213,16 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             contentDescription = "Job Image",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp),
+                                .height(200.dp)
+                                .padding(bottom = 8.dp),
                             contentScale = ContentScale.Crop,
-                            error = painterResource(id = R.drawable.error)
+                            error = painterResource(id = R.drawable.error)//Ảnh nếu lội
                         )
                     }
                     item {
                         Text(
                             text = job.title,
-                            fontSize = 24.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -174,13 +234,14 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             Icon(
                                 imageVector = Icons.Default.AttachMoney,
                                 contentDescription = "Salary",
-                                tint = Color.Red
+                                tint = LightPurple,
+                                modifier = Modifier
+                                    .size(16.dp)
                             )
                             Text(
                                 text = "${job.salaryMin ?: "N/A"} - ${job.salaryMax ?: "N/A"} ${job.currency}",
-                                fontSize = 18.sp,
-                                color = Color.Red,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 14.sp,
+                                color = LightPurple
                             )
                         }
                     }
@@ -189,15 +250,16 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "Job ID",
-                                tint = Color.Gray
-                            )
-                            Text(
-                                text = "ID: ${job.id}",
-                                fontSize = 16.sp
-                            )
+//                            AsyncImage(
+//                                model = job.jobImage ?: R.drawable.placeholder,
+//                                contentDescription = "User image",
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .height(200.dp)
+//                                    .padding(bottom = 8.dp),
+//                                contentScale = ContentScale.Crop,
+//                                error = painterResource(id = R.drawable.error)//Ảnh nếu lội
+//                            )
                         }
                     }
                     item {
@@ -212,7 +274,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = "Company ID: ${job.companyId}",
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -228,7 +290,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = "Posted By: ${job.postedBy}",
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -244,7 +306,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = job.location,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -260,7 +322,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = job.jobType,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -276,7 +338,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = job.experienceLevel,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -292,7 +354,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = "Số lượng: ${job.quantity}",
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -308,7 +370,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = "Giới tính: ${job.genderRequire}",
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -324,48 +386,53 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             )
                             Text(
                                 text = "Trạng thái: ${job.status}",
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
                     item {
                         Text(
                             text = "Mô tả công việc",
-                            fontSize = 20.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = job.description,
-                            fontSize = 16.sp
+                            fontSize = 14.sp
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
+
                     }
                     item {
                         if (!job.requirements.isNullOrEmpty()) {
                             Text(
                                 text = "Yêu cầu",
-                                fontSize = 20.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = job.requirements,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
+
                         }
                     }
                     item {
                         if (!job.benefits.isNullOrEmpty()) {
                             Text(
                                 text = "Quyền lợi",
-                                fontSize = 20.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = job.benefits,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
+
                         }
                     }
                     item {
@@ -404,6 +471,33 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                             }
                         }
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Việc tương tự",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+
+                        val jobViewModel: JobViewModel = viewModel()
+                        when (val uiState = jobViewModel.uiState.collectAsState().value) {
+                            is JobUiState.Loading -> {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                            is JobUiState.Success -> {
+                                RecommendedJobsList(jobs = uiState.jobs, pageCount = uiState.pageCount, navController = navController)
+                            }
+                            is JobUiState.Error -> {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -415,7 +509,7 @@ fun JobDetailContent(uiState: JobDetailUiState) {
                 Text(
                     text = uiState.message,
                     color = Color.Red,
-                    fontSize = 16.sp
+                    fontSize = 14.sp
                 )
             }
         }
