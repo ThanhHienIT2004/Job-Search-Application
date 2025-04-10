@@ -8,9 +8,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,10 +27,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,18 +43,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntOffset
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.features.auth.login.LoginScreen
+import com.mobile.jobsearchapplication.ui.features.auth.login.LoginViewModel
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterScreen
+import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 import com.mobile.jobsearchapplication.utils.GoogleSignInUtils
 
@@ -60,17 +65,24 @@ import com.mobile.jobsearchapplication.utils.GoogleSignInUtils
 fun AuthScreen(
     navController: NavController
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFC1CEEE))
+            .background(Color(0xFFF1F4FD))
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }
     ) {
         TopBackgroundAuth(navController)
 
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(30.dp))
 
         BotBackGroundAuth()
-
     }
 }
 
@@ -88,7 +100,9 @@ fun TopBackgroundAuth(
             .height(125.dp),
         color = Color(0xFFA9B9FF)
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 "Welcome Back",
                 fontWeight = FontWeight.Bold,
@@ -99,7 +113,7 @@ fun TopBackgroundAuth(
     }
     // toggle button
     Row {
-        if (authState.isStatusButton) {
+        if (authState.isLoginScreen) {
             ToggleButtonAuth()
             if (!authState.isDraggingButton) IconSingUpAuth(navController)
         } else {
@@ -130,7 +144,7 @@ fun ToggleButtonAuth(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth(if (authState.isStatusButton) 0.6f else 1f)
+            .fillMaxWidth(if (authState.isLoginScreen) 0.6f else 1f)
             .offset { IntOffset((offsetXButton + offsetXBegin.value).toInt(), (-1).dp.roundToPx()) }
             .draggable(
                 state = rememberDraggableState { delta ->
@@ -176,7 +190,6 @@ fun IconSingUpAuth(
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val user by viewModel.user.collectAsState()
     val authState by viewModel.authState.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
@@ -185,17 +198,13 @@ fun IconSingUpAuth(
 
     LaunchedEffect(authState.isSuccessLogin) {
         if (authState.isSuccessLogin) {
-            navController.navigate("home_screen") {
-                popUpToRoute
-            }
+            navController.navigate("home_screen")
         }
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(if (authState.isStatusButton) 1f else 0.4f)
-            .height(57.dp)
-            .padding(5.dp),
+        modifier = Modifier.height(56.dp)
+            .fillMaxWidth(if (authState.isLoginScreen) 1f else 0.4f),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -212,15 +221,15 @@ fun IconSingUpAuth(
                         }
                     )
                 },
-                colors = IconButtonDefaults.iconButtonColors(Color(0xFFE5EDFF)),
+                colors = IconButtonDefaults.iconButtonColors(Color.Transparent),
                 modifier = Modifier
-                    .padding(5.dp)
-                    .border(1.dp, Color.Gray, CircleShape)
+                    .border(2.dp, Color.Gray, CircleShape)
             ) {
                 Image(
                     painter = painterResource(icon.icon),
                     contentDescription = icon.text,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.padding(2.dp)
+                        .size(64.dp)
                 )
             }
         }
@@ -228,8 +237,13 @@ fun IconSingUpAuth(
 }
 
 @Composable
-fun BotBackGroundAuth(viewModel: AuthViewModel = viewModel()) {
-    val authState by viewModel.authState.collectAsState()
+fun BotBackGroundAuth(
+    authVM: AuthViewModel = viewModel()
+) {
+    val loginVM: LoginViewModel = viewModel()
+    val registerVM: RegisterViewModel = viewModel()
+    val authState by authVM.authState.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -237,19 +251,26 @@ fun BotBackGroundAuth(viewModel: AuthViewModel = viewModel()) {
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.95f)
                 .fillMaxHeight()
                 .padding(8.dp),
             shape = RoundedCornerShape(50.dp, 50.dp, 0.dp, 0.dp),
-            color = Color(0xFFE8E6FF)
+            color = Color.White,
+            shadowElevation = 8.dp
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(Modifier.height(50.dp))
-                if (authState.isStatusButton) LoginScreen() else RegisterScreen()
+                Spacer(Modifier.height(10.dp))
+
+                if (authState.isLoginScreen) {
+                    LoginScreen(registerVM)
+                }
+                else {
+                    RegisterScreen(authVM, registerVM)
+                }
             }
         }
     }

@@ -10,19 +10,19 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
-import com.mobile.jobsearchapplication.ui.screens.DetailUserScreen
-import com.mobile.jobsearchapplication.ui.screens.HomeScreen
-import com.mobile.jobsearchapplication.ui.screens.JobDetailScreen
-import com.mobile.jobsearchapplication.ui.screens.NotificationsScreen
-import com.mobile.jobsearchapplication.ui.screens.PostFaveriteScreen
-import com.mobile.jobsearchapplication.ui.screens.PostFilterScreen
-import com.mobile.jobsearchapplication.ui.screens.PostScreen
-import com.mobile.jobsearchapplication.ui.screens.PostedScreen
-import com.mobile.jobsearchapplication.ui.screens.SearchScreen
+import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
+import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
+import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
+import com.mobile.jobsearchapplication.ui.features.notification.NotificationsScreen
+import com.mobile.jobsearchapplication.ui.features.favorite.PostFaveriteScreen
+import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
+import com.mobile.jobsearchapplication.ui.features.post.PostScreen
+import com.mobile.jobsearchapplication.ui.features.posted.PostedScreen
+import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
 import com.mobile.jobsearchapplication.ui.features.user.UserScreen
 
 @Composable
-fun MainScreen() {
+fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(
@@ -44,7 +44,7 @@ fun MainScreen() {
 
         composable("notifications") { NotificationsScreen(navController) }
         composable("account") { UserScreen(navController) }
-        composable("detail_user_screen") { DetailUserScreen(navController) }
+        composable("profile_screen") { ProfileScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
         composable("posted_screen") {  PostedScreen(navController) }
         composable("auth_screen") {  AuthScreen(navController) }
