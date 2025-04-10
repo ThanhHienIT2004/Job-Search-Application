@@ -54,10 +54,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.features.auth.login.LoginScreen
+import com.mobile.jobsearchapplication.ui.features.auth.login.LoginViewModel
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterScreen
+import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 import com.mobile.jobsearchapplication.utils.GoogleSignInUtils
 
@@ -67,31 +67,22 @@ fun AuthScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
-    BaseScreen(
-        actionsTop = {},
-        actionsBot = {
-            BottomNavBarCustom(
-                navController
-            )
-        }
-    ) { padding ->
-        Column (
-            modifier = Modifier.padding(padding)
-                .fillMaxSize()
-                .background(Color(0xFFF1F4FD))
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    focusManager.clearFocus()
-                }
-        ) {
-            TopBackgroundAuth(navController)
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF1F4FD))
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }
+    ) {
+        TopBackgroundAuth(navController)
 
-            Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(30.dp))
 
-            BotBackGroundAuth()
-        }
+        BotBackGroundAuth()
     }
 }
 
@@ -122,7 +113,7 @@ fun TopBackgroundAuth(
     }
     // toggle button
     Row {
-        if (authState.isStatusButton) {
+        if (authState.isLoginScreen) {
             ToggleButtonAuth()
             if (!authState.isDraggingButton) IconSingUpAuth(navController)
         } else {
@@ -153,7 +144,7 @@ fun ToggleButtonAuth(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth(if (authState.isStatusButton) 0.6f else 1f)
+            .fillMaxWidth(if (authState.isLoginScreen) 0.6f else 1f)
             .offset { IntOffset((offsetXButton + offsetXBegin.value).toInt(), (-1).dp.roundToPx()) }
             .draggable(
                 state = rememberDraggableState { delta ->
@@ -213,7 +204,7 @@ fun IconSingUpAuth(
 
     Row(
         modifier = Modifier.height(56.dp)
-            .fillMaxWidth(if (authState.isStatusButton) 1f else 0.4f),
+            .fillMaxWidth(if (authState.isLoginScreen) 1f else 0.4f),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -247,9 +238,11 @@ fun IconSingUpAuth(
 
 @Composable
 fun BotBackGroundAuth(
-    viewModel: AuthViewModel = viewModel()
+    authVM: AuthViewModel = viewModel()
 ) {
-    val authState by viewModel.authState.collectAsState()
+    val loginVM: LoginViewModel = viewModel()
+    val registerVM: RegisterViewModel = viewModel()
+    val authState by authVM.authState.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -272,11 +265,11 @@ fun BotBackGroundAuth(
             ) {
                 Spacer(Modifier.height(10.dp))
 
-                if (authState.isStatusButton) {
-                    LoginScreen()
+                if (authState.isLoginScreen) {
+                    LoginScreen(registerVM)
                 }
                 else {
-                    RegisterScreen()
+                    RegisterScreen(authVM, registerVM)
                 }
             }
         }

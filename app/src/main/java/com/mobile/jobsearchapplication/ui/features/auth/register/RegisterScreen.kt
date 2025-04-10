@@ -18,6 +18,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,12 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 
 @Composable
 fun RegisterScreen(
+    authVM: AuthViewModel,
+    registerVM: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
-    val registerVM: RegisterViewModel = viewModel()
     val registerState by registerVM.registerState.collectAsState()
     val context = LocalContext.current
 
@@ -45,6 +48,12 @@ fun RegisterScreen(
     registerVM.passwordField.isError = registerState.isErrorPassword
     registerVM.confirmPasswordField.isError = registerState.isErrorConfirmPassword
 
+    LaunchedEffect(registerState.isRegisterSuccess) {
+        if (registerState.isRegisterSuccess) {
+            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show()
+            authVM.onDragButton(true)
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxWidth(0.9f)
@@ -88,7 +97,6 @@ fun RegisterScreen(
             onClick = {
                 if (registerVM.doCheckError()) {
                     registerVM.register(registerState.email, registerState.password)
-                    Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.padding(0.dp, 20.dp)

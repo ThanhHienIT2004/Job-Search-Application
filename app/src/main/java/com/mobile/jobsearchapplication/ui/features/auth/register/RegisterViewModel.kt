@@ -1,11 +1,16 @@
 package com.mobile.jobsearchapplication.ui.features.auth.register
 
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
+import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 data class RegisterState(
     var email: String = "",
@@ -17,15 +22,13 @@ data class RegisterState(
     val isErrorConfirmPassword: Boolean = false,
     val isErrorClause: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val isRegisterSuccess: Boolean = false
 )
 
-class RegisterViewModel : BaseViewModel() {
+class RegisterViewModel : AuthViewModel() {
     private val _registerState = MutableStateFlow(RegisterState())
     val registerState = _registerState.asStateFlow()
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
 
     val emailField = TextFieldAuthModel(
         value = "",
@@ -121,17 +124,21 @@ class RegisterViewModel : BaseViewModel() {
     }
 
     fun register(email: String, password: String) {
-        try {
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                    }
+        viewModelScope.launch {
+            try {
+                val result = auth.createUserWithEmailAndPassword(email, password).await()
+
+                if (result != null) {
+                    _registerState.value = _registerState.value.copy(isRegisterSuccess = true)
+                } else {
+                    _registerState.value = _registerState.value.copy(isRegisterSuccess = false)
                 }
 
-        } catch (e: Exception) {
-            showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng kí")
-        } finally {
-            hideLoading()
+            } catch (e: Exception) {
+                showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng kí")
+            } finally {
+                hideLoading()
+            }
         }
     }
 

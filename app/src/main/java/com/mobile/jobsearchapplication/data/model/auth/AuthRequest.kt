@@ -1,7 +1,5 @@
 package com.mobile.jobsearchapplication.data.model.auth
 
-data class RegisterRequest(
-    val fullName: String,
-    val email: String,
-    val password: String
+data class CreateUserRequest(
+    val uuid: String
 )

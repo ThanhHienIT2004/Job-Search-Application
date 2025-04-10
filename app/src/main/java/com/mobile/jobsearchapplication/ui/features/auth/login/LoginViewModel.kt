@@ -1,14 +1,20 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.model.auth.CreateUserRequest
+import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
+import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
+import com.mobile.jobsearchapplication.utils.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 data class LoginState(
     var email: String = "",
@@ -16,10 +22,13 @@ data class LoginState(
     var isErrorEmail: Boolean = false,
     val isErrorPassword: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val isLoggedSucess: Boolean = false
 )
 
-class LoginViewModel() : BaseViewModel() {
+class LoginViewModel() : AuthViewModel() {
+    private val authRepository = AuthRepository(RetrofitClient.authApiService)
+
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
@@ -84,13 +93,26 @@ class LoginViewModel() : BaseViewModel() {
             try {
                 showLoading()
 
-                Firebase.auth.signInWithEmailAndPassword(
+                val result = auth.signInWithEmailAndPassword(
                     _loginState.value.email,
                     _loginState.value.password
-                )
+                ).await()
+                if (result == null) return@launch
+
+                val request = CreateUserRequest(getLoggedInUserId().toString())
+                val response = authRepository.createUser(request)
+
+                if (response.isSuccess) {
+                    _loginState.value = _loginState.value.copy(isLoggedSucess = true)
+                } else {
+                    showErrorMessage(response.message)
+                    _loginState.value = _loginState.value.copy(isLoggedSucess = false)
+                }
 
             } catch (e: Exception) {
                 showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng nhập")
+            } finally {
+                hideLoading()
             }
         }
     }

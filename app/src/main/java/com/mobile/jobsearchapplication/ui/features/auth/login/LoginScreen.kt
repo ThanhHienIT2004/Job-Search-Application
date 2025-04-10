@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,30 +16,47 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 
 @Composable
 fun LoginScreen(
+    registerVM: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
     val loginVM: LoginViewModel = viewModel()
+    val registerState by registerVM.registerState.collectAsState()
     val loginState by loginVM.loginState.collectAsState()
+    val context = LocalContext.current
+
+    if (registerState.email.isNotBlank() && registerState.password.isNotBlank() && registerState.isRegisterSuccess) {
+        loginVM.emailField.onValueChange(registerState.email)
+        loginVM.passwordField.onValueChange(registerState.password)
+    }
 
     loginVM.emailField.value = loginState.email
     loginVM.passwordField.value = loginState.password
 
     loginVM.emailField.isError = loginState.isErrorEmail
     loginVM.passwordField.isError = loginState.isErrorPassword
+
+    LaunchedEffect(Unit) {
+        if (loginState.isLoggedSucess) {
+            Toast.makeText(context, "Logged Successful", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(
         modifier = modifier

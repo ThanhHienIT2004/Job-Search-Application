@@ -3,8 +3,9 @@ package com.mobile.jobsearchapplication.utils
 import com.google.firebase.auth.FirebaseAuth
 
 class FireBaseUtils {
+
     companion object {
-        private val auth = FirebaseAuth.getInstance()
+        val auth = FirebaseAuth.getInstance()
 
         fun isUserLoggedIn(): Boolean {
             return auth.currentUser != null
@@ -18,4 +19,5 @@ class FireBaseUtils {
             return auth.currentUser?.email.toString()
         }
     }
+
 }

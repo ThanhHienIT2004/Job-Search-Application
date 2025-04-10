@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.data.route.job
+package com.mobile.jobsearchapplication.data.remote.job
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
