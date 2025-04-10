@@ -17,92 +17,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseScreen(
-    title: String = "",
-    isLoading: Boolean? = false,
-    errorMessage: String? = null,
-    showBackButton: Boolean = false,
-    onBackClick: (() -> Unit)? = null,
     actionsTop: @Composable (RowScope.() -> Unit)? = null,
     actionsBot: @Composable (RowScope.() -> Unit)? = null,
-    showSearch: Boolean = false, // Thêm tham số để bật/tắt icon tìm kiếm
-    navController: NavController? = null, // Thêm NavController
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         topBar = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp)
-                    .background(brush = Brush.linearGradient(
-                        colors = listOf(LightBlue, LightPurple)
-                    ))
-                    .offset(y = 12.dp)
-                ,
-            ) {
-                // Nút back (nếu có)
-                if (showBackButton) {
-                    IconButton(
-                        onClick = { onBackClick?.invoke() },
-                        modifier = Modifier.size(48.dp) // Kích thước nút hợp lý
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowLeft,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                }
-
-                // Tiêu đề luôn ở giữa
-                Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = White, // Tùy chỉnh màu nếu cần
-                    textAlign = TextAlign.Start,
-                )
-                Spacer(modifier = Modifier.width(150.dp))
-
-                // ActionsTop (nếu có)
-                actionsTop?.let {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        it()
-                    }
-                } ?: Spacer(modifier = Modifier.width(48.dp)) // Giữ chỗ để cân bằng
-
-                // Thêm IconButton tìm kiếm
-                if (showSearch && navController != null) {
-                    IconButton(
-                        onClick = { navController.navigate("search_screen") },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Mở tìm kiếm",
-                            tint = Color.White
-                        )
-                    }
+            actionsTop?.let {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                        .height(72.dp)
+                        .background(brush = Brush.linearGradient(
+                            colors = listOf(LightBlue, LightPurple)
+                        ))
+                        .offset(y = 12.dp)
+                    ,
+                ) {
+                    it()
                 }
             }
         },
         bottomBar = {
             actionsBot?.let {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
+                    modifier = Modifier.fillMaxWidth()
+                        .height(100.dp)
+                        .background(Color.Transparent)
+                    ,
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     it()
                 }

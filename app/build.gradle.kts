@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.database.ktx)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.play.services.fido)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

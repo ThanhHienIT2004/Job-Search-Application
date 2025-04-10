@@ -1,66 +1,123 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
+import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.model.auth.CreateUserRequest
+import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
+import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
+import com.mobile.jobsearchapplication.utils.RetrofitClient
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class LoginViewModel() : BaseViewModel() {
-    var email by mutableStateOf("")
-        private set
-    var password by mutableStateOf("")
-        private set
+data class LoginState(
+    var email: String = "",
+    var password: String = "",
+    var isErrorEmail: Boolean = false,
+    val isErrorPassword: Boolean = false,
+    val isLoading: Boolean = false,
+    val errorMessage: String = "",
+    val isLoggedSucess: Boolean = false
+)
 
+class LoginViewModel() : AuthViewModel() {
+    private val authRepository = AuthRepository(RetrofitClient.authApiService)
 
-    fun onEmailChanged(newEmail: String) {
-        email = newEmail
-    }
-    fun onPasswordChanged(newPassword: String) {
-        password = newPassword
-    }
+    private val _loginState = MutableStateFlow(LoginState())
+    val loginState = _loginState.asStateFlow()
 
-    sealed class TextFieldLogin(
-        open val value: String,
-        open val onClick: (String) -> Unit,
-        open val label: String,
-        open val isError: Boolean,
-        open val errorMessage: String = ""
-    ) {
-        data class Email(
-            override val value: String,
-            override val onClick: (String) -> Unit,
-            override val label: String = "Email",
-            override val isError: Boolean = false,
-            override val errorMessage: String = "Email không hợp lệ"
-        ) : TextFieldLogin(value, onClick, label, isError, errorMessage)
-
-        data class Password(
-            override val value: String,
-            override val onClick: (String) -> Unit,
-            override val label: String = "Password",
-            override val isError: Boolean = false,
-            override val errorMessage: String = "Mật khẩu phải trên 6 kí tự"
-        ) : TextFieldLogin(value, onClick, label, isError, errorMessage)
-    }
-
-    val textFieldLoginItems = listOf(
-        TextFieldLogin.Email(email, ::onEmailChanged),
-        TextFieldLogin.Password(password, ::onPasswordChanged)
+    val emailField = TextFieldAuthModel(
+        value = "",
+        onValueChange = { onEmailChanged(it) },
+        label = "Email",
+        leadingIcon = R.drawable.ic_email_auth,
+        messageError = "Email Không hợp lệ"
     )
+
+    val passwordField = TextFieldAuthModel(
+        value = "",
+        onValueChange = { onPasswordChanged(it) },
+        label = "Mật khẩu",
+        leadingIcon = R.drawable.ic_password_auth,
+        trailingIcons = listOf(
+            R.drawable.ic_visibility_off, R.drawable.ic_visibility
+        ),
+        messageError = "Hãy nhập mật khẩu",
+        isPasswordField = true,
+        isImeActionDone = true
+    )
+
+    val listTextFieldLogin = listOf(
+        emailField, passwordField
+    )
+
+    private fun onEmailChanged(newEmail: String) {
+        _loginState.value = _loginState.value.copy(
+            email = newEmail
+        )
+    }
+
+    private fun onPasswordChanged(newPassword: String) {
+        _loginState.value = _loginState.value.copy(
+            password = newPassword
+        )
+    }
+
+    fun doCheckError(): Boolean {
+        if (
+            _loginState.value.email.isBlank()
+            || (_loginState.value.email.isNotBlank() && !isValidEmail(_loginState.value.email))
+        ) {
+            _loginState.value = _loginState.value.copy(isErrorEmail = true)
+            return false
+        }
+        _loginState.value = _loginState.value.copy(isErrorEmail = false)
+
+        if (_loginState.value.password.isBlank()) {
+            _loginState.value =  _loginState.value.copy(isErrorPassword = true)
+            return false
+        }
+        _loginState.value =  _loginState.value.copy(isErrorPassword = false)
+
+        return true
+    }
 
     fun login() {
         viewModelScope.launch {
             try {
                 showLoading()
-                Firebase.auth.signInWithEmailAndPassword(email, password)
+
+                val result = auth.signInWithEmailAndPassword(
+                    _loginState.value.email,
+                    _loginState.value.password
+                ).await()
+                if (result == null) return@launch
+
+                val request = CreateUserRequest(getLoggedInUserId().toString())
+                val response = authRepository.createUser(request)
+
+                if (response.isSuccess) {
+                    _loginState.value = _loginState.value.copy(isLoggedSucess = true)
+                } else {
+                    showErrorMessage(response.message)
+                    _loginState.value = _loginState.value.copy(isLoggedSucess = false)
+                }
+
             } catch (e: Exception) {
                 showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng nhập")
+            } finally {
+                hideLoading()
             }
         }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

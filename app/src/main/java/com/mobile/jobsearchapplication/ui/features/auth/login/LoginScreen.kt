@@ -1,72 +1,109 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    registerVM: RegisterViewModel,
+    modifier: Modifier = Modifier
+) {
+    val loginVM: LoginViewModel = viewModel()
+    val registerState by registerVM.registerState.collectAsState()
+    val loginState by loginVM.loginState.collectAsState()
+    val context = LocalContext.current
+
+    if (registerState.email.isNotBlank() && registerState.password.isNotBlank() && registerState.isRegisterSuccess) {
+        loginVM.emailField.onValueChange(registerState.email)
+        loginVM.passwordField.onValueChange(registerState.password)
+    }
+
+    loginVM.emailField.value = loginState.email
+    loginVM.passwordField.value = loginState.password
+
+    loginVM.emailField.isError = loginState.isErrorEmail
+    loginVM.passwordField.isError = loginState.isErrorPassword
+
+    LaunchedEffect(Unit) {
+        if (loginState.isLoggedSucess) {
+            Toast.makeText(context, "Logged Successful", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(0.9f)
             .background(Color.White, shape = RoundedCornerShape(16.dp))
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextFieldAuth()
+        loginVM.listTextFieldLogin.forEach {
+            TextFieldAuth(
+                Modifier.padding(top = 10.dp), it
+            )
+        }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 👉 Nút "Quên mật khẩu?"
         TextButton(
             onClick = { /* Xử lý quên mật khẩu */ },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
+            modifier = Modifier.fillMaxWidth(0.9f)
                 .wrapContentWidth(Alignment.Start)
         ) {
-            Text("Quên mật khẩu?", color = Color.Blue, fontSize = 9.sp)
+            Icon(
+                painter = painterResource(R.drawable.ic_forget_password),
+                contentDescription = "Icon Forget Password",
+                modifier = Modifier.padding(end = 10.dp).size(22.dp),
+                tint = Color.Gray
+            )
+            Text("Quên mật khẩu?", color = Color.Gray, fontSize = 14.sp)
         }
 
-        Button(onClick = { /* Xử lý đăng nhập */ }) {
-            Text("Đăng nhập")
-        }
-    }
+        Button(
+            onClick = {
+                if (loginVM.doCheckError()) {
 
-}
+                }
+            },
+            modifier = Modifier.padding(0.dp, 20.dp)
+                .fillMaxWidth(0.6f)
+                .height(50.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            border = BorderStroke(2.dp, Color.Gray),
 
-@Composable
-fun TextFieldAuth(viewModel: LoginViewModel = viewModel()) {
-    viewModel.textFieldLoginItems.forEach {
-        OutlinedTextField(
-            value = it.value,
-            onValueChange = it.onClick,
-            label = { Text(text = it.value) },
-            modifier = Modifier.fillMaxWidth(0.9f),
-            isError = viewModel.email.isBlank()
-        )
-        if (viewModel.email.isBlank()) {
+        ) {
             Text(
-                text = it.errorMessage,
-                color = Color.Red,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 16.dp)
+                "Đăng nhập",
+                fontSize = 20.sp, color = Color.Black
             )
         }
     }
+
 }
