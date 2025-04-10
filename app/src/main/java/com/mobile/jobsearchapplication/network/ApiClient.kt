@@ -16,4 +16,8 @@ object ApiClient {
     val jobApiService: JobApiService by lazy {
         retrofit.create(JobApiService::class.java)
     }
+
+    val notificationApiService: NotificationApiService by lazy {
+        retrofit.create(NotificationApiService::class.java)
+    }
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.data.model.Job
 import com.mobile.jobsearchapplication.network.ApiClient
-import com.mobile.jobsearchapplication.network.responses.ApiResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

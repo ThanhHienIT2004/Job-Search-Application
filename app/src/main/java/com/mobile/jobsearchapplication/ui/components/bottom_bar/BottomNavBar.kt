@@ -142,7 +142,7 @@ fun IconBottomNav(
                 modifier = Modifier
                     .size(11.dp)
                     .align(Alignment.TopEnd)
-                    .offset(x = (-5).dp, y = 5.dp)
+                    .offset(x = (-9).dp, y = 9.dp)
                     .clip(CircleShape)
                     .background(Color.Red)
             )
@@ -185,9 +185,9 @@ fun CurrIconBottomNav(route: String, icon: ImageVector, navController: NavContro
         if(hasUnreadNotifications){
             Box(
                 modifier = Modifier
-                    .size(11.dp)
+                    .size(10.dp)
                     .align(Alignment.TopEnd)
-                    .offset(x = (-5).dp, y = 5.dp)
+                    .offset(x = (-9).dp, y = 9.dp)
                     .clip(CircleShape)
                     .background(Color.Red)
 
