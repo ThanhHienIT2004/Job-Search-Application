@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen(
@@ -38,7 +39,6 @@ fun RegisterScreen(
     modifier: Modifier = Modifier
 ) {
     val registerState by registerVM.registerState.collectAsState()
-    val context = LocalContext.current
 
     registerVM.emailField.value = registerState.email
     registerVM.passwordField.value = registerState.password
@@ -49,11 +49,10 @@ fun RegisterScreen(
     registerVM.confirmPasswordField.isError = registerState.isErrorConfirmPassword
 
     LaunchedEffect(registerState.isRegisterSuccess) {
-        if (registerState.isRegisterSuccess) {
-            Toast.makeText(context, "Thanh cong", Toast.LENGTH_SHORT).show()
-            authVM.onDragButton(true)
-        }
+        if (registerState.isRegisterSuccess)
+            authVM.onSuccessRegister(true)
     }
+
     Column(
         modifier = modifier
             .fillMaxWidth(0.9f)
@@ -120,18 +119,5 @@ fun RegisterScreen(
             )
         }
     }
-
-    // Loading overlay
-    if (registerState.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0x80000000)), // nửa trong suốt
-            contentAlignment = Alignment.Center
-        ) {
-            androidx.compose.material3.CircularProgressIndicator()
-        }
-    }
-
 }
 

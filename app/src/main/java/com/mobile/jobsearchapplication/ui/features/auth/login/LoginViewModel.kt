@@ -22,8 +22,8 @@ data class LoginState(
     var isErrorEmail: Boolean = false,
     val isErrorPassword: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String = "",
-    val isLoggedSucess: Boolean = false
+    val isLoggedSucess: Boolean = false,
+    val errorMessage: String = ""
 )
 
 class LoginViewModel() : AuthViewModel() {
@@ -97,17 +97,17 @@ class LoginViewModel() : AuthViewModel() {
                     _loginState.value.email,
                     _loginState.value.password
                 ).await()
-                if (result == null) return@launch
 
                 val request = CreateUserRequest(getLoggedInUserId().toString())
                 val response = authRepository.createUser(request)
 
-                if (response.isSuccess) {
+                if (result != null) {
                     _loginState.value = _loginState.value.copy(isLoggedSucess = true)
                 } else {
-                    showErrorMessage(response.message)
                     _loginState.value = _loginState.value.copy(isLoggedSucess = false)
                 }
+
+                hideLoading()
 
             } catch (e: Exception) {
                 showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng nhập")

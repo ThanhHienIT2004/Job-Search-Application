@@ -65,7 +65,25 @@ import com.mobile.jobsearchapplication.utils.GoogleSignInUtils
 fun AuthScreen(
     navController: NavController
 ) {
+    val authVM: AuthViewModel = viewModel()
+    val authState by authVM.authState.collectAsState()
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(authState) {
+        if(authState.isLoggedIn) {
+            navController.navigate("home_screen")
+            Toast.makeText(context, "??ng nh?p t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
+        }
+        if (authState.isSuccessRegister) {
+            authVM.onDragButton(true)
+            Toast.makeText(context, "??ng k? t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
+        }
+        if (authState.isSuccessLogin) {
+            authVM.doCheckUserLoggedIn()
+            Toast.makeText(context, "??ng nh?p t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column (
         modifier = Modifier
@@ -78,21 +96,21 @@ fun AuthScreen(
                 focusManager.clearFocus()
             }
     ) {
-        TopBackgroundAuth(navController)
+        TopBackgroundAuth(authVM, navController)
 
         Spacer(Modifier.height(30.dp))
 
-        BotBackGroundAuth()
+        BotBackGroundAuth(authVM)
     }
 }
 
 
 @Composable
 fun TopBackgroundAuth(
-    navController: NavController,
-    viewModel: AuthViewModel = viewModel()
+    authVM: AuthViewModel,
+    navController: NavController
 ) {
-    val authState by viewModel.authState.collectAsState()
+    val buttonState by authVM.buttonState.collectAsState()
     // title
     Surface(
         modifier = Modifier
@@ -113,38 +131,38 @@ fun TopBackgroundAuth(
     }
     // toggle button
     Row {
-        if (authState.isLoginScreen) {
-            ToggleButtonAuth()
-            if (!authState.isDraggingButton) IconSingUpAuth(navController)
+        if (buttonState.isLoginScreen) {
+            ToggleButtonAuth(authVM)
+            if (!buttonState.isDraggingButton) IconSingUpAuth(authVM, navController)
         } else {
-            IconSingUpAuth(navController)
-            ToggleButtonAuth()
+            IconSingUpAuth(authVM, navController)
+            ToggleButtonAuth(authVM)
         }
     }
 }
 
 @Composable
 fun ToggleButtonAuth(
-    viewModel: AuthViewModel = viewModel()
+    viewModel: AuthViewModel
 ) {
-    val authState by viewModel.authState.collectAsState()
+    val buttonState by viewModel.buttonState.collectAsState()
     val maxDeviceWidth = DeviceSizeUtils.deviceWidthInPx()
     var offsetXButton by remember { mutableFloatStateOf(0f) }
     val offsetXBegin = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        while (authState.isFirstLoad) {
+        while (buttonState.isFirstLoad) {
             repeat(1){
                 offsetXBegin.animateTo(maxDeviceWidth / 19f, animationSpec = tween(500))
                 offsetXBegin.animateTo(0f, animationSpec = tween(1500))
             }
-            viewModel.onFirstLoad()
+            viewModel.doFirstLoad()
         }
     }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth(if (authState.isLoginScreen) 0.6f else 1f)
+            .fillMaxWidth(if (buttonState.isLoginScreen) 0.6f else 1f)
             .offset { IntOffset((offsetXButton + offsetXBegin.value).toInt(), (-1).dp.roundToPx()) }
             .draggable(
                 state = rememberDraggableState { delta ->
@@ -152,7 +170,7 @@ fun ToggleButtonAuth(
                 },
                 orientation = Orientation.Horizontal,
                 onDragStarted = {
-                    viewModel.onDragging()
+                    viewModel.onDraggingButton()
                 },
                 onDragStopped = {
                     if (offsetXButton < (maxDeviceWidth / 4f)) {
@@ -171,7 +189,7 @@ fun ToggleButtonAuth(
         )
 
         Text(
-            text = authState.textButton,
+            text = buttonState.textButton,
             fontWeight = FontWeight.Bold, fontSize = 24.sp,
             color = Color.White,
             modifier = Modifier
@@ -184,31 +202,31 @@ fun ToggleButtonAuth(
 
 @Composable
 fun IconSingUpAuth(
-    navController: NavController,
-    viewModel: AuthViewModel = viewModel()
+    authVM: AuthViewModel,
+    navController: NavController
 ) {
-
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val authState by viewModel.authState.collectAsState()
+    val authState by authVM.authState.collectAsState()
+    val buttonState by authVM.buttonState.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {}
 
-    LaunchedEffect(authState.isSuccessLogin) {
-        if (authState.isSuccessLogin) {
-            navController.navigate("home_screen")
-        }
-    }
+//    LaunchedEffect(authState.isSuccessLogin) {
+//        if (authState.isSuccessLogin) {
+//            navController.navigate("home_screen")
+//        }
+//    }
 
     Row(
         modifier = Modifier.height(56.dp)
-            .fillMaxWidth(if (authState.isLoginScreen) 1f else 0.4f),
+            .fillMaxWidth(if (buttonState.isLoginScreen) 1f else 0.4f),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        viewModel.iConSingUpItems.forEach { icon ->
+        authVM.listIconSignIn.forEach { icon ->
             IconButton (
                 onClick = {
                     GoogleSignInUtils.doGoogleSignIn(
@@ -216,8 +234,8 @@ fun IconSingUpAuth(
                         scope = scope,
                         launcher = launcher,
                         login = {
-                            viewModel.onSuccessLogin()
-                            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                            authVM.doCheckUserLoggedIn()
+//                            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         }
                     )
                 },
@@ -238,11 +256,12 @@ fun IconSingUpAuth(
 
 @Composable
 fun BotBackGroundAuth(
-    authVM: AuthViewModel = viewModel()
+    authVM: AuthViewModel
 ) {
     val loginVM: LoginViewModel = viewModel()
     val registerVM: RegisterViewModel = viewModel()
     val authState by authVM.authState.collectAsState()
+    val buttonState by authVM.buttonState.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -265,8 +284,8 @@ fun BotBackGroundAuth(
             ) {
                 Spacer(Modifier.height(10.dp))
 
-                if (authState.isLoginScreen) {
-                    LoginScreen(registerVM)
+                if (buttonState.isLoginScreen) {
+                    LoginScreen(authVM, loginVM, registerVM)
                 }
                 else {
                     RegisterScreen(authVM, registerVM)
