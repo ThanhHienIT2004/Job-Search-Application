@@ -30,6 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.features.home.RecommendedJobsList
+import com.mobile.jobsearchapplication.ui.features.job.JobUiState
+import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
@@ -40,8 +43,8 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
     }
 
     BaseScreen(
-        showBackButton = true,
-        onBackClick = { navController.popBackStack() },
+//        showBackButton = true,
+//        onBackClick = { navController.popBackStack() },
         actionsTop = {
             Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
 

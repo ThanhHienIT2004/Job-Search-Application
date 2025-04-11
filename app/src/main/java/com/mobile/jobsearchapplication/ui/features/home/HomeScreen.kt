@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,36 +11,41 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
-import com.mobile.jobsearchapplication.ui.components.PostItemList
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.topBar.SearchButton
-import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
+import com.mobile.jobsearchapplication.ui.features.jobcategory.JobCategoryViewModel
+import com.mobile.jobsearchapplication.ui.features.jobcategory.JobCategoryUiState
+import com.mobile.jobsearchapplication.data.model.jocategory.JobCategory
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
 
 @Composable
-fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewModel()) {
+fun HomeScreen(
+    navController: NavController,
+    jobViewModel: JobViewModel = viewModel(),
+    jobCategoryViewModel: JobCategoryViewModel = viewModel() // Thêm JobCategoryViewModel
+) {
     BaseScreen(
         actionsTop = {
             Spacer(Modifier.weight(1f))
             SearchButton()
         },
         actionsBot = {
-            BottomNavBarCustom(
-                navController = navController
-            )
+            BottomNavBarCustom(navController = navController)
         }
     ) {
         Column(
@@ -47,9 +53,66 @@ fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewMo
                 .fillMaxSize()
                 .padding(start = 16.dp, end = 16.dp)
         ) {
-            // Danh mục công việc theo nghề
-            JobCategorySection(navController)
+            // Tiêu đề "Việc làm theo ngành nghề"
+            Text(
+                text = "Việc làm theo ngành nghề",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+            )
 
+            // Hiển thị danh sách ngành nghề
+            when (val uiState = jobCategoryViewModel.uiState.collectAsState().value) {
+                is JobCategoryUiState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is JobCategoryUiState.Success -> {
+                    JobCategoryList(
+                        jobCategories = uiState.jobCategories,
+                        navController = navController,
+                    )
+
+                    // Thêm nút "Xem tất cả  ngành nghề"
+                    Text(
+                        text = "Xem tất cả ${uiState.jobCategories.size} ngành nghề",
+                        color = LightBlue,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+//                                navController.navigate("all_job_categories")
+                            },
+                        textAlign = TextAlign.Center
+                    )
+                }
+                is JobCategoryUiState.Error -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = uiState.message,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+                is JobCategoryUiState.Idle -> {
+                    // Không làm gì hoặc hiển thị placeholder
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Danh sách công việc đề xuất
             when (val uiState = jobViewModel.uiState.collectAsState().value) {
                 is JobUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -57,7 +120,11 @@ fun HomeScreen(navController: NavController, jobViewModel: JobViewModel = viewMo
                     }
                 }
                 is JobUiState.Success -> {
-                    RecommendedJobsList(jobs = uiState.jobs, pageCount = uiState.pageCount, navController = navController)
+                    RecommendedJobsList(
+                        jobs = uiState.jobs,
+                        pageCount = uiState.pageCount,
+                        navController = navController
+                    )
                 }
                 is JobUiState.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -138,116 +205,53 @@ fun JobItem(job: Job, onClick: () -> Unit) {
     }
 }
 
-
-// hàm tạo tiêu đề cho từng section
 @Composable
-fun TitleSection(title: String, isExpanded: Boolean, onExpandToggle: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+fun JobCategoryList(jobCategories: List<JobCategory>, navController: NavController) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        Text(
-            text = if (isExpanded) "Thu gọn" else "Mở rộng",
-            fontSize = 12.sp,
-            modifier = Modifier.clickable { onExpandToggle(!isExpanded) }
-        )
-    }
-}
-
-// -------------- Việc làm theo nghề -----------------------
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun JobCategorySection(navController: NavController) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var isCheckedIconJob by remember { mutableStateOf(false) }
-    var selectedJob by remember { mutableStateOf<String?>(null) }
-    val categories = listOf("Bán Hàng", "Tạp vụ", "Giúp việc", "t", "t", "t", "t", "t", "t")
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        TitleSection("Việc làm theo nghề", isExpanded = isExpanded) {
-            isExpanded = it
-        }
-
-        // kiểm tra có nhấn mở rông hay không
-        if (isExpanded) {
-            FlowRow (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                categories.forEach { category ->
-                    JobCategoryItem(category = category, isCheckedIconJob) {
-                        isCheckedIconJob = it
-                    }
+        items(jobCategories) { category ->
+            JobCategoryItem(
+                category = category,
+                onClick = {
+                    // Chuyển hướng đến màn hình hiển thị công việc theo ngành nghề
+                    navController.navigate("jobs_by_category/${category.id}")
                 }
-            }
-        } else {
-            LazyRow{
-                items(categories.size) { index ->
-                    JobCategoryItem(category = categories[index], isCheckedIconJob) { isChecked ->
-                        isCheckedIconJob = isChecked
-                        selectedJob = if (isChecked) categories[index] else null
-                    }
-                }
-            }
-        }
-
-        // chuyển screen khi nhấn vào icon Job
-        if (isCheckedIconJob) {
-            navController.navigate("adv_job_search/${selectedJob ?: ""}") {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
+            )
         }
     }
 }
 
 @Composable
-fun JobCategoryItem(category: String, isCheckedIconJob: Boolean, onToggleIconJob: (Boolean) -> Unit) {
+fun JobCategoryItem(category: JobCategory, onClick: () -> Unit) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .width(60.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface(
+        // Hiển thị biểu tượng ngành nghề
+        AsyncImage(
+            model = category.imageUrl, // Sử dụng imageUrl từ JobCategory
+            contentDescription = category.name,
             modifier = Modifier
-                .size(60.dp)
-                .clickable { onToggleIconJob(!isCheckedIconJob) }
-            ,
-            color = Color.LightGray,
-            shape = RoundedCornerShape(50)
-        ) {
-            // Placeholder cho hình ảnh
-        }
+                .size(50.dp)
+                .background(Color.LightGray, shape = CircleShape),
+            placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.error)
+        )
+
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = category, fontSize = 14.sp)
+
+        // Hiển thị tên ngành nghề
+        Text(
+            text = category.name,
+            fontSize = 12.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
-
-// -------------- Việc dành cho bạn -----------------------
-@Composable
-fun RecommendedJobsList(navController: NavController) {
-    var isExpanded by remember { mutableStateOf(false) }
-
-    Column(modifier = Modifier.padding(16.dp, 0.dp)) {
-        TitleSection("Việc dành cho bạn", isExpanded = isExpanded) {
-            isExpanded = it
-        }
-
-        LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-            val jobs = listOf("Lập trình mobile frontend", "Job 2", "Job 3","job 4","job 5")
-
-            items(jobs.size) { index ->
-                PostItemList(navController, jobTitle = jobs[index])
-            }
-        }
-    }
-}
-
