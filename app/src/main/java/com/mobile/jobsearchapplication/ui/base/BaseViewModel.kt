@@ -1,25 +1,27 @@
 package com.mobile.jobsearchapplication.ui.base
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+data class BaseState(
+    val isLoading: Boolean = false,
+    val errorMessage: String = ""
+)
 
 open class BaseViewModel : ViewModel() {
-    protected val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> = _loading
-
-    protected val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+    private val _baseState = MutableStateFlow(BaseState())
+    val baseState = _baseState.asStateFlow()
 
     protected fun showLoading() {
-        _loading.value = true
+        _baseState.value = _baseState.value.copy(isLoading = true)
     }
 
     protected fun hideLoading() {
-        _loading.value = false
+        _baseState.value = _baseState.value.copy(isLoading = false)
     }
 
     protected fun showErrorMessage(message: String){
-        _errorMessage.value = message
+        _baseState.value = _baseState.value.copy(errorMessage = message)
     }
 }
