@@ -42,7 +42,7 @@ fun AppNavigation() {
 
         ) { PostScreen(navController) }
 
-        composable("notifications") { NotificationsScreen(navController) }
+        composable("notificationsState") { NotificationsScreen(navController) }
         composable("account") { UserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }

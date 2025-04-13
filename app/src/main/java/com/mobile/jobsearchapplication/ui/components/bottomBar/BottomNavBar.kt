@@ -47,7 +47,7 @@ sealed class Screen(val route: String, val icon: ImageVector) {
     object Home : Screen("home_screen", Icons.Filled.Home)
     object PostedJob : Screen("posted_screen", Icons.Filled.Article)
     object PostJob : Screen("post_screen", Icons.Filled.AddCircle)
-    object Notifications : Screen("notifications", Icons.Filled.Notifications)
+    object Notifications : Screen("notificationsState", Icons.Filled.Notifications)
     object Account : Screen("account", Icons.Filled.AccountCircle)
 }
 

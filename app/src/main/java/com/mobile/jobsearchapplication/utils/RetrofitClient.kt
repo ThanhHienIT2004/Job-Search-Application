@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.utils
 
 import com.mobile.jobsearchapplication.data.remote.auth.AuthApiService
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
+import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -24,5 +25,9 @@ object RetrofitClient {
 
     val authApiService: AuthApiService by lazy {
         retrofit.create(AuthApiService::class.java)
+    }
+
+    val notificationApiService : NotificationApiService by lazy {
+        retrofit.create(NotificationApiService::class.java)
     }
 }
