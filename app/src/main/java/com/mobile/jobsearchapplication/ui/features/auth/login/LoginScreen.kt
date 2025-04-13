@@ -29,17 +29,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 
 @Composable
 fun LoginScreen(
+    authVM: AuthViewModel,
+    loginVM: LoginViewModel,
     registerVM: RegisterViewModel,
     modifier: Modifier = Modifier
 ) {
-    val loginVM: LoginViewModel = viewModel()
     val registerState by registerVM.registerState.collectAsState()
     val loginState by loginVM.loginState.collectAsState()
-    val context = LocalContext.current
 
     if (registerState.email.isNotBlank() && registerState.password.isNotBlank() && registerState.isRegisterSuccess) {
         loginVM.emailField.onValueChange(registerState.email)
@@ -52,10 +53,9 @@ fun LoginScreen(
     loginVM.emailField.isError = loginState.isErrorEmail
     loginVM.passwordField.isError = loginState.isErrorPassword
 
-    LaunchedEffect(Unit) {
-        if (loginState.isLoggedSucess) {
-            Toast.makeText(context, "Logged Successful", Toast.LENGTH_SHORT).show()
-        }
+    LaunchedEffect(loginState.isLoggedSucess) {
+        if (loginState.isLoggedSucess)
+            authVM.onSuccessLogin(true)
     }
 
     Column(
@@ -88,7 +88,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (loginVM.doCheckError()) {
-
+                    loginVM.login()
                 }
             },
             modifier = Modifier.padding(0.dp, 20.dp)

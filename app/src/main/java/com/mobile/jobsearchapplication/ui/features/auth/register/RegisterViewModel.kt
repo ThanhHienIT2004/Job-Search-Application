@@ -21,12 +21,11 @@ data class RegisterState(
     val isErrorPassword: Boolean = false,
     val isErrorConfirmPassword: Boolean = false,
     val isErrorClause: Boolean = false,
-    val isLoading: Boolean = false,
-    val errorMessage: String = "",
-    val isRegisterSuccess: Boolean = false
+    val isRegisterSuccess: Boolean = false,
+    val errorMessage: String = ""
 )
 
-class RegisterViewModel : AuthViewModel() {
+class RegisterViewModel : BaseViewModel() {
     private val _registerState = MutableStateFlow(RegisterState())
     val registerState = _registerState.asStateFlow()
 
@@ -128,11 +127,13 @@ class RegisterViewModel : AuthViewModel() {
             try {
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
 
+                showLoading()
                 if (result != null) {
                     _registerState.value = _registerState.value.copy(isRegisterSuccess = true)
                 } else {
                     _registerState.value = _registerState.value.copy(isRegisterSuccess = false)
                 }
+                hideLoading()
 
             } catch (e: Exception) {
                 showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng kí")
