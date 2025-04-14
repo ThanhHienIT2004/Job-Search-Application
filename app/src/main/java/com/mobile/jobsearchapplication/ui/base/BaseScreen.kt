@@ -37,7 +37,7 @@ fun BaseScreen(
                         .background(brush = Brush.linearGradient(
                             colors = listOf(LightBlue, LightPurple)
                         ))
-                        .offset(y = 12.dp)
+                        .offset(y = 16.dp)
                     ,
                 ) {
                     it()

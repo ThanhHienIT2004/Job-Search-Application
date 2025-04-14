@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.data.model.jocategory
+package com.mobile.jobsearchapplication.data.model.jobcategory
 
 
 import com.google.gson.annotations.SerializedName
