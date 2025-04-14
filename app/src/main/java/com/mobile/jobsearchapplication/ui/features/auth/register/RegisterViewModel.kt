@@ -1,11 +1,9 @@
 package com.mobile.jobsearchapplication.ui.features.auth.register
 
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
-import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +27,7 @@ class RegisterViewModel : BaseViewModel() {
     private val _registerState = MutableStateFlow(RegisterState())
     val registerState = _registerState.asStateFlow()
 
-    val emailField = TextFieldAuthModel(
+    val emailField = TextFieldModel(
         value = "",
         onValueChange = { onEmailChanged(it) },
         label = "Email",
@@ -37,7 +35,7 @@ class RegisterViewModel : BaseViewModel() {
         messageError = "Email Không hợp lệ"
     )
 
-    val passwordField = TextFieldAuthModel(
+    val passwordField = TextFieldModel(
         value = "",
         onValueChange = { onPasswordChanged(it) },
         label = "Mật khẩu",
@@ -50,7 +48,7 @@ class RegisterViewModel : BaseViewModel() {
         isImeActionDone = false
     )
 
-    val confirmPasswordField = TextFieldAuthModel(
+    val confirmPasswordField = TextFieldModel(
         value = "",
         onValueChange = { onConfirmPasswordChanged(it) },
         label = "Nhập lại mật khẩu",

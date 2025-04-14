@@ -11,8 +11,8 @@ class FireBaseUtils {
             return auth.currentUser != null
         }
 
-        fun getLoggedInUserId(): String? {
-            return auth.currentUser?.uid
+        fun getLoggedInUserId(): String {
+            return auth.currentUser?.uid.toString()
         }
 
         fun getCurrentUserEmail(): String {

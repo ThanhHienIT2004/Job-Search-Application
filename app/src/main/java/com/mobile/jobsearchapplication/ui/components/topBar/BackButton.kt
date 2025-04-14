@@ -24,6 +24,6 @@ fun BackButton(
             .padding(start = 10.dp)
             .size(32.dp)
             .clickable { navController.popBackStack() },
-        tint = Color.White
+        tint = Color.Black
     )
 }

@@ -1,12 +1,10 @@
 package com.mobile.jobsearchapplication.ui.components.icon
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,20 +28,12 @@ fun IconEditProfile(
 }
 
 @Composable
-fun IconEditAndTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+fun IconUpdateProfile(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { onValueChange(it) },
-        modifier = modifier
-    )
-
     IconButton(
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
             .size(32.dp),
         onClick = {

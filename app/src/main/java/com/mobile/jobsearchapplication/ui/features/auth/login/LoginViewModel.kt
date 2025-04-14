@@ -1,12 +1,9 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.data.model.auth.CreateUserRequest
 import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
-import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuthModel
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldModel
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
@@ -32,7 +29,7 @@ class LoginViewModel() : AuthViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
-    val emailField = TextFieldAuthModel(
+    val emailField = TextFieldModel(
         value = "",
         onValueChange = { onEmailChanged(it) },
         label = "Email",
@@ -40,7 +37,7 @@ class LoginViewModel() : AuthViewModel() {
         messageError = "Email Không hợp lệ"
     )
 
-    val passwordField = TextFieldAuthModel(
+    val passwordField = TextFieldModel(
         value = "",
         onValueChange = { onPasswordChanged(it) },
         label = "Mật khẩu",
@@ -88,7 +85,7 @@ class LoginViewModel() : AuthViewModel() {
         return true
     }
 
-    fun login() {
+    fun signInWithEmail() {
         viewModelScope.launch {
             try {
                 showLoading()
@@ -98,10 +95,9 @@ class LoginViewModel() : AuthViewModel() {
                     _loginState.value.password
                 ).await()
 
-                val request = CreateUserRequest(getLoggedInUserId().toString())
-                val response = authRepository.createUser(request)
+                val response = authRepository.createUser(getLoggedInUserId())
 
-                if (result != null) {
+                if (response.isSuccess) {
                     _loginState.value = _loginState.value.copy(isLoggedSucess = true)
                 } else {
                     _loginState.value = _loginState.value.copy(isLoggedSucess = false)

@@ -1,6 +1,5 @@
 package com.mobile.jobsearchapplication.ui.features.auth.login
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,13 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldAuth
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 
@@ -66,7 +63,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         loginVM.listTextFieldLogin.forEach {
-            TextFieldAuth(
+            TextFieldCustom(
                 Modifier.padding(top = 10.dp), it
             )
         }
@@ -88,7 +85,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (loginVM.doCheckError()) {
-                    loginVM.login()
+                    loginVM.signInWithEmail()
                 }
             },
             modifier = Modifier.padding(0.dp, 20.dp)
