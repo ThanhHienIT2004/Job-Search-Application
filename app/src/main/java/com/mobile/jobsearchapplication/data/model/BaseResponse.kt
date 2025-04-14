@@ -11,7 +11,7 @@ data class BaseResponse<T> (
 data class PaginatedData<T>(
     val pageCount: Int,
     val data: List<T>
-)
+) 
 
 // Cập nhật ApiResponse để khớp với API thực tế
 data class ApiResponse<T>(

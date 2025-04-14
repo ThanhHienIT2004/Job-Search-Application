@@ -13,9 +13,9 @@ import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
 import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
-import com.mobile.jobsearchapplication.ui.features.notification.NotificationsScreen
 import com.mobile.jobsearchapplication.ui.features.favorite.PostFaveriteScreen
 import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
+import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.post.PostScreen
 import com.mobile.jobsearchapplication.ui.features.posted.PostedScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
@@ -42,7 +42,7 @@ fun AppNavigation() {
 
         ) { PostScreen(navController) }
 
-        composable("notificationsState") { NotificationsScreen(navController) }
+        composable("notificationsState") { NotificationScreen(navController) }
         composable("account") { UserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
         composable("post_favorite") { PostFaveriteScreen(navController) }
