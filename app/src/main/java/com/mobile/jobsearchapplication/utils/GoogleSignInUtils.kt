@@ -52,7 +52,6 @@ class GoogleSignInUtils {
                                 val user = auth.signInWithCredential(credential).await().user
                                 user?.let {
                                     login.invoke()
-                                    SharedPreferencesUtils.saveUserLoggedInState(context, true, user.uid)
                                 }
                             }
                         }

@@ -1,22 +1,32 @@
 package com.mobile.jobsearchapplication.data.model.user
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.time.LocalDateTime
 
 data class User(
-    val id: UUID,
-    val name: String,
-    val email: String,
-    @SerializedName("password_hash") val passwordHash: String,
-    val role: String,
-    @SerializedName("phone_number") val phoneNumber: String?,
-    @SerializedName("profile_picture") val profilePicture: String?,
-    val gender: String,
-    val bio: String?,
-    val location: String?,
-    @SerializedName("cv_url") val cvUrl: String?,
-    val education: String?,
-    val experience: String?,
-    val skills: String?,
-    @SerializedName("created_at") val createdAt: Date
+    @SerializedName("id") val id: String,
+
+    @SerializedName("fullName") val fullName: String? = null,
+
+    @SerializedName("phoneNumber") val phoneNumber: String? = null,
+
+    @SerializedName("avatar") val avatar: String? = null,
+
+    @SerializedName("bio") val bio: String? = null,
+
+    @SerializedName("birthDay") val birthDay: String? = null,
+
+    @SerializedName("gender") val gender: String? = null,
+
+    @SerializedName("location") val location: String? = null,
+
+    @SerializedName("cvUrl") val cvUrl: String? = null,
+
+    @SerializedName("education") val education: String? = null,
+
+    @SerializedName("experience") val experience: String? = null,
+
+    @SerializedName("createdAt") val createdAt: String? = null,
+
+    @SerializedName("updatedAt") val updatedAt: String? = null,
 )

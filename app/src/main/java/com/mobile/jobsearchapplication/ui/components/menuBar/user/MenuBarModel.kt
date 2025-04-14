@@ -28,7 +28,7 @@ sealed class MenuBarUser(val icon: ImageVector, val title: String) {
 open class MenuItemUser(val icon: ImageVector, val title: String, val route: String? = null, val action: (() -> Unit)? = {})
 
 sealed class MenuItemProfile(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
-    data object PersonalInfo: MenuItemProfile(Icons.Filled.PersonPin, "Hồ sơ cá nhân", "detail_user_screen", {})
+    data object PersonalInfo: MenuItemProfile(Icons.Filled.PersonPin, "Hồ sơ cá nhân", "profile_screen", {})
     data object UpdateInfo: MenuItemProfile(Icons.Filled.EditNote,"Cập nhật thông tin")
     data object ChangedBusinessAccount: MenuItemProfile(Icons.Filled.BusinessCenter, "Chuyển tài khoản kinh doanh", )
 }
