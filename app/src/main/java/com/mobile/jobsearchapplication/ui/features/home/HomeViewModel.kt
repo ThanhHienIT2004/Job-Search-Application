@@ -1,19 +1,28 @@
 package com.mobile.jobsearchapplication.ui.features.home
 
 import androidx.lifecycle.ViewModel
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Computer
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.MedicalServices
-import androidx.compose.material.icons.filled.Business
-import com.mobile.jobsearchapplication.data.model.job.JobCategory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+data class HomeUiState(
+    val isJobCategoryExpanded: Boolean = false,
+    val isCheckedIconJob: Boolean = false,
+    val selectedJobCategory: String? = null
+)
 
 class HomeViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    val jobCategories = listOf(
-        JobCategory(Icons.Filled.Computer, "Công nghệ thông tin"),
-        JobCategory(Icons.Filled.Build, "Kỹ thuật"),
-        JobCategory(Icons.Filled.MedicalServices, "Y tế"),
-        JobCategory(Icons.Filled.Business, "Kinh doanh")
-    )
+    fun toggleJobCategoryExpansion(isExpanded: Boolean) {
+        _uiState.value = _uiState.value.copy(isJobCategoryExpanded = isExpanded)
+    }
+
+    fun toggleJobIcon(isChecked: Boolean, selectedCategory: String? = null) {
+        _uiState.value = _uiState.value.copy(
+            isCheckedIconJob = isChecked,
+            selectedJobCategory = if (isChecked) selectedCategory else null
+        )
+    }
 }

@@ -37,8 +37,8 @@ class JobDetailViewModel : ViewModel() {
 }
 
 sealed class JobDetailUiState {
-    object Idle : JobDetailUiState() // Trạng thái ban đầu, chưa gọi API
-    object Loading : JobDetailUiState()
+    data object Idle : JobDetailUiState() // Trạng thái ban đầu, chưa gọi API
+    data object Loading : JobDetailUiState()
     data class Success(val job: Job) : JobDetailUiState()
     data class Error(val message: String) : JobDetailUiState()
 }
