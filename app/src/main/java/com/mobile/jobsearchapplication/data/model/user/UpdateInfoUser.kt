@@ -1,14 +1,19 @@
 package com.mobile.jobsearchapplication.data.model.user
 
+import com.google.gson.annotations.SerializedName
+
 data class UpdateInfoUser (
-    val fullName: String = "",
-    val phoneNumber: String = "",
-    val avatar: String = "",
-    val bio: String = "",
-    val birthDay: String = "",
-    val gender: String = "",
-    val location: String = "",
-    val cvUrl: String = "",
-    val education: String = "",
-    val experience: String = ""
+    @SerializedName("avatar") val avatar: String = "",
+
+    @SerializedName("bio") val bio: String = "",
+
+    @SerializedName("fullName") val fullName: String = "",
+
+    @SerializedName("gender") val gender: String = "",
+
+    @SerializedName("birthDay") val birthDay: String = "",
+
+    @SerializedName("phoneNumber") val phoneNumber: String = "",
+
+    @SerializedName("cvUrl") val cvUrl: String = "",
 )

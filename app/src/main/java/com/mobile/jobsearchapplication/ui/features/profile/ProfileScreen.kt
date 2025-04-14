@@ -1,30 +1,67 @@
 package com.mobile.jobsearchapplication.ui.features.profile
 
+import IconUpdateProfile
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.widget.Toast
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.*
-import androidx.compose.ui.zIndex
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.icon.IconUpdateProfile
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
+import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldDatePicker
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserEmail
@@ -54,13 +91,9 @@ fun ProfileScreen(navController: NavController) {
                 .padding(padding)
         ) {
             item {
-                TopProfileScreen(
-                    profileVM,
-                )
+                TopProfileScreen(profileVM)
 
-                BottomProfileScreen(
-                    profileVM
-                )
+                TabsMenuProfile(profileVM)
             }
         }
     }
@@ -73,7 +106,7 @@ fun TopProfileScreen(
 ) {
     Box(
         modifier = modifier.fillMaxWidth()
-            .padding(16.dp)
+            .padding(top = 16.dp, bottom = 50.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -113,25 +146,32 @@ fun TopProfileScreen(
     }
 }
 
-
 @Composable
-fun BottomProfileScreen(
-    profileVM: ProfileViewModel,
-    modifier: Modifier = Modifier
+fun TabsMenuProfile(
+    profileVM: ProfileViewModel
 ) {
     val profileState by profileVM.profileState.collectAsState()
+    val tabs = listOf("Hồ sơ", "CV")
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-    Column (
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFFFCFCFF), RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
-            .shadow(2.dp, RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp)),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (!profileState.isModeEditor) {
-            SectionInfoProfile(profileVM)
-        } else {
-            SectionUpdatedProfile(profileVM)
+    Column {
+        TabRow(
+            selectedTabIndex = selectedTabIndex
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(title) }
+                )
+            }
+        }
+
+        when (selectedTabIndex) {
+            0 -> if (!profileState.isModeEditor)
+                    SectionInfoProfile(profileVM)
+                else SectionUpdatedProfile(profileVM)
+            1 -> SectionCVProfile(profileVM)
         }
     }
 }
@@ -145,26 +185,21 @@ fun SectionInfoProfile(
 
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(Color.White)
     ) {
         InfoProfileItem("Họ và tên", infoProfileState.fullName)
-        InfoProfileItem("Ngày sinh", infoProfileState.birthDay)
         InfoProfileItem("Giới tính", infoProfileState.gender)
-        InfoProfileItem("Địa chỉ", infoProfileState.location)
+        InfoProfileItem("Ngày sinh", infoProfileState.birthDay)
         InfoProfileItem("Số điện thoại", infoProfileState.phoneNumber)
-        InfoImageProfileItem(profileVM,"CV", infoProfileState.cvUrl, R.drawable.ic_avatar)
-        InfoProfileItem("Học vấn", infoProfileState.education)
-        InfoProfileItem("Kinh nghiệm", infoProfileState.experience)
     }
 }
 
 @Composable
 fun InfoProfileItem(title: String, value: String) {
     Row(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp, 24.dp)
     ) {
         Text(
             text = "$title: ",
@@ -182,50 +217,80 @@ fun InfoProfileItem(title: String, value: String) {
 }
 
 @Composable
-fun InfoImageProfileItem(
-    profileVM: ProfileViewModel,
-    title: String,
-    value: String,
-    painter: Int,
+fun SectionCVProfile(
+    profileVM: ProfileViewModel
 ) {
-    val profileState by profileVM.profileState.collectAsState()
+    val infoProfileState by profileVM.infoProfileState.collectAsState()
+    val context = LocalContext.current
 
-    Row(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = "$title: ",
-            modifier = Modifier.weight(1f),
-            fontSize = 16.sp,fontWeight = FontWeight.Bold,
-            color = Color.Black,
-        )
-        Row(
-            modifier = Modifier.weight(2f)
-                .clickable {
-                    profileVM.onZoomImage()
-                },
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = value,
-                fontSize = 14.sp,fontWeight = FontWeight.Bold,
-                color = Color(0xB3131313),
-            )
-            Icon(
-                imageVector = Icons.Filled.Link,
-                contentDescription = "Icon Link"
-            )
+    // State để lưu Uri ảnh tạm thời (trước khi upload)
+    var tempAvatarUri by remember { mutableStateOf<Uri?>(null) }
+    // Launcher để chọn ảnh
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            tempAvatarUri = it
+            // Cập nhật avatar tạm thời trong ViewModel
+            profileVM.onChangeValueInfo(it.toString(), "avatar")
+            // Upload ảnh (hoặc xử lý local)
+//            profileVM.uploadAvatar(it)
         }
     }
 
-    if (profileState.isZoomImage) {
-        Icon(
-            painter = painterResource(painter),
-            contentDescription = "Info Image",
-            modifier = Modifier.fillMaxSize(0.6f)
-//                .offset(y = (-500).dp)
-                .zIndex(1f),
-            tint = Color.Unspecified
+    // Launcher để yêu cầu permission
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Mở album
+            pickImageLauncher.launch("image/*")
+        } else {
+            Toast.makeText(context, "Quyền truy cập ảnh bị từ chối", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Ảnh đại diện
+        AsyncImage(
+            model = tempAvatarUri ?: infoProfileState.avatar.takeIf { it.isNotBlank() }
+            ?: "https://placehold.co/600x400@2x.png",
+            contentDescription = "Avatar",
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .clickable {
+                    // Kiểm tra permission
+                    val permission =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        } else {
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        }
+                    if (ContextCompat.checkSelfPermission(
+                            context,
+                            permission
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        pickImageLauncher.launch("image/*")
+                    } else {
+                        requestPermissionLauncher.launch(permission)
+                    }
+                },
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Nhấn để thay đổi ảnh",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -237,15 +302,8 @@ fun SectionUpdatedProfile(
 ) {
     val infoProfileState by profileVM.infoProfileState.collectAsState()
     profileVM.fullNameItem.value = infoProfileState.fullName
-    profileVM.phoneNumberItem.value = infoProfileState.phoneNumber
-    profileVM.avatarItem.value = infoProfileState.avatar
-    profileVM.bioItem.value = infoProfileState.bio
-    profileVM.birthDayItem.value = infoProfileState.birthDay
     profileVM.genderItem.value = infoProfileState.gender
-    profileVM.locationItem.value = infoProfileState.location
-    profileVM.cvUrlItem.value = infoProfileState.cvUrl
-    profileVM.educationItem.value = infoProfileState.education
-    profileVM.experienceItem.value = infoProfileState.experience
+    profileVM.phoneNumberItem.value = infoProfileState.phoneNumber
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -255,6 +313,11 @@ fun SectionUpdatedProfile(
         profileVM.listItemsUpdate.forEach {
             TextFieldCustom(model = it)
         }
+
+        TextFieldDatePicker(
+            value = infoProfileState.birthDay,
+            onDateSelected = { profileVM.onChangeValueInfo(it, "birthDay") },
+        )
 
         Button(
             onClick = { profileVM.updateInfoApi() },

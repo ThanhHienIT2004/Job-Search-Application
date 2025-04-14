@@ -1,8 +1,7 @@
-package com.mobile.jobsearchapplication.ui.components.icon
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -32,20 +31,17 @@ fun IconUpdateProfile(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    IconButton(
+    FloatingActionButton(
+        onClick = { onEditClick() },
         modifier = modifier
             .padding(5.dp)
-            .size(32.dp),
-        onClick = {
-            onEditClick()
-        }
+            .size(40.dp),
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_edit),
             contentDescription = "Edit Icon"
         )
     }
-
 }
 
 
