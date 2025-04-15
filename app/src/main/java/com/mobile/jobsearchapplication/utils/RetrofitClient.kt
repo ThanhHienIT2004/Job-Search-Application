@@ -3,6 +3,7 @@ package com.mobile.jobsearchapplication.utils
 import com.mobile.jobsearchapplication.data.remote.auth.AuthApiService
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
 import com.mobile.jobsearchapplication.data.remote.jobcategory.JobCategoryApiService
+ import retrofit2.Retrofit
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
 import retrofit2.Retrofit
@@ -14,7 +15,7 @@ object RetrofitClient {
     //    http://192.168.2.193:8080/
     //    http://192.168.1.35:8080/
 
-    private val retrofit: Retrofit by lazy {
+        private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

@@ -30,7 +30,7 @@ import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.ui.features.jobcategory.JobCategoryViewModel
 import com.mobile.jobsearchapplication.ui.features.jobcategory.JobCategoryUiState
-import com.mobile.jobsearchapplication.data.model.jocategory.JobCategory
+import com.mobile.jobsearchapplication.data.model.jobcategory.JobCategory
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 
 @Composable
@@ -139,6 +139,7 @@ fun HomeScreen(
 @Composable
 fun RecommendedJobsList(jobs: List<Job>, pageCount: Int, navController: NavController) {
     Column {
+         Text("Việc làm dành cho bạn", fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 6.dp))
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(jobs) { job ->
                 JobItem(

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.mobile.jobsearchapplication.ui.features.application.ApplicationScreen
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
@@ -48,7 +49,10 @@ fun AppNavigation() {
         composable("post_favorite") { PostFaveriteScreen(navController) }
         composable("posted_screen") {  PostedScreen(navController) }
         composable("auth_screen") {  AuthScreen(navController) }
-        composable("search_screen") {  SearchScreen(navController) }
+        composable("search_screen") {
+            SearchScreen(navController)
+        }
+
 
 
 

@@ -2,7 +2,7 @@ package com.mobile.jobsearchapplication.ui.features.jobcategory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobile.jobsearchapplication.data.model.jocategory.JobCategory
+import com.mobile.jobsearchapplication.data.model.jobcategory.JobCategory
 import com.mobile.jobsearchapplication.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ class JobCategoryViewModel : ViewModel() {
         fetchJobCategories()
     }
 
-    fun fetchJobCategories() {
+    private fun fetchJobCategories() {
         viewModelScope.launch {
             _uiState.value = JobCategoryUiState.Loading
             try {

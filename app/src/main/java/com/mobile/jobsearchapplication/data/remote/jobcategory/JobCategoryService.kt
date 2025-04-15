@@ -1,7 +1,7 @@
 package com.mobile.jobsearchapplication.data.remote.jobcategory
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
-import com.mobile.jobsearchapplication.data.model.jocategory.JobCategory
+import com.mobile.jobsearchapplication.data.model.jobcategory.JobCategory
 import retrofit2.http.GET
 
 interface JobCategoryApiService {

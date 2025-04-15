@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
+import android.app.Application
 import android.hardware.lights.Light
 import android.text.Layout
 import androidx.compose.foundation.background
@@ -14,8 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,15 +23,22 @@ import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
+import com.mobile.jobsearchapplication.ui.features.application.ApplicationScreen
 import com.mobile.jobsearchapplication.ui.features.home.RecommendedJobsList
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
@@ -43,9 +49,8 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
     }
 
     BaseScreen(
-//        showBackButton = true,
-//        onBackClick = { navController.popBackStack() },
         actionsTop = {
+            BackButton(navController)
             Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
 
             IconButton(onClick = { /* tim */ }) {
@@ -56,8 +61,8 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
             }
             ThreeDotsMenu()
         },
-        actionsBot = { BottomActionBar() },
-    ) {
+        actionsBot = { BottomActionBar(navController) },
+     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -110,8 +115,14 @@ fun ThreeDotsMenu() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomActionBar() {
+fun BottomActionBar(navController: NavController)   {
+    // State để điều khiển Bottom Sheet
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     Surface(
         color = LightBlue,
         shape = RoundedCornerShape(32.dp),
@@ -169,7 +180,12 @@ fun BottomActionBar() {
 
             // Nút ứng tuyển
             Button(
-                onClick = { /* TODO: Xử lý ứng tuyển */ },
+                onClick = {
+                    showBottomSheet = true
+                    scope.launch {
+                        sheetState.show()// Mở bottom sheet
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFFF6F61)
                 ),
@@ -184,6 +200,27 @@ fun BottomActionBar() {
                     fontSize = 14.sp
                 )
             }
+        }
+    }
+
+    // Modal Bottom Sheet
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            dragHandle = null, // xóa thanh kéo mặc định
+        ) {
+            // Nội dung Bottom Sheet
+            ApplicationScreen(
+                onClose = {
+                    scope.launch {
+                        sheetState.hide()
+                        showBottomSheet = false
+                    }
+                }
+            )
         }
     }
 }
