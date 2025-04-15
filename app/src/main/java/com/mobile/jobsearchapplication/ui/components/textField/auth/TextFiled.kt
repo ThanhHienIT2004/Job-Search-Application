@@ -28,9 +28,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TextFieldAuth(
+fun TextFieldCustom(
     modifier: Modifier = Modifier,
-    model: TextFieldAuthModel
+    model: TextFieldModel
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -45,11 +45,13 @@ fun TextFieldAuth(
             .height(90.dp)
             .focusRequester(focusRequester),
         leadingIcon = {
-            Icon(
-                painter = painterResource(id = model.leadingIcon),
-                contentDescription = model.label,
-                modifier = Modifier.size(28.dp)
-            )
+            model.leadingIcon?.let { painterResource(id = it) }?.let {
+                Icon(
+                    painter = it,
+                    contentDescription = model.label,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         },
         trailingIcon = {
             if (model.isPasswordField && model.trailingIcons != null) {

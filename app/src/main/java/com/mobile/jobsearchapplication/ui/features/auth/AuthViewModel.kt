@@ -1,11 +1,15 @@
 package com.mobile.jobsearchapplication.ui.features.auth
 
-import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
+import com.mobile.jobsearchapplication.utils.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 data class AuthState(
     val isLoggedIn: Boolean = false,
@@ -26,6 +30,8 @@ sealed class IConSingUp(val icon: Int, val text: String) {
 }
 
 open class AuthViewModel : BaseViewModel() {
+    private val authRepository = AuthRepository(RetrofitClient.authApiService)
+
     private val _authState = MutableStateFlow(AuthState())
     val authState = _authState.asStateFlow()
 
@@ -34,7 +40,13 @@ open class AuthViewModel : BaseViewModel() {
 
     val listIconSignIn =  listOf(IConSingUp.Google, IConSingUp.Facebook)
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
+    fun resetStateLogged() {
+        _authState.value = _authState.value.copy(
+            isLoggedIn = false,
+            isSuccessLogin = false,
+            isSuccessRegister = false
+        )
+    }
 
     // thay đổi trạng thái khi kéo nút
     fun onDragButton(state: Boolean) {
@@ -65,5 +77,25 @@ open class AuthViewModel : BaseViewModel() {
 
     fun onSuccessRegister(state: Boolean) {
         _authState.value = _authState.value.copy(isSuccessRegister = state)
+    }
+
+    fun signInOther() {
+        viewModelScope.launch {
+            try {
+                showLoading()
+
+                val response = authRepository.createUser(getLoggedInUserId())
+                if (response.isSuccess) {
+                    _authState.value = _authState.value.copy(isLoggedIn = true)
+                }
+
+                hideLoading()
+
+            } catch (e: Exception) {
+                showErrorMessage(e.message ?: "Đã xảy ra lỗi khi đăng nhập")
+            } finally {
+                hideLoading()
+            }
+        }
     }
 }

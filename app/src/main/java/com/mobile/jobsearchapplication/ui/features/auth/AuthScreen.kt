@@ -73,15 +73,15 @@ fun AuthScreen(
     LaunchedEffect(authState) {
         if(authState.isLoggedIn) {
             navController.navigate("home_screen")
-            Toast.makeText(context, "??ng nh?p t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+            authVM.resetStateLogged()
         }
         if (authState.isSuccessRegister) {
             authVM.onDragButton(true)
-            Toast.makeText(context, "??ng k? t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Đăng ký thành công", Toast.LENGTH_SHORT).show()
         }
         if (authState.isSuccessLogin) {
             authVM.doCheckUserLoggedIn()
-            Toast.makeText(context, "??ng nh?p t?i kho?n th?nh c?ng", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -214,12 +214,6 @@ fun IconSingUpAuth(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {}
 
-//    LaunchedEffect(authState.isSuccessLogin) {
-//        if (authState.isSuccessLogin) {
-//            navController.navigate("home_screen")
-//        }
-//    }
-
     Row(
         modifier = Modifier.height(56.dp)
             .fillMaxWidth(if (buttonState.isLoginScreen) 1f else 0.4f),
@@ -234,8 +228,8 @@ fun IconSingUpAuth(
                         scope = scope,
                         launcher = launcher,
                         login = {
+                            authVM.signInOther()
                             authVM.doCheckUserLoggedIn()
-//                            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         }
                     )
                 },
