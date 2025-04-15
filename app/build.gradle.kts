@@ -56,6 +56,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
     implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation ("com.google.accompanist:accompanist-placeholder-material:0.33.2-alpha")
+
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

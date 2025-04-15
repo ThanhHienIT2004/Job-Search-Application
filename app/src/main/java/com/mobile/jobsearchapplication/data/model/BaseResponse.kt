@@ -18,3 +18,8 @@ data class ApiResponse<T>(
     val data: PaginatedData<T>?,
     val message: String
 )
+
+data class NotificationListResponse<T>(
+    val data: List<T>?,
+    val message: String
+)

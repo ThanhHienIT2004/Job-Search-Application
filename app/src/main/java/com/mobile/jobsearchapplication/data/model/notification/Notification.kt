@@ -10,7 +10,7 @@ data class Notification(
     @SerializedName("description") val message: String? = null,
     @SerializedName("type") val typeNotification: String? = null,
     @SerializedName("imageRes") val avatar: Int? = null,
-    @SerializedName("createAt") val createAt: LocalDateTime? = null,
+    @SerializedName("createAt") val createAt: String? = null,
     @SerializedName("senderId") val senderID: String? = null,
     @SerializedName("senderName") val senderName: String? = null
 ) {

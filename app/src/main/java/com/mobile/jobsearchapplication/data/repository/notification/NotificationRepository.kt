@@ -1,7 +1,7 @@
 package com.mobile.jobsearchapplication.data.repository.notification
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
-import com.mobile.jobsearchapplication.data.model.PaginatedData
+import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
@@ -12,8 +12,8 @@ import java.util.UUID
 class NotificationRepository : NotificationApiService {
     private val api = RetrofitClient.notificationApiService
 
-    override suspend fun getAllNotifications(userId: String): ApiResponse<PaginatedData<Notification>> {
-        return api.getAllNotifications(userId)
+    override suspend fun getAllNotificationByUserId(userId: String, page: Int, limit: Int): NotificationListResponse<Notification> {
+        return api.getAllNotificationByUserId(userId, page, limit)
     }
 
     override suspend fun getNotificationById(notificationId: UUID): ApiResponse<Notification> {

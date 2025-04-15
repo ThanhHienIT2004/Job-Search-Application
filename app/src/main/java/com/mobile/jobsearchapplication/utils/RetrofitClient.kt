@@ -2,12 +2,13 @@ package com.mobile.jobsearchapplication.utils
 
 import com.mobile.jobsearchapplication.data.remote.auth.AuthApiService
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
+import com.mobile.jobsearchapplication.data.remote.jobcategory.JobCategoryApiService
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://127.0.0.1:8080/"
+    private const val BASE_URL = "http://192.168.112.102:8080/"
 
 //    http://192.168.2.193:8080
 
@@ -20,6 +21,9 @@ object RetrofitClient {
 
     val jobApiService: JobApiService by lazy {
         retrofit.create(JobApiService::class.java)
+    }
+    val jobCategoryApiService: JobCategoryApiService by lazy {
+        retrofit.create(JobCategoryApiService::class.java)
     }
 
     val authApiService: AuthApiService by lazy {
