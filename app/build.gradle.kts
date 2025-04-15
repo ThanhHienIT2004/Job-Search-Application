@@ -101,6 +101,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.play.services.fido)
     implementation(libs.play.services.fido)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences.core.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -109,4 +111,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(kotlin("reflect"))
+    implementation("io.getstream:stream-chat-android-compose:6.1.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 }

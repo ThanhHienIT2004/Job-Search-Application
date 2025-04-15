@@ -6,7 +6,6 @@ import com.mobile.jobsearchapplication.data.remote.jobcategory.JobCategoryApiSer
  import retrofit2.Retrofit
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
-import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {

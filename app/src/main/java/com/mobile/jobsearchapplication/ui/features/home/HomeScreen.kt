@@ -42,7 +42,7 @@ fun HomeScreen(
     BaseScreen(
         actionsTop = {
             Spacer(Modifier.weight(1f))
-            SearchButton()
+            SearchButton(navController)
         },
         actionsBot = {
             BottomNavBarCustom(navController = navController)

@@ -16,7 +16,8 @@ data class SingleNotification(
     val createAt:String? = null,
     val senderID: String = "",
     val senderName: String = "",
-    val typeNotification: String = ""
+    val typeNotification: String = "",
+    val isRead:Boolean = false
 )
 
 data class NotificationUserState(
@@ -25,7 +26,8 @@ data class NotificationUserState(
     val isLoadingMore: Boolean = false,
     val error: String? = null,
     val currentPage: Int = 1,
-    val hasMore: Boolean = true
+    val hasMore: Boolean = true,
+    val unReadCount:Int = 0
 )
 
 class NotificationViewModel : ViewModel() {
@@ -35,6 +37,15 @@ class NotificationViewModel : ViewModel() {
     private val _notificationsState = MutableStateFlow(NotificationUserState())
     val notificationsState = _notificationsState.asStateFlow()
 
+    private fun updateNotificationsAndCount(
+        currentState: NotificationUserState,
+        updateAction: (List<SingleNotification>) -> List<SingleNotification>
+    ): Pair<List<SingleNotification>, Int> {
+        val updatedNotifications = updateAction(currentState.notifications)
+        val unReadCount = updatedNotifications.count { !it.isRead }
+        return updatedNotifications to unReadCount
+    }
+
     fun loadNotification(userId: String) {
         if (_notificationsState.value.notifications.isNotEmpty()) return
         viewModelScope.launch {
@@ -42,13 +53,15 @@ class NotificationViewModel : ViewModel() {
             try {
                 val response = notificationRepository.getAllNotificationByUserId(userId, 1, limit)
                 val notifications = response.data?.map { it.toSingleNotification() } ?: emptyList()
+                val unReadCount = notifications.count { !it.isRead }
                 _notificationsState.update {
                     it.copy(
                         notifications = notifications,
                         isLoading = false,
                         error = null,
                         currentPage = 1,
-                        hasMore = notifications.size == limit
+                        hasMore = notifications.size == limit,
+                        unReadCount = 6
                     )
                 }
             } catch (e: Exception) {
@@ -64,20 +77,25 @@ class NotificationViewModel : ViewModel() {
     }
 
     fun loadMoreNotifications(userId: String) {
-        if (!_notificationsState.value.hasMore || _notificationsState.value.isLoadingMore) return
         viewModelScope.launch {
             _notificationsState.update { it.copy(isLoadingMore = true) }
             try {
                 val nextPage = _notificationsState.value.currentPage + 1
                 val response = notificationRepository.getAllNotificationByUserId(userId, nextPage, limit)
                 val newNotifications = response.data?.map { it.toSingleNotification() } ?: emptyList()
+                val (updatedNotifications, unReadCount) = updateNotificationsAndCount(
+                    NotificationUserState()
+                ) { notifications ->
+                    notifications + newNotifications
+                }
                 _notificationsState.update {
                     it.copy(
                         notifications = it.notifications + newNotifications,
                         isLoadingMore = false,
                         error = null,
                         currentPage = nextPage,
-                        hasMore = newNotifications.size == limit
+                        hasMore = newNotifications.size == limit,
+                        unReadCount = 5
                     )
                 }
             } catch (e: Exception) {
@@ -87,6 +105,23 @@ class NotificationViewModel : ViewModel() {
                         error = e.message ?: "Failed to load more notifications"
                     )
                 }
+            }
+        }
+    }
+
+    fun checkIsRead(notificationId: String, isRead: Boolean) {
+        viewModelScope.launch {
+            _notificationsState.update { currentState ->
+                val (updatedNotifications, unReadCount) = updateNotificationsAndCount(currentState) { notifications ->
+                    notifications.map { notification ->
+                        if (notification.senderID == notificationId) {
+                            notification.copy(isRead = isRead)
+                        } else {
+                            notification
+                        }
+                    }
+                }
+                currentState.copy(notifications = updatedNotifications)
             }
         }
     }
