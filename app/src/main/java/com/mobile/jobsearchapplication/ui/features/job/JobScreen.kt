@@ -35,6 +35,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
+import com.mobile.jobsearchapplication.ui.components.skeleton.JobItemSkeleton
+import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
 
@@ -50,10 +52,7 @@ fun SectionListJob(
 
     when (jobsState) {
         is JobUiState.Loading -> {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(16.dp)
-            )
+            SectionJobSkeleton()
         }
         is JobUiState.Success -> {
             val categories = (jobCategoryUiState as JobCategoryUiState.Success).jobCategories
