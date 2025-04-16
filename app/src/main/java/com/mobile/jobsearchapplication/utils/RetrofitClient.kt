@@ -6,6 +6,9 @@ import com.mobile.jobsearchapplication.data.remote.job.JobApiService
 import com.mobile.jobsearchapplication.data.remote.jobcategory.JobCategoryApiService
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
 import retrofit2.Retrofit
+import retrofit2.Retrofit
+import com.mobile.jobsearchapplication.data.remote.user.UserApiService
+import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
@@ -40,4 +43,8 @@ object RetrofitClient {
         retrofit.create(JobApplicationService::class.java)
     }
 
+
+    val notificationApiService : NotificationApiService by lazy {
+        retrofit.create(NotificationApiService::class.java)
+    }
 }

@@ -1,213 +1,453 @@
 package com.mobile.jobsearchapplication.ui.features.notification
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.mobile.jobsearchapplication.data.model.notification.NotificationData
-import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
-import com.mobile.jobsearchapplication.utils.NotificationUtils
+import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotificationsScreen(
-    navController: NavController,
-    viewModel: NotificationViewModel = viewModel()
-) {
-    val userNotifications by viewModel.userNotifications.collectAsState()
-    val recruiterNotifications by viewModel.recruiterNotifications.collectAsState()
-
-    val groupedUserNotifications = NotificationUtils.groupNotificationsByDate(userNotifications)
-    val groupedRecruiterNotifications = NotificationUtils.groupNotificationsByDate(recruiterNotifications)
-
-    // Giả lập trạng thái có thông báo chưa đọc để test
-    val hasUnreadNotifications by remember { mutableStateOf(true) } // Luôn true để hiện chấm đỏ
-
-    // Khi có dữ liệu thực tế, thay bằng:
-    // val hasUnreadNotifications by remember { derivedStateOf { viewModel.hasUnreadNotifications() } }
-    LaunchedEffect(Unit) {
-        viewModel.markAllAsRead()
-    }
-    BaseScreen(
-        actionsBot = {
-            BottomNavBarCustom(
-                navController = navController
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFFE3F2FD), Color.White)
-                    )
-                )
-                .padding(paddingValues)
-                .windowInsetsPadding(WindowInsets.statusBars)
-
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-
-            ) {
-                NotificationSection(
-                    "Thông báo của bạn",
-                    groupedUserNotifications,
-                    viewModel,
-                    Modifier.weight(1f)
-                )
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    color = Color.Gray.copy(alpha = 0.3f)
-                )
-                NotificationSection(
-                    "Thông báo từ nhà tuyển dụng",
-                    groupedRecruiterNotifications,
-                    viewModel,
-                    Modifier.weight(1f)
-                )
-            }
-        }
-    }
-}
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.ui.theme.LightPurple
+import kotlinx.coroutines.delay
 
 @Composable
-fun NotificationSection(
-    title: String,
-    notifications: Map<String, List<NotificationData>>,
-    viewModel: NotificationViewModel,
+fun NotificationScreen(
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier.fillMaxHeight()) {
-        item {
-            Surface(
+    val viewModel: NotificationViewModel = viewModel()
+    val notiState by viewModel.notificationsState.collectAsState()
+    val userId = "10ece493-41a4-4a16-801a-ce2cf3652de2"
+
+    LaunchedEffect(Unit) {
+        viewModel.loadNotification(userId)
+    }
+
+    BaseScreen(
+        actionsTop = {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                color = Color(0xFFBBDEFB),
-                shape = RoundedCornerShape(12.dp)
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(12.dp),
-                    textAlign = TextAlign.Center,
-                    color = Color(0xFF1976D2)
+                    text = "Thông Báo",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 )
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Notifications,
+                    contentDescription = "Notifications Icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        },
+        actionsBot = {
+            Box {
+                BottomNavBarCustom(navController = navController)
+                if (notiState.unReadCount > 0) {
+                    BadgedBox(
+                        badge = {
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Red),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = notiState.unReadCount.toString(),
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-48).dp, y = 8.dp) // Điều chỉnh vị trí badge
+                    ) {
+                        Box {}
+                    }
+                }
+            }
+        },
+        content = { padding ->
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFF5F5F5), Color(0xFFE0E0E0))
+                        )
+                    )
+            ) {
+                when {
+                    notiState.isLoading -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(vertical = 16.dp)
+                        ) {
+                            items(10) {
+                                Xuong()
+                            }
+                        }
+                    }
+                    notiState.error != null -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Lỗi: ${notiState.error}",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.error
+                                ),
+                                modifier = Modifier
+                                    .background(
+                                        Color(0xFFFFE6E6).copy(alpha = 0.8f),
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                    notiState.notifications.isEmpty() -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Không có thông báo",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.Gray
+                                ),
+                                modifier = Modifier
+                                    .background(
+                                        Color.White.copy(alpha = 0.8f),
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp)
+                                .shadow(2.dp, RoundedCornerShape(16.dp))
+                                .background(Color.White),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(vertical = 16.dp)
+                        ) {
+                            items(notiState.notifications) { notification ->
+                                NotificationItem(notification)
+                            }
+                            if (notiState.hasMore) {
+                                item {
+                                    Button(
+                                        onClick = { viewModel.loadMoreNotifications(userId) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(
+                                                brush = Brush.linearGradient(
+                                                    colors = listOf(LightBlue, LightPurple)
+                                                )
+                                            ),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color.Transparent
+                                        )
+                                    ) {
+                                        Text(
+                                            text = if (notiState.isLoadingMore) "Đang tải thêm..." else "Tải thêm",
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Medium,
+                                                color = Color.White
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        notifications.forEach { (dateHeader, items) ->
-            item {
-                Text(
-                    text = dateHeader,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
-                )
-            }
-            items(items) { notification ->
-                NotificationItem(notification, viewModel)
+    )
+}
+
+@Composable
+fun NotificationItem(notification: SingleNotification) {
+    val scope = rememberCoroutineScope()
+    val scale = remember { Animatable(1f) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            scale.animateTo(0.97f, animationSpec = tween(100))
+            scale.animateTo(1f, animationSpec = tween(100))
+        }
+    }
+
+    AnimatedVisibility(
+        visible = true,
+        enter = fadeIn(animationSpec = tween(500)) + slideInVertically(initialOffsetY = { it / 2 })
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .scale(scale.value)
+                .shadow(6.dp, RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(interactionSource = interactionSource, indication = null) {
+                    // Bạn có thể xử lý sự kiện click ở đây nếu cần
+                }
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(Color.White, Color(0xFFF5F5F5))
+                    )
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(LightBlue, LightPurple)
+                            )
+                        )
+                        .shadow(4.dp, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = notification.title.firstOrNull()?.toString() ?: "N",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp)
+                ) {
+                    Text(
+                        text = notification.title,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF1A1A1A)
+                        )
+                    )
+                    Text(
+                        text = notification.message,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 14.sp,
+                            color = Color(0xFF666666)
+                        ),
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Loại: ${notification.typeNotification}",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                color = Color(0xFF888888)
+                            )
+                        )
+                        notification.createAt?.let {
+                            Text(
+                                text = "Nhận lúc: $it",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF888888)
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun NotificationItem(notification: NotificationData, viewModel: NotificationViewModel) {
-    val backgroundColor by animateColorAsState(
-        targetValue = if (notification.isRead) Color(0xFFF5F5F5) else Color.White
-    )
-
+fun Xuong() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .pointerInput(Unit) {
-                detectTapGestures { viewModel.markAsRead(notification) }
-            },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardColors(
-            containerColor = backgroundColor,
-            contentColor = Color.Black,
-            disabledContainerColor = Color.Gray,
-            disabledContentColor = Color.White
-        )
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .shadow(4.dp, RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box {
-                Image(
-                    painter = painterResource(id = notification.imageRes),
-                    contentDescription = "Avatar",
+            // Avatar placeholder
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(Color(0xFFE0E0E0), Color(0xFFD0D0D0))
+                        )
+                    ),
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 12.dp)
+            ) {
+                Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(Color.LightGray)
+                        .fillMaxWidth(0.6f)
+                        .height(16.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(Color(0xFFE0E0E0), Color(0xFFD0D0D0))
+                            )
+                        )
                 )
-                if (!notification.isRead) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(Color(0xFFE0E0E0), Color(0xFFD0D0D0))
+                            )
+                        )
+                        .padding(top = 8.dp)
+                )
+                Row(
+                    modifier = Modifier.padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Box(
                         modifier = Modifier
-                            .size(12.dp)
-                            .align(Alignment.TopEnd)
-                            .background(Color.Red, CircleShape)
+                            .fillMaxWidth(0.3f)
+                            .height(10.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(Color(0xFFE0E0E0), Color(0xFFD0D0D0))
+                                )
+                            )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .height(10.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(Color(0xFFE0E0E0), Color(0xFFD0D0D0))
+                                )
+                            )
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = notification.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = if (!notification.isRead) Color(0xFF1976D2) else Color.Black
-                )
-                Text(
-                    text = notification.description,
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-            }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewNotificationsScreen() {
-    val fakeNavController = rememberNavController()
-    NotificationsScreen(navController = fakeNavController)
 }

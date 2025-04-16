@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class InfoProfileState(
     val fullName: String = "",
@@ -124,7 +125,7 @@ class ProfileViewModel: BaseViewModel() {
     }
 
     fun updateInfoApi() {
-        CoroutineScope(Dispatchers.Main).launch {
+        viewModelScope.launch {
             val uuid = getLoggedInUserId()
             val request = UpdateInfoUser(
                 avatar = "",
@@ -135,7 +136,7 @@ class ProfileViewModel: BaseViewModel() {
                 gender = _infoProfileState.value.gender,
                 cvUrl = _infoProfileState.value.cvUrl,
             )
-            val response = userRepository.updateInfo(uuid, request)
+            val response = withContext(Dispatchers.IO) { userRepository.updateInfo(uuid, request) }
             if (response.isSuccess) {
                 _profileState.value = _profileState.value.copy(
                     isUpdateInfoSuccess = true
@@ -146,6 +147,5 @@ class ProfileViewModel: BaseViewModel() {
                 )
             }
         }
-
     }
 }

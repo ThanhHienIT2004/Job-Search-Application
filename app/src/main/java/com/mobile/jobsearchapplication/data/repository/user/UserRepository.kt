@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.data.repository.user
 
 import android.util.Log
 import com.mobile.jobsearchapplication.data.model.BaseResponse
+import com.mobile.jobsearchapplication.data.model.user.FavoriteJobPosting
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
@@ -36,6 +37,28 @@ class UserRepository: UserApiService {
     ): BaseResponse<User> {
         return try {
             val response = userApiService.updateInfo(uuid, request)
+            BaseResponse(
+                isSuccess = true,
+                message = response.message,
+                data = response.data
+            )
+        } catch (e: Exception) {
+            Log.e("updateInfo", "Lỗi: ${e.message}", e)
+            BaseResponse(
+                isSuccess = false,
+                message = "Lỗi khi cập nhật thông tin: ${e.message}",
+                data = null
+            )
+        }
+    }
+
+    override suspend fun favoriteJobPosting(
+        uuid: String,
+        request: FavoriteJobPosting
+    ): BaseResponse<Any> {
+
+        return try {
+            val response = userApiService.favoriteJobPosting(uuid, request)
             BaseResponse(
                 isSuccess = true,
                 message = response.message,

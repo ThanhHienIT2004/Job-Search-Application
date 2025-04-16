@@ -48,6 +48,14 @@ dependencies {
 
     implementation (libs.accompanist.navigation.animation)
 
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.32.0")
+    implementation("com.google.firebase:firebase-database:21.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation ("com.google.accompanist:accompanist-placeholder-material:0.33.2-alpha")
+
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
@@ -92,6 +100,9 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.androidx.room.ktx)
     implementation(libs.play.services.fido)
+    implementation(libs.play.services.fido)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences.core.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,4 +111,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(kotlin("reflect"))
+    implementation("io.getstream:stream-chat-android-compose:6.1.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 }
