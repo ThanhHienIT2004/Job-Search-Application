@@ -1,8 +1,5 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
-import android.app.Application
-import android.hardware.lights.Light
-import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,18 +15,13 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
@@ -61,7 +53,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
             }
             ThreeDotsMenu()
         },
-        actionsBot = { BottomActionBar(navController) },
+        actionsBot = { BottomActionBar(navController, jobId) },
      ) {
         Column(
             modifier = Modifier
@@ -117,7 +109,7 @@ fun ThreeDotsMenu() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomActionBar(navController: NavController)   {
+fun BottomActionBar(navController: NavController, jobId: String)   {
     // State để điều khiển Bottom Sheet
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -207,13 +199,13 @@ fun BottomActionBar(navController: NavController)   {
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             containerColor = MaterialTheme.colorScheme.surface,
             dragHandle = null, // xóa thanh kéo mặc định
         ) {
             // Nội dung Bottom Sheet
             ApplicationScreen(
+                jobId,
                 onClose = {
                     scope.launch {
                         sheetState.hide()

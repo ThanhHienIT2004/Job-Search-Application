@@ -5,7 +5,6 @@ import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
-import com.mobile.jobsearchapplication.ui.features.profile.InfoProfileState
 import com.mobile.jobsearchapplication.utils.RetrofitClient
 import retrofit2.http.Body
 import retrofit2.http.Query
