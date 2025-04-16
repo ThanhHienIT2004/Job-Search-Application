@@ -7,18 +7,19 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.mobile.jobsearchapplication.ui.features.application.ApplicationScreen
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
-import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
-import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
-import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
 import com.mobile.jobsearchapplication.ui.features.favorite.PostFaveriteScreen
 import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
+import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
+import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.post.PostScreen
 import com.mobile.jobsearchapplication.ui.features.posted.PostedScreen
+import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
 import com.mobile.jobsearchapplication.ui.features.user.UserScreen
 

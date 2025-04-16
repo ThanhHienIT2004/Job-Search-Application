@@ -1,10 +1,8 @@
 package com.mobile.jobsearchapplication.data.remote.notification
 
 
-import com.google.gson.annotations.SerializedName
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
-import com.mobile.jobsearchapplication.data.model.PaginatedData
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
 import retrofit2.http.DELETE

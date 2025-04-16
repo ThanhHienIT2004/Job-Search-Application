@@ -1,7 +1,6 @@
 package com.mobile.jobsearchapplication.data.model.notification
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.datetime.LocalDateTime
 import com.mobile.jobsearchapplication.ui.features.notification.SingleNotification
 
 data class Notification(
@@ -12,7 +11,8 @@ data class Notification(
     @SerializedName("imageRes") val avatar: Int? = null,
     @SerializedName("createAt") val createAt: String? = null,
     @SerializedName("senderId") val senderID: String? = null,
-    @SerializedName("senderName") val senderName: String? = null
+    @SerializedName("senderName") val senderName: String? = null,
+    @SerializedName("isRead") val isRead: Boolean? = false
 ) {
     fun toSingleNotification() = SingleNotification(
         avatar = avatar ?: 0,
@@ -21,7 +21,10 @@ data class Notification(
         createAt = createAt,
         senderID = senderID ?: "",
         senderName = senderName ?: "Unknown",
-        typeNotification = typeNotification ?: ""
+        typeNotification = typeNotification ?: "",
+        isRead = isRead ?:false
+
+
     )
 }
 

@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
 
 @Composable
 fun SearchButton(
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     Icon(
@@ -20,7 +22,7 @@ fun SearchButton(
         modifier = modifier.padding(horizontal = 10.dp)
             .size(32.dp)
             .clickable {
-
+                navController.navigate("search_screen")
             }
     )
 }

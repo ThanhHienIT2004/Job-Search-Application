@@ -48,6 +48,8 @@ firebaseDatabase = "21.0.0"
 firebaseDatabaseKtx = "21.0.0"
 roomKtx = "2.6.1"
 playServicesFido = "20.0.1"
+datastoreCoreAndroid = "1.1.4"
+datastorePreferencesCoreAndroid = "1.2.0-alpha01"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
@@ -109,6 +111,8 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 play-services-fido = { group = "com.google.android.gms", name = "play-services-fido", version.ref = "playServicesFido" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+androidx-datastore-preferences-core-android = { group = "androidx.datastore", name = "datastore-preferences-core-android", version.ref = "datastorePreferencesCoreAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
