@@ -16,12 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +37,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
-import com.mobile.jobsearchapplication.ui.components.skeleton.JobItemSkeleton
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
@@ -66,11 +67,13 @@ fun SectionListJob(
                     modifier = Modifier.padding(16.dp, top = 20.dp)
                 )
 
-                RecommendedJobsList(
-                    jobs = jobsByCategory[index],
-                    favoriteIcons = null,
-                    navController = navController
-                )
+                jobsByCategory?.let {
+                    RecommendedJobsList(
+                        jobVM,
+                        jobs = it[index],
+                        navController = navController
+                    )
+                }
             }
         }
         is JobUiState.Error -> {
@@ -86,8 +89,8 @@ fun SectionListJob(
 
 @Composable
 fun RecommendedJobsList(
+    jobVM: JobViewModel?,
     jobs: List<Job>,
-    favoriteIcons: List<FavoriteIcon>?,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -115,8 +118,8 @@ fun RecommendedJobsList(
                 pageSpacing = 16.dp
             ) { page ->
                 JobItem(
+                    jobVM,
                     job = jobs[page],
-                    favoriteIcon = favoriteIcons?.get(page),
                     onClick = {
                         navController.navigate("job_detail_screen/${jobs[page].id}")
                     },
@@ -130,11 +133,13 @@ fun RecommendedJobsList(
 
 @Composable
 fun JobItem(
+    jobVM: JobViewModel?,
     job: Job,
-    favoriteIcon: FavoriteIcon?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isFavorite by remember { mutableStateOf(jobVM?.checkIsFavorite(jobId = job.id)) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -187,18 +192,17 @@ fun JobItem(
                     )
                 }
 
-                if (favoriteIcon != null) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
-                        modifier = Modifier
-                            .weight(1f)
-                            .size(32.dp)
-                            .clickable {
-                                favoriteIcon.onClick
-                            },
-                        tint = if (favoriteIcon.isCheck) Color.Red else Color.Gray,
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
+                    modifier = Modifier
+                        .weight(1f)
+                        .size(32.dp)
+                        .clickable {
+                            isFavorite = !isFavorite!!
+                            jobVM?.updateFavoriteApi(jobId = job.id, state = isFavorite!!)
+                        },
+                    tint = if (isFavorite == true) Color.Red else Color.Gray,
+                )
             }
         }
     }

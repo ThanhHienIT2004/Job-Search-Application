@@ -559,11 +559,13 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                                 }
                             }
                             is JobUiState.Success -> {
-                                RecommendedJobsList(
-                                    jobs = uiState.jobs,
-                                    favoriteIcons = uiState.favoriteIcons,
-                                    navController = navController
-                                )
+                                uiState.jobs?.let {
+                                    RecommendedJobsList(
+                                        null,
+                                        jobs = it,
+                                        navController = navController
+                                    )
+                                }
                             }
                             is JobUiState.Error -> {
                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

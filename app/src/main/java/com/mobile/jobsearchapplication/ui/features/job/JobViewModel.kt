@@ -26,10 +26,9 @@ sealed class JobUiState {
     data object Loading : JobUiState()
 
     data class Success(
-        val jobs: List<Job> = emptyList(),
-        val favoriteIcons: List<FavoriteIcon> = emptyList(),
-        val jobByCategory: List<List<Job>> = emptyList(),
-        val favoriteIconsCate: List<List<FavoriteIcon>> = emptyList(),
+        val jobs: List<Job>? = emptyList(),
+        val jobByCategory: List<List<Job>>? = emptyList(),
+        val favoriteJobs: List<UUID>? = emptyList(),
         val pageCount: Int = 1
     ) : JobUiState()
 
@@ -45,35 +44,26 @@ class JobViewModel : ViewModel() {
     private val userRepository = UserRepository()
 
     init {
-        loadJobsAndFavorites()
+//        loadJobsAndFavorites()
         loadJobByCategory()
+        loadFavoriteJobs()
+    }
+
+    fun checkIsFavorite(jobId: UUID): Boolean {
+        return (_uiState.value as JobUiState.Success).favoriteJobs?.contains(jobId) ?: false
     }
 
     private fun loadJobsAndFavorites() {
         viewModelScope.launch {
             _uiState.value = JobUiState.Loading
             try {
-                val (jobResponse, favoritePosts) = withContext(Dispatchers.IO) {
-                    val jobs = RetrofitClient.jobApiService.getJobs()
-                    val favorites = loadFavoritePosts()
-                    jobs to favorites
+                val jobResponse = withContext(Dispatchers.IO) {
+                    RetrofitClient.jobApiService.getJobs()
                 }
-
-                if (jobResponse.message == "Success" && jobResponse.data != null) {
-                    val favoriteIcons = jobResponse.data.data.map { job ->
-                        FavoriteIcon(
-                            isCheck = job.id in favoritePosts,
-                            onClick = { updateFavoriteApi(job.id, job.id in favoritePosts) }
-                        )
-                    }
-                    _uiState.value = JobUiState.Success(
-                        jobs = jobResponse.data.data,
-                        favoriteIcons = favoriteIcons,
-                        pageCount = jobResponse.data.pageCount
-                    )
-                } else {
-                    _uiState.value = JobUiState.Error(jobResponse.message)
-                }
+                _uiState.value = JobUiState.Success(
+                    jobs = jobResponse.data?.data,
+                    pageCount = jobResponse.data?.pageCount ?: 1
+                )
             } catch (e: Exception) {
                 _uiState.value = JobUiState.Error("Error fetching jobs: ${e.message}")
             }
@@ -101,24 +91,28 @@ class JobViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadFavoritePosts(): List<UUID> {
-        return try {
-            val response = userRepository.getInfo(getLoggedInUserId())
-            if (response.isSuccess && response.data?.favoritePosts != null) {
-                response.data.favoritePosts
-                    .split(",")
-                    .map { it.trim() }
-                    .filter { it.isNotBlank() }
-                    .map { UUID.fromString(it) }
-            } else {
-                emptyList()
+    private fun loadFavoriteJobs() {
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    userRepository.getInfo(getLoggedInUserId())
+                        .data?.favoritePosts
+                            ?.split(",")
+                            ?.map { it.trim() }
+                            ?.filter { it.isNotBlank() }
+                            ?.map { UUID.fromString(it) }
+                }
+                _uiState.value = when (val currentState = _uiState.value) {
+                    is JobUiState.Success -> currentState.copy(favoriteJobs = response)
+                    else -> JobUiState.Success(favoriteJobs = response)
+                }
+            } catch (e: Exception) {
+                _uiState.value = JobUiState.Error("Error fetching favorite jobs: ${e.message}")
             }
-        } catch (e: Exception) {
-            emptyList() // Trả về rỗng nếu lỗi
         }
     }
 
-    private fun updateFavoriteApi(jobId: UUID, state: Boolean) {
+    fun updateFavoriteApi(jobId: UUID, state: Boolean) {
         viewModelScope.launch {
             val userId = getLoggedInUserId()
             val request = FavoriteJobPosting(jobId, state)
@@ -126,7 +120,8 @@ class JobViewModel : ViewModel() {
                 withContext(Dispatchers.IO) {
                     userRepository.favoriteJobPosting(uuid = userId, request = request)
                 }
-                loadJobsAndFavorites()
+
+                loadFavoriteJobs()
             } catch (e: Exception) {
                 _uiState.value = JobUiState.Error("Error updating favorite: ${e.message}")
             }

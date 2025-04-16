@@ -161,8 +161,8 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                                     .padding(horizontal = 8.dp)
                             ) {
                                 JobItem(
+                                    jobVM = viewModel(),
                                     job = job,
-                                    favoriteIcon = null,
                                     onClick = {
                                         job.id.let {
                                             navController.navigate("job_detail_screen/${job.id}") {
