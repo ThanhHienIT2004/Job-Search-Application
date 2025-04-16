@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.notification
 
+import android.app.NotificationManager
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

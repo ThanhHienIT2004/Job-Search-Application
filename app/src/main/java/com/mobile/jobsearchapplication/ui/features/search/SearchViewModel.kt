@@ -16,6 +16,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 
 class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel() {
 
@@ -29,12 +30,11 @@ class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel
         loadSearchHistory()
     }
 
-    fun searchJobs(query: String, userId: String? = null) {
+    fun searchJobs(query: String, userId: String? = null, isFullSearch: Boolean = false) {
         viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
             try {
                 val jobs = withContext(Dispatchers.IO) {
-                    // Fetch jobs (all or by userId)
                     val response = RetrofitClient.jobApiService.getJobs()
                     if (response.message == "Success" && response.data != null) {
                         response.data.data
@@ -43,23 +43,35 @@ class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel
                     }
                 }
 
+                // Tách query thành các từ khóa
+                val keywords = query.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }
+
+                // Lọc công việc
                 val filteredJobs = jobs.filter { job ->
-                    val matchesQuery = query.isEmpty() || job.title.contains(query, ignoreCase = true) ||
-                            job.description.contains(query, ignoreCase = true)
-                    val matchesUserId = userId == null || job.postedBy.toString() == userId
-                    matchesQuery && matchesUserId
+                    val matchesUserId = userId == null || job.postedBy?.toString() == userId
+                    val matchesQuery = if (keywords.isEmpty()) {
+                        true // Nếu không có từ khóa, trả về tất cả
+                    } else if (isFullSearch) {
+                        // Tìm kiếm đầy đủ: khớp tất cả từ khóa
+                        keywords.all { keyword ->
+                            job.title?.contains(keyword, ignoreCase = true) ?: false
+                        }
+                    } else {
+                        // Tìm kiếm tức thời: khớp với query nguyên văn
+                        job.title?.contains(query.trim(), ignoreCase = true) ?: false
+                    }
+                    matchesUserId && matchesQuery
                 }
 
-                if (filteredJobs.isNotEmpty()) {
-                    _uiState.value = SearchUiState.Success(filteredJobs)
-                    if (query.isNotEmpty()) {
-                        saveSearchQuery(query)
-                    }
-                } else {
-                    _uiState.value = SearchUiState.Error("No jobs found")
+                // Sắp xếp theo createdAt từ mới đến cũ
+                val sortedJobs = filteredJobs.sortedByDescending { it.createdAt ?: "" }
+
+                _uiState.value = SearchUiState.Success(sortedJobs)
+                if (query.isNotEmpty() && isFullSearch) {
+                    saveSearchQuery(query)
                 }
             } catch (e: Exception) {
-                _uiState.value = SearchUiState.Error("Error searching jobs: ${e.message}")
+                _uiState.value = SearchUiState.Error("Lỗi khi tìm kiếm công việc: ${e.message}")
             }
         }
     }
@@ -69,7 +81,6 @@ class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel
             dataStore.edit { preferences ->
                 val currentHistory = preferences[SEARCH_HISTORY_KEY]?.toMutableSet() ?: mutableSetOf()
                 currentHistory.add(query)
-                // Limit to last 5 searches
                 if (currentHistory.size > 5) {
                     currentHistory.remove(currentHistory.first())
                 }
