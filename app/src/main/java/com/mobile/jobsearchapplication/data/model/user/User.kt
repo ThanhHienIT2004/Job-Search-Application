@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
 data class User(
-    @SerializedName("id") val id: String,
-
     @SerializedName("fullName") val fullName: String? = null,
 
     @SerializedName("phoneNumber") val phoneNumber: String? = null,
@@ -18,15 +16,7 @@ data class User(
 
     @SerializedName("gender") val gender: String? = null,
 
-    @SerializedName("location") val location: String? = null,
-
     @SerializedName("cvUrl") val cvUrl: String? = null,
 
-    @SerializedName("education") val education: String? = null,
-
-    @SerializedName("experience") val experience: String? = null,
-
-    @SerializedName("createdAt") val createdAt: String? = null,
-
-    @SerializedName("updatedAt") val updatedAt: String? = null,
+    @SerializedName("favoritePosts") val favoritePosts: String? = null,
 )

@@ -11,14 +11,14 @@ data class BaseResponse<T> (
 
 // Đại diện cho object "data" lồng nhau trong JSON
 data class PaginatedData<T>(
-    val pageCount: Int,
-    val data: List<T>
+    @SerializedName("pageCount") val pageCount: Int,
+    @SerializedName("data")  val data: List<T>
 ) 
 
 // Cập nhật ApiResponse để khớp với API thực tế
 data class ApiResponse<T>(
-    val data: PaginatedData<T>?,
-    val message: String
+    @SerializedName("data") val data: PaginatedData<T>?,
+    @SerializedName("message") val message: String
 )
 
 data class NotificationListResponse<T>(

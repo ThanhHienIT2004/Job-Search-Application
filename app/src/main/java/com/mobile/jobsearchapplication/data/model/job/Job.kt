@@ -5,23 +5,23 @@ import java.math.BigDecimal
 import java.util.*
 
 data class Job(
-    val id: UUID,
-    val title: String,
-    val description: String,
+    @SerializedName("id") val id: UUID,
+    @SerializedName("title") val title: String,
+    @SerializedName("description") val description: String,
     @SerializedName("salaryMin") val salaryMin: BigDecimal?,
     @SerializedName("salaryMax") val salaryMax: BigDecimal?,
-    val currency: String,
-    val location: String,
+    @SerializedName("currency") val currency: String,
+    @SerializedName("location") val location: String,
     @SerializedName("jobType") val jobType: String,
     @SerializedName("experienceLevel") val experienceLevel: String,
-    @SerializedName("companyId") val companyId: UUID,
-    @SerializedName("postedBy") val postedBy: UUID,
-    val benefits: String?,
-    val quantity: Int,
+    @SerializedName("companyId") val companyId: String,
+    @SerializedName("postedBy") val postedBy: String,
+    @SerializedName("benefits") val benefits: String?,
+    @SerializedName("quantity") val quantity: Int,
     @SerializedName("genderRequire") val genderRequire: String,
-    val deadline: String?, // Thay vì Date vì API trả về String
-    val status: String,
-    val requirements: String?,
+    @SerializedName("deadline") val deadline: String?, // Thay vì Date vì API trả về String
+    @SerializedName("status") val status: String,
+    @SerializedName("requirements") val requirements: String?,
     @SerializedName("jobImage") val jobImage: String?,
     @SerializedName("createdAt") val createdAt: String // Thay vì Date vì API trả về String
 )

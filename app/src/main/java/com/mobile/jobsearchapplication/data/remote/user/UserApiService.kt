@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.data.remote.user
 
 import com.mobile.jobsearchapplication.data.model.BaseResponse
+import com.mobile.jobsearchapplication.data.model.user.FavoriteJobPosting
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.ui.features.profile.InfoProfileState
@@ -22,5 +23,9 @@ interface UserApiService {
         @Body request: UpdateInfoUser
     ): BaseResponse<User>
 
-
+    @PUT("favorite/jobPosting")
+    suspend fun favoriteJobPosting(
+        @Query("uuid") uuid: String,
+        @Body request: FavoriteJobPosting
+    ): BaseResponse<Any>
 }

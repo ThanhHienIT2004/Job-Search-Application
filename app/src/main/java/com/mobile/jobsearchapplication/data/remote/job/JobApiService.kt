@@ -3,12 +3,14 @@ package com.mobile.jobsearchapplication.data.remote.job
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
 import com.mobile.jobsearchapplication.data.model.job.Job
+import com.mobile.jobsearchapplication.data.model.job.JobByCategory
 import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
 import com.mobile.jobsearchapplication.data.model.user.User
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.*
 
 interface JobApiService {
@@ -17,6 +19,11 @@ interface JobApiService {
     // Các phương thức khác giữ nguyên nếu cần
     @GET("jobs/{id}")
     suspend fun getJobDetail(@Path("id") jobId: String): JobDetailResponse<Job>
+
+    @GET("jobs/getJobsOfCategory")
+    suspend fun getJobsByCategory(
+        @Query("categoryId") categoryId: String
+    ): JobByCategory
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: UUID): ApiResponse<User>
