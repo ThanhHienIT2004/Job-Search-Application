@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.features.home.JobItem
+import com.mobile.jobsearchapplication.ui.features.job.JobItem
 import com.mobile.jobsearchapplication.utils.dataStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -136,6 +136,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
             }
             is SearchUiState.Success -> {
                 val jobs = (uiState as SearchUiState.Success).jobs // Gán giá trị cục bộ ngay tại nhánh
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(vertical = 8.dp),
@@ -161,6 +162,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                             ) {
                                 JobItem(
                                     job = job,
+                                    favoriteIcon = null,
                                     onClick = {
                                         job.id.let {
                                             navController.navigate("job_detail_screen/${job.id}") {

@@ -1,6 +1,5 @@
 package com.mobile.jobsearchapplication.ui.features.job
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,7 +69,7 @@ fun SectionListJob(
 
                 RecommendedJobsList(
                     jobs = jobsByCategory[index],
-                    favoriteIcons = (jobsState as JobUiState.Success).favoriteIcons,
+                    favoriteIcons = null,
                     navController = navController
                 )
             }
@@ -90,9 +88,9 @@ fun SectionListJob(
 @Composable
 fun RecommendedJobsList(
     jobs: List<Job>,
-    favoriteIcons: List<FavoriteIcon>,
+    favoriteIcons: List<FavoriteIcon>?,
     navController: NavController,
-    modifierItem: Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -119,11 +117,11 @@ fun RecommendedJobsList(
             ) { page ->
                 JobItem(
                     job = jobs[page],
-                    favoriteIcon = favoriteIcons[page],
+                    favoriteIcon = favoriteIcons?.get(page),
                     onClick = {
                         navController.navigate("job_detail_screen/${jobs[page].id}")
                     },
-                    modifierItem = modifierItem
+                    modifier = modifier
                 )
             }
         }
@@ -134,12 +132,12 @@ fun RecommendedJobsList(
 @Composable
 fun JobItem(
     job: Job,
-    favoriteIcon: FavoriteIcon,
+    favoriteIcon: FavoriteIcon?,
     onClick: () -> Unit,
-    modifierItem: Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifierItem
+        modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
             .clickable(onClick = onClick),
@@ -190,16 +188,18 @@ fun JobItem(
                     )
                 }
 
-                Icon(
-                    imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(32.dp)
-                        .clickable {
-                            favoriteIcon.onClick
-                        },
-                    tint = if (favoriteIcon.isCheck) Color.Red else Color.Gray,
-                )
+                if (favoriteIcon != null) {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
+                        modifier = Modifier
+                            .weight(1f)
+                            .size(32.dp)
+                            .clickable {
+                                favoriteIcon.onClick
+                            },
+                        tint = if (favoriteIcon.isCheck) Color.Red else Color.Gray,
+                    )
+                }
             }
         }
     }
