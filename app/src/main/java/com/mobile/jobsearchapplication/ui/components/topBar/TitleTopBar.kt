@@ -16,7 +16,7 @@ fun TitleTopBar(
 ) {
     Text(
         text = text,
-        fontSize = 18.sp, fontWeight = FontWeight.Bold,
+        fontSize = 32.sp, fontWeight = FontWeight.Bold,
         modifier = modifier.padding(start = 10.dp),
         color = Color.White
     )

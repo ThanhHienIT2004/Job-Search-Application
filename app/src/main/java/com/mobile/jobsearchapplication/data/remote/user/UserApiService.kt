@@ -23,7 +23,7 @@ interface UserApiService {
         @Body request: UpdateInfoUser
     ): BaseResponse<User>
 
-    @PUT("favorite/jobPosting")
+    @PUT("user/favoriteJobs")
     suspend fun favoriteJobPosting(
         @Query("uuid") uuid: String,
         @Body request: FavoriteJobPosting
