@@ -161,7 +161,6 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                                     .padding(horizontal = 8.dp)
                             ) {
                                 JobItem(
-                                    jobVM = viewModel(),
                                     job = job,
                                     onClick = {
                                         job.id.let {
