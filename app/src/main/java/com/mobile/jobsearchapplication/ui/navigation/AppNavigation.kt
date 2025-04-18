@@ -12,14 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
-import com.mobile.jobsearchapplication.ui.features.favorite.PostFaveriteScreen
 import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
 import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.post.PostScreen
-import com.mobile.jobsearchapplication.ui.features.posted.PostedScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
+import com.mobile.jobsearchapplication.ui.features.saved.SavedScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
 import com.mobile.jobsearchapplication.ui.features.user.UserScreen
 
@@ -29,7 +28,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "home_screen",
+        startDestination = "posted_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
 
@@ -47,8 +46,8 @@ fun AppNavigation() {
         composable("notificationsState") { NotificationScreen(navController) }
         composable("account") { UserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
-        composable("post_favorite") { PostFaveriteScreen(navController) }
-        composable("posted_screen") {  PostedScreen(navController) }
+        composable("favorite_screen") { SavedScreen(navController) }
+        composable("posted_screen") {  SavedScreen(navController) }
         composable("auth_screen") {  AuthScreen(navController) }
         composable("search_screen") {
             SearchScreen(navController)
