@@ -24,6 +24,7 @@ fun MenuBarSaved(
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route ?: "favorite_screen"
 
     Row(
         modifier = Modifier.fillMaxWidth().height(90.dp),
@@ -31,7 +32,7 @@ fun MenuBarSaved(
         verticalAlignment = Alignment.CenterVertically
     ) {
         listMenuBarSaved.forEach {
-            ItemMenuSaved(it, { onClick(it.route) }, it.route == queryRoute)
+            ItemMenuSaved(it, { onClick(it.route) }, it.route == currentRoute)
         }
     }
     HorizontalDivider(thickness = 0.8.dp)
