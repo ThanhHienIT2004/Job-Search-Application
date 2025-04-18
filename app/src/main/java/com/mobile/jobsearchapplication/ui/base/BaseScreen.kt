@@ -48,7 +48,7 @@ fun BaseScreen(
             actionsBot?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth()
-                        .height(100.dp)
+                        .height(80.dp)
                         .background(Color.Transparent)
                     ,
                     horizontalArrangement = Arrangement.SpaceAround,
