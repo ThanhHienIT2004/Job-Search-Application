@@ -16,12 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-
-data class FavoriteIcon(
-    var isCheck: Boolean = false,
-    val onClick: () -> Unit = {  }
-)
-
 sealed class JobUiState {
     data object Loading : JobUiState()
 
@@ -44,30 +38,12 @@ class JobViewModel : ViewModel() {
     private val userRepository = UserRepository()
 
     init {
-//        loadJobsAndFavorites()
         loadJobByCategory()
         loadFavoriteJobs()
     }
 
     fun checkIsFavorite(jobId: UUID): Boolean {
         return (_uiState.value as JobUiState.Success).favoriteJobs?.contains(jobId) ?: false
-    }
-
-    private fun loadJobsAndFavorites() {
-        viewModelScope.launch {
-            _uiState.value = JobUiState.Loading
-            try {
-                val jobResponse = withContext(Dispatchers.IO) {
-                    RetrofitClient.jobApiService.getJobs()
-                }
-                _uiState.value = JobUiState.Success(
-                    jobs = jobResponse.data?.data,
-                    pageCount = jobResponse.data?.pageCount ?: 1
-                )
-            } catch (e: Exception) {
-                _uiState.value = JobUiState.Error("Error fetching jobs: ${e.message}")
-            }
-        }
     }
 
     private fun loadJobByCategory() {

@@ -23,7 +23,7 @@ class JobDetailViewModel : ViewModel() {
                 }
                 if (response.message == "Success") {
                     // Giả sử response.data là một Job đơn lẻ, không phải PaginatedData
-                    _uiState.value = JobDetailUiState.Success(response.data)
+                    _uiState.value = response.data?.let { JobDetailUiState.Success(it) }!!
                 } else {
                     _uiState.value =
                         JobDetailUiState.Error(response.message ?: "Lỗi không xác định")
