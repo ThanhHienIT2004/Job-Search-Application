@@ -17,7 +17,7 @@ interface JobApiService {
     @GET("jobs") // Endpoint tương ứng với http://127.0.0.1:8080/jobs
     suspend fun getJobs(): ApiResponse<Job>
     // Các phương thức khác giữ nguyên nếu cần
-    @GET("jobs/{id}")
+    @GET("/getById")
     suspend fun getJobDetail(@Path("id") jobId: String): JobDetailResponse<Job>
 
     @GET("jobs/getJobsOfCategory")
