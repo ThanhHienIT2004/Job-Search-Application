@@ -15,6 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.ui.theme.LightPurple
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Badge
@@ -44,7 +55,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,10 +64,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -95,7 +101,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
             }
             ThreeDotsMenu()
         },
-        actionsBot = { BottomActionBar(navController) },
+        actionsBot = { BottomActionBar(navController, jobId) },
      ) {
         Column(
             modifier = Modifier
@@ -151,7 +157,7 @@ fun ThreeDotsMenu() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomActionBar(navController: NavController)   {
+fun BottomActionBar(navController: NavController, jobId: String)   {
     // State để điều khiển Bottom Sheet
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -241,13 +247,13 @@ fun BottomActionBar(navController: NavController)   {
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             containerColor = MaterialTheme.colorScheme.surface,
             dragHandle = null, // xóa thanh kéo mặc định
         ) {
             // Nội dung Bottom Sheet
             ApplicationScreen(
+                jobId,
                 onClose = {
                     scope.launch {
                         sheetState.hide()

@@ -42,7 +42,6 @@ import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
 
-
 @Composable
 fun SectionListJob(
     jobVM: JobViewModel,
