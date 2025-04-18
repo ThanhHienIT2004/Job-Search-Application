@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -85,4 +86,24 @@ fun AppNavigation() {
             JobDetailScreen(jobId = jobId ?: "", navController = navController)
         }
     }
+}
+
+
+class NavigationRoute {
+
+    companion object {
+        fun baseNavController(
+            navController: NavController,
+            route: String
+        ) {
+            navController.navigate(route){
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+
 }

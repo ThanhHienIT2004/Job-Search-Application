@@ -37,7 +37,7 @@ fun SectionJobSkeleton(
             Surface(
                 modifier = Modifier.padding(start = 10.dp ,top = 5.dp)
                     .fillMaxWidth(0.6f).height(30.dp),
-                color = Color(0xFF8C8D8F)
+                color = Color.LightGray
             ) {}
 
             HorizontalPager(
@@ -73,14 +73,14 @@ fun JobItemSkeleton(
                 modifier = Modifier.padding(top = 5.dp)
                     .fillMaxWidth(0.95f)
                     .fillMaxHeight(0.6f),
-                color = Color(0xFF8C8D8F)
+                color = Color.LightGray
 
 
             ) {}
             Surface(
                 modifier = Modifier.padding(8.dp, 8.dp)
                     .fillMaxWidth(),
-                color = Color(0xFF8C8D8F)
+                color = Color.LightGray
             ) {}
 
             Row {
@@ -90,12 +90,12 @@ fun JobItemSkeleton(
                     Surface(
                         modifier = Modifier.padding(8.dp, 4.dp)
                             .fillMaxWidth(),
-                        color = Color(0xFF8C8D8F)
+                        color = Color.LightGray
                     ) {}
                     Surface(
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                             .fillMaxWidth(),
-                        color = Color(0xFF8C8D8F)
+                        color = Color.LightGray
                     ) {}
                 }
             }

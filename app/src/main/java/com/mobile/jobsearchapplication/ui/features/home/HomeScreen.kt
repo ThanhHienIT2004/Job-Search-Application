@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.bottomBar.MenuNavBar
 import com.mobile.jobsearchapplication.ui.components.topBar.SearchButton
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.ui.features.job.SectionListJob
@@ -29,7 +30,7 @@ fun HomeScreen(
             SearchButton(navController)
         },
         actionsBot = {
-            BottomNavBarCustom(navController = navController)
+            MenuNavBar(navController)
         }
     ) { padding ->
         LazyColumn(

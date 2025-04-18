@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
@@ -40,7 +41,6 @@ import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
-
 
 @Composable
 fun SectionListJob(
@@ -118,7 +118,6 @@ fun RecommendedJobsList(
                 pageSpacing = 16.dp
             ) { page ->
                 JobItem(
-                    jobVM,
                     job = jobs[page],
                     onClick = {
                         navController.navigate("job_detail_screen/${jobs[page].id}")
@@ -133,12 +132,12 @@ fun RecommendedJobsList(
 
 @Composable
 fun JobItem(
-    jobVM: JobViewModel?,
     job: Job,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isFavorite by remember { mutableStateOf(jobVM?.checkIsFavorite(jobId = job.id)) }
+    val jobVM: JobViewModel = viewModel()
+    var isFavorite by remember { mutableStateOf(jobVM.checkIsFavorite(jobId = job.id)) }
 
     Card(
         modifier = modifier
@@ -198,10 +197,10 @@ fun JobItem(
                         .weight(1f)
                         .size(32.dp)
                         .clickable {
-                            isFavorite = !isFavorite!!
-                            jobVM?.updateFavoriteApi(jobId = job.id, state = isFavorite!!)
+                            isFavorite = !isFavorite
+                            jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
                         },
-                    tint = if (isFavorite == true) Color.Red else Color.Gray,
+                    tint = if (isFavorite) Color.Red else Color.Gray,
                 )
             }
         }
