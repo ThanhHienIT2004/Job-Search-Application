@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.data.repository.job
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.model.job.JobByCategory
@@ -16,15 +17,26 @@ class JobRepository : JobApiService {
     }
 
     override suspend fun getJobDetail(jobId: String): JobDetailResponse<Job> {
-        TODO("Not yet implemented")
+        return try {
+            jobApiService.getJobDetail(jobId)
+        } catch (e: Exception) {
+            JobDetailResponse(data = null, message = "Error fetching job detail: ${e.message}")
+        }
     }
 
     override suspend fun getJobsByCategory(categoryId: String): JobByCategory {
         return try {
-            val response = jobApiService.getJobsByCategory(categoryId)
-            response
+            jobApiService.getJobsByCategory(categoryId)
         } catch (e: Exception) {
             JobByCategory(data = emptyList(), message = "Error fetching jobs: ${e.message}")
+        }
+    }
+
+    override suspend fun getPostedJobs(userId: String): BaseResponse<List<Job>> {
+        return try {
+            jobApiService.getPostedJobs(userId)
+        } catch (e: Exception) {
+            BaseResponse(isSuccess = false ,data = null, message = "Error fetching posted jobs: ${e.message}")
         }
     }
 
