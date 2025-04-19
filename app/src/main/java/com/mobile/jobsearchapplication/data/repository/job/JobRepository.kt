@@ -48,6 +48,14 @@ class JobRepository : JobApiService {
         }
     }
 
+    override suspend fun getAppliedJobs(userId: String): BaseResponse<List<Job>> {
+        return try {
+            jobApiService.getAppliedJobs(userId)
+        } catch (e: Exception) {
+            BaseResponse(isSuccess = false ,data = null, message = "Error fetching posted jobs: ${e.message}")
+        }
+    }
+
     override suspend fun getUser(userId: UUID): ApiResponse<User> {
         TODO("Not yet implemented")
     }

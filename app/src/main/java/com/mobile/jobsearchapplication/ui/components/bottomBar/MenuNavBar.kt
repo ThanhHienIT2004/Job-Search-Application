@@ -103,7 +103,7 @@ fun ItemNavBarDefault(
 ) {
     Box (
         modifier = modifier.height(54.dp).padding(horizontal = 2.dp)
-            .background(Color(0xFF1F1F1F), RoundedCornerShape(8.dp)),
+            .background(Color(0xFF2C2F2F), RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -113,7 +113,7 @@ fun ItemNavBarDefault(
         ) {
             Icon(
                 imageVector = item.icon, contentDescription = "",
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier.size(42.dp), tint = Color(0xFF2C2F2F)
             )
         }
     }
@@ -138,7 +138,7 @@ fun ShapeArrowRight(
                 .offset(x = (-18).dp)
                 .align(Alignment.TopStart),
             shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
-            colors = CardDefaults.cardColors(Color(0xFF1F1F1F))
+            colors = CardDefaults.cardColors(Color(0xFF2C2F2F))
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowForwardIos, contentDescription = "",
@@ -167,7 +167,7 @@ fun ShapeArrowLeft(
                 .offset(x = 16.dp, y = 8.dp)
                 .align(Alignment.TopStart),
             shape = RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp),
-            colors = CardDefaults.cardColors(Color(0xFF1F1F1F))
+            colors = CardDefaults.cardColors(Color(0xFF2C2F2F))
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "",
