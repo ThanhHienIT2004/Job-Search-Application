@@ -18,3 +18,8 @@ app/src/main/java/com/mobile/jobsearchapplication/network/ApiClient.kt
 /app/wrapper/dists/
 /app/wrapper/caches/
 app/daemon/
+# Kotlin profiler
+app/kotlin-profile/
+
+# Fake dependency
+app/android/FakeDependency.jar
