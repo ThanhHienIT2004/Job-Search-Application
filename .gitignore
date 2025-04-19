@@ -14,3 +14,6 @@
 .cxx
 local.properties
 app/src/main/java/com/mobile/jobsearchapplication/network/ApiClient.kt
+/app/caches/
+/app/wrapper/dists/
+/app/wrapper/caches/
