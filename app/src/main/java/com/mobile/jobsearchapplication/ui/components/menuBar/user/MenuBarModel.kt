@@ -36,7 +36,7 @@ sealed class MenuItemProfile(icon: ImageVector, title: String, route: String? = 
 sealed class MenuItemPosts(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
     data object PublishedPosts: MenuItemPosts(Icons.Filled.HistoryEdu, "Tuyển dụng đã đăng", "posted_screen")
     data object Favorites: MenuItemPosts(Icons.Filled.FavoriteBorder, "Bài đăng yêu thích", "favorite_screen")
-    data object AppliedJobs: MenuItemPosts(Icons.Filled.ModeComment, "Công việc đã ứng tuyển", )
+    data object AppliedJobs: MenuItemPosts(Icons.Filled.ModeComment, "Công việc đã ứng tuyển", "applied_screen")
 }
 
 sealed class MenuItemSettings(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {

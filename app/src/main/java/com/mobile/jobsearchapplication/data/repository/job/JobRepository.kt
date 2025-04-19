@@ -32,6 +32,14 @@ class JobRepository : JobApiService {
         }
     }
 
+    override suspend fun getFavoriteJobs(userId: String): BaseResponse<List<Job>> {
+        return try {
+            jobApiService.getFavoriteJobs(userId)
+        } catch (e: Exception) {
+            BaseResponse(isSuccess = false ,data = null, message = "Error fetching posted jobs: ${e.message}")
+        }
+    }
+
     override suspend fun getPostedJobs(userId: String): BaseResponse<List<Job>> {
         return try {
             jobApiService.getPostedJobs(userId)

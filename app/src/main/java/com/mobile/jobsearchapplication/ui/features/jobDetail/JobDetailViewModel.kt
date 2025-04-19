@@ -16,13 +16,11 @@ class JobDetailViewModel : ViewModel() {
 
     fun fetchJobDetail(jobId: String) {
         viewModelScope.launch {
-            _uiState.value = JobDetailUiState.Loading
             try {
                 val response = withContext(Dispatchers.IO) {
                     RetrofitClient.jobApiService.getJobDetail(jobId)
                 }
                 if (response.message == "Success") {
-                    // Giả sử response.data là một Job đơn lẻ, không phải PaginatedData
                     _uiState.value = response.data?.let { JobDetailUiState.Success(it) }!!
                 } else {
                     _uiState.value =
