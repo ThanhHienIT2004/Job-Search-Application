@@ -19,15 +19,10 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +30,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.android.play.integrity.internal.c
 import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 
 sealed class Screen1(val route: String, val icon: ImageVector) {
@@ -108,12 +102,12 @@ fun ItemNavBarDefault(
     modifier: Modifier = Modifier
 ) {
     Box (
-        modifier = modifier.height(64.dp).padding(horizontal = 2.dp)
+        modifier = modifier.height(54.dp).padding(horizontal = 2.dp)
             .background(Color(0xFF1F1F1F), RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Box(
-            modifier = Modifier.size(52.dp)
+            modifier = Modifier.size(48.dp)
                 .background(Color(0xFFF8F7F7), CircleShape),
             contentAlignment = Alignment.Center
         ) {
@@ -134,13 +128,13 @@ fun ShapeArrowRight(
         contentAlignment = Alignment.CenterStart
     ) {
         Card(
-            modifier = Modifier.width(32.dp).height(34.dp)
+            modifier = Modifier.width(26.dp).height(24.dp)
                 .offset(x = (-2).dp, y = (-5).dp),
             shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
             colors = CardDefaults.cardColors(Color.White)
         ) { }
         Card(
-            modifier = Modifier.width(42.dp).height(24.dp)
+            modifier = Modifier.width(38.dp).height(16.dp)
                 .offset(x = (-18).dp)
                 .align(Alignment.TopStart),
             shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
@@ -163,21 +157,21 @@ fun ShapeArrowLeft(
         contentAlignment = Alignment.CenterStart
     ) {
         Card(
-            modifier = Modifier.width(32.dp).height(34.dp)
-                .offset(x = 10.dp, y = 5.dp),
+            modifier = Modifier.width(24.dp).height(24.dp)
+                .offset(x = 12.dp, y = 4.dp),
             shape = RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp),
             colors = CardDefaults.cardColors(Color.White)
         ) { }
         Card(
-            modifier = Modifier.width(42.dp).height(24.dp)
-                .offset(x = 15.dp, y = 10.dp)
+            modifier = Modifier.width(34.dp).height(16.dp)
+                .offset(x = 16.dp, y = 8.dp)
                 .align(Alignment.TopStart),
             shape = RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp),
             colors = CardDefaults.cardColors(Color(0xFF1F1F1F))
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "",
-                modifier = Modifier.size(32.dp), tint = Color.White
+                modifier = Modifier.size(32.dp).offset(x = (-5).dp), tint = Color.White
             )
         }
     }

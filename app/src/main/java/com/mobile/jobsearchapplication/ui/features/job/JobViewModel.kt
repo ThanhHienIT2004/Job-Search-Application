@@ -8,12 +8,12 @@ import com.mobile.jobsearchapplication.data.repository.job.JobRepository
 import com.mobile.jobsearchapplication.data.repository.jobCategory.JobCategoryRepository
 import com.mobile.jobsearchapplication.data.repository.user.UserRepository
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
-import com.mobile.jobsearchapplication.utils.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Timer
 import java.util.UUID
 
 sealed class JobUiState {
@@ -23,7 +23,7 @@ sealed class JobUiState {
         val jobs: List<Job>? = emptyList(),
         val jobByCategory: List<List<Job>>? = emptyList(),
         val favoriteJobs: List<UUID>? = emptyList(),
-        val pageCount: Int = 1
+        val page: Int = 1
     ) : JobUiState()
 
     data class Error(val message: String) : JobUiState()
@@ -37,21 +37,28 @@ class JobViewModel : ViewModel() {
     private val jobRepository = JobRepository()
     private val userRepository = UserRepository()
 
-    init {
-        loadJobByCategory()
-        loadFavoriteJobs()
-    }
 
     fun checkIsFavorite(jobId: UUID): Boolean {
-        return (_uiState.value as JobUiState.Success).favoriteJobs?.contains(jobId) ?: false
+        return when (val state = _uiState.value) {
+            is JobUiState.Success -> state.favoriteJobs?.contains(jobId) ?: false
+            else -> false
+        }
     }
 
-    private fun loadJobByCategory() {
+    fun loadJobByCategory() {
         viewModelScope.launch {
             try {
                 val jobsByCategory = withContext(Dispatchers.IO) {
-                    val categories = jobCategoryRepository.getAllJobCategories("1", "20").data?.data ?: emptyList()
-                    categories.map { category ->
+                    val page = when(val current = _uiState.value) {
+                        is JobUiState.Success -> current.page
+                        else -> 1
+                    }
+
+                    val categories = jobCategoryRepository.getAllJobCategories(
+                        page.toString(), "20"
+                    ).data?.data ?: emptyList()
+                    categories.mapIndexed() { index, category ->
+                        if (index >5) return@mapIndexed emptyList()
                         jobRepository.getJobsByCategory(category.id).data
                     }
                 }
@@ -61,13 +68,14 @@ class JobViewModel : ViewModel() {
                     else -> JobUiState.Success(jobByCategory = jobsByCategory)
                 }
 
+                loadFavoriteJobs()
             } catch (e: Exception) {
                 _uiState.value = JobUiState.Error(message = "Lỗi khi fetch jobs by category: ${e.message}")
             }
         }
     }
 
-    private fun loadFavoriteJobs() {
+    fun loadFavoriteJobs() {
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -96,8 +104,9 @@ class JobViewModel : ViewModel() {
                 withContext(Dispatchers.IO) {
                     userRepository.favoriteJobPosting(uuid = userId, request = request)
                 }
-
+                Timer("Updated favorite: $jobId, state: $state")
                 loadFavoriteJobs()
+
             } catch (e: Exception) {
                 _uiState.value = JobUiState.Error("Error updating favorite: ${e.message}")
             }
