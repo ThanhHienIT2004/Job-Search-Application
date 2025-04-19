@@ -20,3 +20,4 @@ app/src/main/java/com/mobile/jobsearchapplication/network/ApiClient.kt
 app/daemon/
 app/kotlin-profile/
 app/android/FakeDependency.jar
+app/.tmp/
