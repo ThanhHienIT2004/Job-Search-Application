@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
+import java.io.File
 
 data class FormState(
     val coverLetter: String = "",
-    val additionalInfo: String = ""
+    val additionalInfo: String = "",
+    val cvFile: File? = null
 )
 
 class ApplicationViewModel : ViewModel() {
@@ -59,6 +59,10 @@ class ApplicationViewModel : ViewModel() {
         _formState.value = _formState.value.copy(coverLetter = coverLetter)
     }
 
+    fun updateCvFile(cvFile: File?) {
+        _formState.value = _formState.value.copy(cvFile = cvFile)
+    }
+
     fun updateAdditionalInfo(additionalInfo: String) {
         _formState.value = _formState.value.copy(additionalInfo = additionalInfo)
     }
@@ -74,12 +78,13 @@ class ApplicationViewModel : ViewModel() {
                     jobId = jobId,
                     status = "PENDING",
                     coverLetter = _formState.value.coverLetter,
-                    cvUrl = "https://example.com/my-cv.pdf",
+                    cvUrl = null.toString(),
                     additionalInfo = _formState.value.additionalInfo
                 )
 
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitClient.jobApplicationApiService.submitApplication(application)
+                    RetrofitClient.jobApplicationApiService.submitApplication(application, cvFile = _formState.value.cvFile)
+
                 }
                 if (response.message == "Success" && response.data != null) {
                     _uiState.value = ApplicationState.Success
@@ -94,6 +99,7 @@ class ApplicationViewModel : ViewModel() {
 
     fun resetApplicationState() {
         _uiState.value = ApplicationState.Idle
+        _formState.value = FormState()
     }
 }
 
