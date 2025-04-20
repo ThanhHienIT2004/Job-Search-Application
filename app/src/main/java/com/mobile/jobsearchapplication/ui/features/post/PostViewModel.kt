@@ -11,164 +11,149 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.job.Job
+import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
 import com.mobile.jobsearchapplication.data.repository.job.JobRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
+data class JobPost(
+    val companyId: String,
+    val title: String,
+    val description: String,
+    val requirements: String,
+    val benefits: String?,
+    val postedBy: String,
+    val categoryId: Int,
+    val salary: Salary,
+    val employmentType: String,
+    val location: Location,
+    val experience: Experience,
+    val deadline: String,
+    val positionsAvailable: Int,
+    val genderRequirement: String,
+    val status: String = "ACTIVE",
+    val additionalInfo: AdditionalInfo
+) {
+    data class Salary(
+        val min: Double,
+        val max: Double,
+        val currency: String = "VND",
+        val isNegotiable: Boolean = true
+    )
+
+    data class Location(
+        val city: String,
+        val district: String?,
+        val address: String,
+        val isRemote: Boolean
+    )
+
+    data class Experience(
+        val minYears: Int,
+        val maxYears: Int,
+        val level: String
+    )
+
+    data class AdditionalInfo(
+        val workingHours: String,
+        val overtimePolicy: String?,
+        val probationPeriod: String?,
+        val jobImage: String?
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 class PostViewModel(
-    private val jobRepository: JobRepository = JobRepository()
-) : ViewModel() {
-    // Trạng thái cho các trường nhập liệu
-    var title by mutableStateOf("")
-    var jobQuantity by mutableStateOf("")
-    var salaryMin by mutableStateOf("")
-    var salaryMax by mutableStateOf("")
-    var description by mutableStateOf("")
-    var gender by mutableStateOf("Không yêu cầu")
-    var educationLevel by mutableStateOf("Không yêu cầu")
-    var experience by mutableStateOf("Không yêu cầu")
-    var additionalInfo by mutableStateOf("")
-    var location by mutableStateOf("")
-    var city by mutableStateOf("")
-    var district by mutableStateOf("")
-    var categoryId by mutableStateOf("")
-    var employmentType by mutableStateOf("FULL_TIME")
-    var workingHours by mutableStateOf("8h/ngày")
-    var isRemote by mutableStateOf(false)
-    var userId by mutableStateOf("default_user_id") // Thêm trạng thái userId
+    private val jobRepository: JobRepository = JobRepository(),
 
+) : ViewModel() {
+    var jobPost by mutableStateOf(
+        JobPost(
+            companyId = "1",
+            title = "",
+            description = "",
+            requirements = "Không yêu cầu",
+            benefits = null,
+            postedBy = "5nXIVWS9GMQRb3hJim2pZ8j6v2M2",
+            categoryId = 0,
+            salary = JobPost.Salary(min = 0.0, max = 0.0),
+            employmentType = "FULL_TIME",
+            location = JobPost.Location(city = "", district = null, address = "", isRemote = false),
+            experience = JobPost.Experience(minYears = 0, maxYears = 0, level = "FRESH"), // Thay ENTRY bằng FRESH
+            deadline = LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+            positionsAvailable = 0,
+            genderRequirement = "ANY",
+            status = "ACTIVE",
+            additionalInfo = JobPost.AdditionalInfo(
+                workingHours = "8h/ngày",
+                overtimePolicy = null,
+                probationPeriod = null,
+                jobImage = null
+            )
+        )
+    )
     var postResult by mutableStateOf<Result<String>?>(null)
         private set
+
+    private fun validateJobPost(): Result<Unit> {
+        return when {
+            jobPost.title.isBlank() -> Result.failure(Exception("Tiêu đề không được để trống"))
+            jobPost.description.isBlank() -> Result.failure(Exception("Mô tả công việc không được để trống"))
+            jobPost.positionsAvailable <= 0 -> Result.failure(Exception("Số lượng tuyển dụng phải lớn hơn 0"))
+            jobPost.salary.min <= 0.0 -> Result.failure(Exception("Lương tối thiểu phải lớn hơn 0"))
+            jobPost.salary.max <= 0.0 -> Result.failure(Exception("Lương tối đa phải lớn hơn 0"))
+            jobPost.salary.min > jobPost.salary.max -> Result.failure(Exception("Lương tối thiểu không được lớn hơn lương tối đa"))
+            jobPost.location.city.isBlank() -> Result.failure(Exception("Thành phố không được để trống"))
+            jobPost.location.address.isBlank() -> Result.failure(Exception("Địa chỉ không được để trống"))
+            jobPost.categoryId <= 0 -> Result.failure(Exception("Danh mục công việc không hợp lệ"))
+            jobPost.companyId == "default_company_id" -> Result.failure(Exception("ID công ty không hợp lệ"))
+            jobPost.postedBy == "default_user_id" -> Result.failure(Exception("Vui lòng đăng nhập để đăng tin"))
+            jobPost.additionalInfo.workingHours.isBlank() -> Result.failure(Exception("Giờ làm việc không được để trống"))
+            jobPost.experience.level !in listOf("INTERN", "FRESH", "JUNIOR", "SENIOR", "LEAD") -> Result.failure(Exception("Mức kinh nghiệm không hợp lệ"))
+            jobPost.employmentType !in listOf("FULL_TIME", "PART_TIME", "CONTRACT") -> Result.failure(Exception("Loại công việc không hợp lệ"))
+            jobPost.genderRequirement !in listOf("MALE", "FEMALE", "ANY") -> Result.failure(Exception("Yêu cầu giới tính không hợp lệ"))
+            jobPost.status !in listOf("ACTIVE", "CLOSED", "DRAFT") -> Result.failure(Exception("Trạng thái công việc không hợp lệ"))
+            else -> Result.success(Unit)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun submitPost() {
         viewModelScope.launch {
             try {
-                // Kiểm tra dữ liệu đầu vào
-                if (title.isBlank()) {
-                    postResult = Result.failure(Exception("Tiêu đề không được để trống"))
-                    return@launch
-                }
-                if (jobQuantity.isBlank() || jobQuantity.toIntOrNull() == null) {
-                    postResult = Result.failure(Exception("Số lượng tuyển dụng phải là số hợp lệ"))
-                    return@launch
-                }
-                if (salaryMin.isNotBlank() && salaryMin.toDoubleOrNull() == null) {
-                    postResult = Result.failure(Exception("Lương tối thiểu phải là số hợp lệ"))
-                    return@launch
-                }
-                if (salaryMax.isNotBlank() && salaryMax.toDoubleOrNull() == null) {
-                    postResult = Result.failure(Exception("Lương tối đa phải là số hợp lệ"))
-                    return@launch
-                }
-                if (location.isBlank()) {
-                    postResult = Result.failure(Exception("Địa chỉ không được để trống"))
-                    return@launch
-                }
-                if (city.isBlank()) {
-                    postResult = Result.failure(Exception("Thành phố không được để trống"))
-                    return@launch
-                }
-                if (categoryId.isBlank() || categoryId.toIntOrNull() == null) {
-                    postResult = Result.failure(Exception("Danh mục công việc không hợp lệ"))
-                    return@launch
-                }
-                if (userId.isBlank()) {
-                    postResult = Result.failure(Exception("ID người dùng không được để trống"))
+                // Kiểm tra dữ liệu
+                validateJobPost().onFailure { exception ->
+                    postResult = Result.failure(exception)
                     return@launch
                 }
 
-                // Tạo JSON body khớp với JobParams và JobTable
-                val gson = Gson()
-                val jobJson = JsonObject().apply {
-                    addProperty("companyId", "default_company_id") // Thay bằng ID thực
-                    addProperty("title", title)
-                    addProperty("description", description)
-                    addProperty("requirements", educationLevel)
-                    addProperty("benefits", additionalInfo.takeIf { it.isNotBlank() } ?: "")
-                    addProperty("postedBy", userId) // Sử dụng userId cho postedBy
-                    addProperty("userId", userId) // Thêm userId để khớp với server
-                    addProperty("categoryId", categoryId.toInt())
-                    add("salary", JsonObject().apply {
-                        addProperty("min", salaryMin.toDoubleOrNull() ?: 0.0)
-                        addProperty("max", salaryMax.toDoubleOrNull() ?: 0.0)
-                        addProperty("currency", "VND")
-                        addProperty("isNegotiable", true)
-                    })
-                    addProperty("employmentType", employmentType)
-                    add("location", JsonObject().apply {
-                        addProperty("city", city)
-                        addProperty("district", district.takeIf { it.isNotBlank() } ?: "Không xác định")
-                        addProperty("address", location)
-                        addProperty("isRemote", isRemote)
-                    })
-                    add("experience", JsonObject().apply {
-                        val (minYears, maxYears, level) = when (experience) {
-                        "Dưới 1 năm" -> Triple(0, 1, "INTERN")
-                        "1-2 năm" -> Triple(1, 2, "JUNIOR")
-                        "Trên 2 năm" -> Triple(2, 5, "SENIOR")
-                        else -> Triple(0, 0, "FRESH")
-                    }
-                        addProperty("minYears", minYears)
-                        addProperty("maxYears", maxYears)
-                        addProperty("level", level)
-                    })
-                    addProperty("deadline", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-                    addProperty("positionsAvailable", jobQuantity.toInt())
-                    addProperty("genderRequirement", when (gender) {
-                        "Nam" -> "MALE"
-                        "Nữ" -> "FEMALE"
-                        else -> "ANY"
-                    })
-                    addProperty("status", "ACTIVE")
-                    add("additionalInfo", JsonObject().apply {
-                        addProperty("workingHours", workingHours)
-                        addProperty("overtimePolicy", null as String?)
-                        addProperty("probationPeriod", null as String?)
-                        addProperty("jobImage", null as String?)
-                    })
-                }
+                // Tạo JSON theo cấu trúc JobParams
+                val jsonBody = Gson().toJsonTree(jobPost).asJsonObject
 
-                // Tạo Job object để gửi qua API
-                val job = Job(
-                    id = UUID.randomUUID(),
-                    title = title,
-                    description = description,
-                    salaryMin = salaryMin.toBigDecimalOrNull(),
-                    salaryMax = salaryMax.toBigDecimalOrNull(),
-                    currency = "VND",
-                    location = location,
-                    jobType = employmentType,
-                    experienceLevel = experience,
-                    companyId = "default_company_id",
-                    postedBy = userId,
-                    benefits = additionalInfo.takeIf { it.isNotBlank() },
-                    quantity = jobQuantity.toInt(),
-                    genderRequire = gender,
-                    deadline = LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    status = "ACTIVE",
-                    requirements = educationLevel,
-                    jobImage = null,
-                    createdAt = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                )
+                // Log JSON để debug
+                println("JSON Body: $jsonBody")
 
                 // Gọi API
-                val response: ApiResponse<Job> = jobRepository.createJob(job)
-
+                val response: ApiResponse<Job> = jobRepository.createJob(jsonBody)
                 if (response.data != null) {
                     postResult = Result.success("Đăng tin thành công: ${response.message}")
                 } else {
                     postResult = Result.failure(Exception("Đăng tin thất bại: ${response.message}"))
                 }
             } catch (e: HttpException) {
-                when (e.code()) {
-                    400 -> postResult = Result.failure(Exception("Yêu cầu không hợp lệ: Vui lòng kiểm tra dữ liệu nhập (userId, categoryId, hoặc định dạng)."))
-                    404 -> postResult = Result.failure(Exception("Không tìm thấy endpoint /jobs/add. Vui lòng kiểm tra cấu hình API."))
-                    else -> postResult = Result.failure(Exception("Lỗi server: ${e.message()}"))
+                postResult = when (e.code()) {
+                    400 -> Result.failure(Exception("Yêu cầu không hợp lệ: Vui lòng kiểm tra dữ liệu nhập"))
+                    401 -> Result.failure(Exception("Chưa đăng nhập hoặc token hết hạn"))
+                    403 -> Result.failure(Exception("Không có quyền đăng tin"))
+                    404 -> Result.failure(Exception("Không tìm thấy endpoint /jobs/add"))
+                    500 -> Result.failure(Exception("Lỗi server, vui lòng thử lại sau"))
+                    else -> Result.failure(Exception("Lỗi HTTP: ${e.code()} - ${e.message()}"))
                 }
+            } catch (e: IOException) {
+                postResult = Result.failure(Exception("Lỗi kết nối mạng, vui lòng kiểm tra kết nối"))
             } catch (e: Exception) {
                 postResult = Result.failure(Exception("Lỗi không xác định: ${e.message}"))
             }

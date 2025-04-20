@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.data.remote.job
 
+import com.google.gson.JsonObject
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
@@ -49,7 +50,7 @@ interface JobApiService {
     suspend fun getCompany(@Path("id") companyId: UUID): ApiResponse<Company>
 
     @POST("jobs/add")
-    suspend fun createJob(@Body job: Job): ApiResponse<Job>
+    suspend fun createJob(@Body job: JsonObject): ApiResponse<Job>
 
 
 

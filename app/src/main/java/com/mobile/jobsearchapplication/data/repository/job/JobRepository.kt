@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.data.repository.job
 
+import com.google.gson.JsonObject
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
@@ -9,6 +10,7 @@ import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
 import com.mobile.jobsearchapplication.utils.RetrofitClient.jobApiService
+import java.io.IOException
 import java.util.UUID
 
 class JobRepository : JobApiService {
@@ -64,7 +66,10 @@ class JobRepository : JobApiService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun createJob(job: Job): ApiResponse<Job> {
-        TODO("Not yet implemented")
+    override suspend fun createJob(job: JsonObject): ApiResponse<Job> {
+        // Log JSON để debug
+        println("Sending JSON: $job")
+        // Gọi API
+        return jobApiService.createJob(job)
     }
 }
