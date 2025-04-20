@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.job
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,9 +43,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
+import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
 @Composable
 fun SectionListJob(
@@ -153,6 +158,7 @@ fun JobItem(
     var isFavorite = rememberSaveable(jobUiState, job.id) {
         (jobUiState as JobUiState.Success).favoriteJobs?.contains(job.id) == true
     }
+    val context = LocalContext.current
 
     Card(
         modifier = modifier
@@ -212,8 +218,12 @@ fun JobItem(
                             .weight(1f)
                             .size(32.dp)
                             .clickable {
-                                isFavorite = !isFavorite
-                                jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
+                                if (!isUserLoggedIn()) {
+                                    Toast.makeText(context, "Vui lòng đăng nhập để sử dụng", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    isFavorite = !isFavorite
+                                    jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
+                                }
                             },
                         tint = if (isFavorite) Color.Red else Color.Gray,
                     )

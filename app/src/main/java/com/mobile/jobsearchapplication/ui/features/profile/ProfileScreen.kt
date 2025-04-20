@@ -13,11 +13,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,20 +59,34 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
+import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
 import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldDatePicker
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserEmail
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
 @Composable
-fun ProfileScreen(navController: NavController) {
-    val profileVM: ProfileViewModel = viewModel()
+fun ProfileScreen(
+    navController: NavController,
+    profileVM: ProfileViewModel = viewModel()
+) {
     val profileState by profileVM.profileState.collectAsState()
     val context = LocalContext.current
+
+    val queryScreen = navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+    LaunchedEffect(queryScreen) {
+        if (queryScreen == "update_profile_screen") {
+            profileVM.onIconEdit()
+        } else {
+            if (isUserLoggedIn()) profileVM.getInfoApi()
+        }
+    }
 
     LaunchedEffect(profileState.isUpdateInfoSuccess) {
         if (profileState.isModeEditor && profileState.isUpdateInfoSuccess) {
@@ -88,12 +104,25 @@ fun ProfileScreen(navController: NavController) {
         LazyColumn (
             modifier = Modifier.fillMaxSize()
                 .background(Color(0xFFF8F8FC))
-                .padding(padding)
+                .padding(padding),
         ) {
             item {
-                TopProfileScreen(profileVM)
-
-                TabsMenuProfile(profileVM)
+                if (!isUserLoggedIn()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        EmptyState(
+                            icon = R.drawable.img_go_log_in,
+                            message = "Hãy đăng nhập để sử dụng chức năng này",
+                            onClick = { navController.navigate("auth_screen") }
+                        )
+                    }
+                } else {
+                    TopProfileScreen(profileVM)
+                    TabsMenuProfile(profileVM)
+                }
             }
         }
     }
@@ -106,7 +135,7 @@ fun TopProfileScreen(
 ) {
     Box(
         modifier = modifier.fillMaxWidth()
-            .padding(top = 16.dp, bottom = 50.dp)
+            .padding(top = 16.dp, bottom = 20.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -127,13 +156,13 @@ fun TopProfileScreen(
             Text(
                 text = getCurrentUserEmail(),
                 fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                color = Color.Gray,
+                color = Color(0xFF323333),
                 modifier = Modifier.padding(top = 10.dp)
             )
             Text(
                 text = "bio hghj",
                 fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                color = Color.Gray,
+                color = Color(0xFF323333),
                 modifier = Modifier.padding(top = 10.dp)
             )
         }
@@ -162,7 +191,7 @@ fun TabsMenuProfile(
                 Tab(
                     selected = selectedTabIndex == index,
                     onClick = { selectedTabIndex = index },
-                    text = { Text(title) }
+                    text = { Text(title, fontSize = 16.sp, color = Color.Gray) }
                 )
             }
         }
@@ -220,6 +249,7 @@ fun InfoProfileItem(title: String, value: String) {
 fun SectionCVProfile(
     profileVM: ProfileViewModel
 ) {
+    val profileState by profileVM.profileState.collectAsState()
     val infoProfileState by profileVM.infoProfileState.collectAsState()
     val context = LocalContext.current
 
@@ -232,9 +262,9 @@ fun SectionCVProfile(
         uri?.let {
             tempAvatarUri = it
             // Cập nhật avatar tạm thời trong ViewModel
-            profileVM.onChangeValueInfo(it.toString(), "avatar")
+            profileVM.onChangeValueInfo(it.toString(), "cvUrl")
             // Upload ảnh (hoặc xử lý local)
-//            profileVM.uploadAvatar(it)
+            profileVM.updateInfoApi()
         }
     }
 
@@ -250,47 +280,47 @@ fun SectionCVProfile(
         }
     }
 
-
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Ảnh đại diện
+        if (profileState.isModeEditor) {
+            Text(
+                text = "Chỉnh sửa CV",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Ảnh CV
         AsyncImage(
-            model = tempAvatarUri ?: infoProfileState.avatar.takeIf { it.isNotBlank() }
-            ?: "https://placehold.co/600x400@2x.png",
+            model = tempAvatarUri ?: infoProfileState.cvUrl.takeIf { it.isNotBlank() }
+            ?: "https://th.bing.com/th/id/OIP.dhFjdSsJIvsp5WrEsGfVQQHaKe?w=1414&h=2000&rs=1&pid=ImgDetMain",
             contentDescription = "Avatar",
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
+            modifier = Modifier.fillMaxSize()
                 .clickable {
-                    // Kiểm tra permission
-                    val permission =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            Manifest.permission.READ_MEDIA_IMAGES
+                    if (profileState.isModeEditor) {
+                        val permission =
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                Manifest.permission.READ_MEDIA_IMAGES
+                            } else {
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            }
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                permission
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            pickImageLauncher.launch("image/*")
                         } else {
-                            Manifest.permission.READ_EXTERNAL_STORAGE
+                            requestPermissionLauncher.launch(permission)
                         }
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            permission
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        pickImageLauncher.launch("image/*")
-                    } else {
-                        requestPermissionLauncher.launch(permission)
                     }
                 },
             contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Nhấn để thay đổi ảnh",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -311,7 +341,7 @@ fun SectionUpdatedProfile(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         profileVM.listItemsUpdate.forEach {
-            TextFieldCustom(model = it)
+            TextFieldCustom(model = it, isNumeric = it.label == "Số điện thoại")
         }
 
         TextFieldDatePicker(

@@ -45,10 +45,17 @@ fun AppNavigation() {
         ) { PostScreen(navController) }
 
         composable("notificationsState") { NotificationScreen(navController) }
+
+        // menu
         composable("account") { UserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
+        composable("update_profile_screen") { ProfileScreen(navController) }
+
+        // saved
+        composable("applied_screen") { SavedScreen(navController) }
         composable("favorite_screen") { SavedScreen(navController) }
         composable("posted_screen") {  SavedScreen(navController) }
+
         composable("auth_screen") {  AuthScreen(navController) }
         composable("search_screen") {
             SearchScreen(navController)

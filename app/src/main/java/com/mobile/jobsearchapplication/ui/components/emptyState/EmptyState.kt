@@ -68,7 +68,7 @@ fun EmptyState(
             text = { Text(
                 text = message,
                 color = Color.Gray,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyMedium
             ) },
             containerColor = Color(0xFFF5F5F5),
             contentColor = Color.Black,
