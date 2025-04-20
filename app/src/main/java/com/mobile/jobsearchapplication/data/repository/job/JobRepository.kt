@@ -14,8 +14,12 @@ import java.io.IOException
 import java.util.UUID
 
 class JobRepository : JobApiService {
-    override suspend fun getJobs(): ApiResponse<Job> {
-        TODO("Not yet implemented")
+    override suspend fun getJobs(): ApiResponse<List<Job>> {
+        return try {
+            jobApiService.getJobs()
+        } catch (e: Exception) {
+            ApiResponse(data = null, message = "Error fetching jobs: ${e.message}")
+        }
     }
 
     override suspend fun getJobDetail(jobId: String): JobDetailResponse<Job> {
