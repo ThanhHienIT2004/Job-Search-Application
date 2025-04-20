@@ -37,6 +37,11 @@ interface JobApiService {
         @Query("userId") userId: String
     ): BaseResponse<List<Job>>
 
+    @GET("jobs/getById/{id}")
+    suspend fun getAppliedJobs(
+        @Path("id") userId: String
+    ): BaseResponse<List<Job>>
+
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: UUID): ApiResponse<User>
 

@@ -16,6 +16,7 @@ sealed class SavedUiState{
     data object Loading: SavedUiState()
 
     data class Success(
+        val appliedJobs: List<Job>? = emptyList(),
         val postedJobs: List<Job>? = emptyList(),
         val favoriteJobs: List<Job>? = emptyList()
     ): SavedUiState()
@@ -64,6 +65,23 @@ class SavedViewModel : BaseViewModel() {
                 _uiState.value = when (val current = _uiState.value) {
                     is SavedUiState.Success -> current.copy(favoriteJobs = favoriteJobs)
                     else -> SavedUiState.Success(favoriteJobs = favoriteJobs)
+                }
+            } catch (e: Exception) {
+                _uiState.value = SavedUiState.Error("Error fetching favorite jobs: ${e.message}")
+            }
+        }
+    }
+
+    fun loadAppliedJobs() {
+        viewModelScope.launch {
+            try {
+                val favoriteJobs = withContext(Dispatchers.IO) {
+                    jobRepository.getAppliedJobs(getLoggedInUserId()).data
+                }
+
+                _uiState.value = when (val current = _uiState.value) {
+                    is SavedUiState.Success -> current.copy(appliedJobs = favoriteJobs)
+                    else -> SavedUiState.Success(appliedJobs = favoriteJobs)
                 }
             } catch (e: Exception) {
                 _uiState.value = SavedUiState.Error("Error fetching favorite jobs: ${e.message}")

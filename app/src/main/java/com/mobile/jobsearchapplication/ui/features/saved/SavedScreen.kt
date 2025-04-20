@@ -28,10 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.bottomBar.MenuNavBar
 import com.mobile.jobsearchapplication.ui.components.dropdownMenu.MenuGrid
+import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.menuBar.saved.MenuBarSaved
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.ui.features.job.JobItem
@@ -56,6 +58,7 @@ fun SavedScreen(
     LaunchedEffect(Unit) {
         savedVM.loadFavoriteJobs()
         savedVM.loadPostedJobs()
+        savedVM.loadAppliedJobs()
         jobVM.loadFavoriteJobs()
     }
 
@@ -80,12 +83,16 @@ fun SavedScreen(
                     onTabSelected = { tab ->
                         savedVM.onTabChanged(tab)
                         when (tab) {
-                            "favorite_screen" -> {
-                                savedVM.loadFavoriteJobs()
+                            "applied_screen" -> {
+                                savedVM.loadAppliedJobs()
                                 jobVM.loadFavoriteJobs()
                             }
                             "posted_screen" -> {
                                 savedVM.loadPostedJobs()
+                                jobVM.loadFavoriteJobs()
+                            }
+                            "favorite_screen" -> {
+                                savedVM.loadFavoriteJobs()
                                 jobVM.loadFavoriteJobs()
                             }
                         }
@@ -105,7 +112,7 @@ fun SavedScreen(
                 savedUiState.value is SavedUiState.Error -> { (savedUiState.value as SavedUiState.Error).message }
                 savedUiState.value is SavedUiState.Success && jobUiState.value is JobUiState.Success -> {
                     val listItem = when(tabSaved.value) {
-                        "applied_screen" -> emptyList()
+                        "applied_screen" -> (savedUiState.value as SavedUiState.Success).appliedJobs
                         "posted_screen" -> (savedUiState.value as SavedUiState.Success).postedJobs
                         "favorite_screen" -> (savedUiState.value as SavedUiState.Success).favoriteJobs
                         else -> emptyList()
@@ -113,7 +120,11 @@ fun SavedScreen(
 
                     // Kiểm tra danh sách
                     if (listItem.isNullOrEmpty()) {
-                        Text("No data")
+                        EmptyState(
+                            icon = R.drawable.img_empty_state,
+                            message = "Hãy cập nhật thông tin",
+                            onClick = { baseNavController(navController, "home_screen") }
+                        )
                     } else {
                         SectionListSaved(
                             jobs =  listItem,
