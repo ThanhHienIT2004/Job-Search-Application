@@ -41,10 +41,6 @@ class ProfileViewModel: BaseViewModel() {
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState = _profileState.asStateFlow()
 
-    init {
-        getInfoApi()
-    }
-
     fun onIconEdit() {
         _profileState.value = _profileState.value.copy(
             isModeEditor = !_profileState.value.isModeEditor,
@@ -65,8 +61,8 @@ class ProfileViewModel: BaseViewModel() {
     }
 
     // -----------Info State--------------
-    private fun getInfoApi() {
-        CoroutineScope(Dispatchers.Main).launch {
+    fun getInfoApi() {
+        CoroutineScope(Dispatchers.IO).launch {
             val uuid = getLoggedInUserId()
             val response = userRepository.getInfo(uuid)
             if (response.isSuccess) {

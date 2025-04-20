@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.topBar.FilterButton
 
@@ -23,7 +23,7 @@ fun PostFilterScreen(navController: NavController, query: String) {
             BackButton(navController)
         },
         actionsBot = {
-            BottomNavBarCustom(navController)
+            BottomNavBar(navController)
         }
     )
     {

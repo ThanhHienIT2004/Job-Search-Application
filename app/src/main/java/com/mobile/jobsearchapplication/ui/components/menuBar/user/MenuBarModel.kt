@@ -29,7 +29,7 @@ open class MenuItemUser(val icon: ImageVector, val title: String, val route: Str
 
 sealed class MenuItemProfile(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
     data object PersonalInfo: MenuItemProfile(Icons.Filled.PersonPin, "Hồ sơ cá nhân", "profile_screen", {})
-    data object UpdateInfo: MenuItemProfile(Icons.Filled.EditNote,"Cập nhật thông tin")
+    data object UpdateInfo: MenuItemProfile(Icons.Filled.EditNote,"Cập nhật thông tin", "update_profile_screen")
     data object ChangedBusinessAccount: MenuItemProfile(Icons.Filled.BusinessCenter, "Chuyển tài khoản kinh doanh", )
 }
 

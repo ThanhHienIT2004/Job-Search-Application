@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,7 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.bottomBar.MenuNavBar
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.components.dropdownMenu.MenuGrid
 import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.menuBar.saved.MenuBarSaved
@@ -40,6 +39,7 @@ import com.mobile.jobsearchapplication.ui.features.job.JobItem
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
 
 @Composable
@@ -69,7 +69,7 @@ fun SavedScreen(
                 text = "Bài đăng của bạn"
             )
         },
-        actionsBot = { MenuNavBar(navController) }
+        actionsBot = { BottomNavBar(navController) }
     ) { padding ->
         Column (
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -110,6 +110,13 @@ fun SavedScreen(
                 }
                 jobUiState.value is JobUiState.Error -> { (jobUiState.value as JobUiState.Error).message }
                 savedUiState.value is SavedUiState.Error -> { (savedUiState.value as SavedUiState.Error).message }
+                !isUserLoggedIn() -> { // kiểm tra trạng thái đăng nhập
+                    EmptyState(
+                        icon = R.drawable.img_go_log_in,
+                        message = "Hãy đăng nhập để tiếp tục",
+                        onClick = { baseNavController(navController, "auth_screen") }
+                    )
+                }
                 savedUiState.value is SavedUiState.Success && jobUiState.value is JobUiState.Success -> {
                     val listItem = when(tabSaved.value) {
                         "applied_screen" -> (savedUiState.value as SavedUiState.Success).appliedJobs
@@ -118,12 +125,27 @@ fun SavedScreen(
                         else -> emptyList()
                     }
 
-                    // Kiểm tra danh sách
+                    // Kiểm tra danh sách có empty
                     if (listItem.isNullOrEmpty()) {
                         EmptyState(
                             icon = R.drawable.img_empty_state,
-                            message = "Hãy cập nhật thông tin",
-                            onClick = { baseNavController(navController, "home_screen") }
+                            message = when(tabSaved.value) {
+                                "applied_screen" -> "Hãy ứng tuyển cho công việc nào đó"
+                                "posted_screen" -> "Hãy đăng tuyển cho công việc nào đó"
+                                "favorite_screen" -> "Hãy thích công việc nào đó"
+                                else -> ""
+                            },
+                            onClick = {
+                                baseNavController(
+                                    navController,
+                                    route = when (tabSaved.value) {
+                                        "applied_screen" -> "home_screen"
+                                        "posted_screen" -> "post_screen"
+                                        "favorite_screen" -> "home_screen"
+                                        else -> ""
+                                    }
+
+                            ) }
                         )
                     } else {
                         SectionListSaved(
