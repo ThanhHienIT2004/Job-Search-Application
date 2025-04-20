@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils
-import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,15 +65,9 @@ fun ApplicationScreen(
     val pickFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                val fileName = context.contentResolver.openInputStream(uri)?.use { input ->
-                    val tempFile = File.createTempFile("cv", ".pdf", context.cacheDir)
-                    tempFile.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                    tempFile
+                viewModel.handleCvFileSelection(context, uri) { fileName ->
+                    selectedCvFileName = fileName ?: "No file selected"
                 }
-                viewModel.updateCvFile(fileName)
-                selectedCvFileName = fileName?.name ?: "No file selected"
             }
         }
     }
@@ -369,20 +362,11 @@ fun ApplicationScreen(
                 enabled = uiState !is ApplicationState.Loading,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { /* Chuyển focus tới chọn file CV nếu cần */ }
+                    imeAction = ImeAction.Done
                 )
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "File pdf CV",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -390,7 +374,7 @@ fun ApplicationScreen(
                     intent.type = "application/pdf"
                     pickFileLauncher.launch(intent)
                 },
-                modifier = Modifier 
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp),
@@ -411,12 +395,23 @@ fun ApplicationScreen(
                 color = if (selectedCvFileName == "No file selected") Color.Gray else Color.Black
             )
 
+            if (selectedCvFileName == "No file selected") {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Vui lòng chọn file CV",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         // Nút cố định ở dưới cùng
         val buttonAlpha by animateFloatAsState(
-            targetValue = if (formState.coverLetter.isNotBlank() && uiState !is ApplicationState.Loading) 1f else 0.5f
+            targetValue = if (formState.coverLetter.isNotBlank() &&
+                formState.cvFile != null &&
+                uiState !is ApplicationState.Loading) 1f else 0.5f
         )
         Button(
             onClick = { viewModel.submitApplication(jobId) },
@@ -427,7 +422,9 @@ fun ApplicationScreen(
                 .alpha(buttonAlpha),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
             shape = RoundedCornerShape(12.dp),
-            enabled = uiState !is ApplicationState.Loading && formState.coverLetter.isNotBlank()
+            enabled = uiState !is ApplicationState.Loading &&
+                    formState.coverLetter.isNotBlank() &&
+                    formState.cvFile != null
         ) {
             if (uiState is ApplicationState.Loading) {
                 CircularProgressIndicator(
