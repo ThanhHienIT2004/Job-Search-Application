@@ -48,17 +48,17 @@ class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel
 
                 // Lọc công việc
                 val filteredJobs = jobs.filter { job ->
-                    val matchesUserId = userId == null || job.postedBy?.toString() == userId
+                    val matchesUserId = userId == null || job.postedBy.toString() == userId
                     val matchesQuery = if (keywords.isEmpty()) {
                         true // Nếu không có từ khóa, trả về tất cả
                     } else if (isFullSearch) {
                         // Tìm kiếm đầy đủ: khớp tất cả từ khóa
                         keywords.all { keyword ->
-                            job.title?.contains(keyword, ignoreCase = true) ?: false
+                            job.title.contains(keyword, ignoreCase = true) ?: false
                         }
                     } else {
                         // Tìm kiếm tức thời: khớp với query nguyên văn
-                        job.title?.contains(query.trim(), ignoreCase = true) ?: false
+                        job.title.contains(query.trim(), ignoreCase = true) ?: false
                     }
                     matchesUserId && matchesQuery
                 }

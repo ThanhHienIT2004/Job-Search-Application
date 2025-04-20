@@ -14,7 +14,7 @@ object RetrofitClient {
 //        "http://192.168.1.35:8080/"
 //        "http://192.168.112.102:8080/"
 //        "http://192.168.2.193:8080/"
-        "http:// 192.168.112.103:8080/"
+        "http://192.168.112.103:8080/"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()

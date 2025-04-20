@@ -1,6 +1,8 @@
 package com.mobile.jobsearchapplication.ui.features.post
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +45,7 @@ import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.textField.post.DropdownMenuField
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     val context = LocalContext.current
