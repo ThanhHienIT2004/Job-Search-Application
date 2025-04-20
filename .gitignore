@@ -21,3 +21,4 @@ app/daemon/
 app/kotlin-profile/
 app/android/FakeDependency.jar
 app/.tmp/
+app/native/
