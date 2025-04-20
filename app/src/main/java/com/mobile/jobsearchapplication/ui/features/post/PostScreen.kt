@@ -43,7 +43,7 @@ import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
+            BackButton(navController, "home_screen")
 
             TitleTopBar(
                 text = "Đăng tin tuyển dụng",

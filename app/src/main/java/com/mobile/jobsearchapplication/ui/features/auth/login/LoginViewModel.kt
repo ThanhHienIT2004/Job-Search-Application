@@ -3,7 +3,7 @@ package com.mobile.jobsearchapplication.ui.features.auth.login
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldModel
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldModel
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId

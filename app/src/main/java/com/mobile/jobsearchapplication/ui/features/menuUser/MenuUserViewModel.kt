@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.features.user
+package com.mobile.jobsearchapplication.ui.features.menuUser
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

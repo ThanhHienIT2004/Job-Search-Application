@@ -90,7 +90,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
 
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
+            BackButton(navController, "home_screen")
             Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
 
             IconButton(onClick = { /* tim */ }) {

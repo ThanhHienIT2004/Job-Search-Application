@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.components.textField.auth
+package com.mobile.jobsearchapplication.ui.components.textField.account
 
 data class TextFieldModel(
     var value: String = "",

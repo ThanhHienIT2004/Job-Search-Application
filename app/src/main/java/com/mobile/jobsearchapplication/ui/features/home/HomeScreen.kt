@@ -40,8 +40,6 @@ fun HomeScreen(
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
-//                .background(Color(0xFFF9FAFC)),
-            contentPadding = PaddingValues(12.dp),
         ) {
             item {
                 // Danh mục việc làm
