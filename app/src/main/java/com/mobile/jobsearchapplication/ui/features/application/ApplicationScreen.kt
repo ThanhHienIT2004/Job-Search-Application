@@ -1,5 +1,8 @@
 package com.mobile.jobsearchapplication.ui.features.application
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -26,6 +29,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,7 +44,7 @@ import com.mobile.jobsearchapplication.utils.FireBaseUtils
 fun ApplicationScreen(
     jobId: String,
     onClose: () -> Unit,
-    onExpand: (Boolean) -> Unit = {} // Callback để mở rộng ModalBottomSheet
+    onExpand: (Boolean) -> Unit = {}
 ) {
     val viewModel: ApplicationViewModel = viewModel()
     val infoProfileState by viewModel.infoProfileState.collectAsState()
@@ -54,6 +58,19 @@ fun ApplicationScreen(
 
     // Theo dõi trạng thái focus để mở rộng
     var isTextFieldFocused by remember { mutableStateOf(false) }
+
+    // Chọn file PDF
+    var selectedCvFileName by remember { mutableStateOf("No file selected") }
+    val context = LocalContext.current
+    val pickFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                viewModel.handleCvFileSelection(context, uri) { fileName ->
+                    selectedCvFileName = fileName ?: "No file selected"
+                }
+            }
+        }
+    }
 
     // Hiển thị dialog kết quả
     when (uiState) {
@@ -209,7 +226,7 @@ fun ApplicationScreen(
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 100.dp) // Tăng padding để nút không che nội dung
+                .padding(bottom = 100.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -286,11 +303,11 @@ fun ApplicationScreen(
                 onValueChange = { viewModel.updateCoverLetter(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp) // Tăng chiều cao
+                    .height(150.dp)
                     .focusRequester(coverLetterFocusRequester)
                     .onFocusChanged { focusState ->
                         isTextFieldFocused = focusState.isFocused
-                        onExpand(isTextFieldFocused) // Mở rộng full màn hình
+                        onExpand(isTextFieldFocused)
                     },
                 label = { Text("Viết lời nhắn gửi đến nhà tuyển dụng") },
                 placeholder = { Text("Ví dụ: Tôi rất quan tâm đến vị trí này...") },
@@ -346,18 +363,55 @@ fun ApplicationScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { viewModel.submitApplication(jobId) }
                 )
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "application/pdf"
+                    pickFileLauncher.launch(intent)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                enabled = uiState !is ApplicationState.Loading
+            ) {
+                Text(
+                    text = "Chọn file CV",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = selectedCvFileName,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (selectedCvFileName == "No file selected") Color.Gray else Color.Black
+            )
+
+            if (selectedCvFileName == "No file selected") {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Vui lòng chọn file CV",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         // Nút cố định ở dưới cùng
         val buttonAlpha by animateFloatAsState(
-            targetValue = if (formState.coverLetter.isNotBlank() && uiState !is ApplicationState.Loading) 1f else 0.5f
+            targetValue = if (formState.coverLetter.isNotBlank() &&
+                formState.cvFile != null &&
+                uiState !is ApplicationState.Loading) 1f else 0.5f
         )
         Button(
             onClick = { viewModel.submitApplication(jobId) },
@@ -368,7 +422,9 @@ fun ApplicationScreen(
                 .alpha(buttonAlpha),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
             shape = RoundedCornerShape(12.dp),
-            enabled = uiState !is ApplicationState.Loading && formState.coverLetter.isNotBlank()
+            enabled = uiState !is ApplicationState.Loading &&
+                    formState.coverLetter.isNotBlank() &&
+                    formState.cvFile != null
         ) {
             if (uiState is ApplicationState.Loading) {
                 CircularProgressIndicator(

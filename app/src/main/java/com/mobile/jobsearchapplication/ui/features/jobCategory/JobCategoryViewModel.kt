@@ -21,13 +21,8 @@ class JobCategoryViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<JobCategoryUiState>(JobCategoryUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    init {
-        loadJobCategories()
-    }
-
-    private fun loadJobCategories() {
+    fun loadJobCategories() {
         viewModelScope.launch {
-            _uiState.value = JobCategoryUiState.Loading
             try {
                 val response = jobCategoryRepository.getAllJobCategories("1", "20")
                 if (response.message == "Success" && response.data?.data != null) {

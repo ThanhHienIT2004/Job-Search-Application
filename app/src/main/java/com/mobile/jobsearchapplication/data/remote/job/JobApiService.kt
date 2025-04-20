@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.data.remote.job
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.model.job.JobByCategory
@@ -24,6 +25,21 @@ interface JobApiService {
     suspend fun getJobsByCategory(
         @Query("categoryId") categoryId: String
     ): JobByCategory
+
+    @GET("jobs/getFavoriteJobs")
+    suspend fun getFavoriteJobs(
+        @Query("userId") userId: String
+    ): BaseResponse<List<Job>>
+
+    @GET("jobs/getPostedJobs")
+    suspend fun getPostedJobs(
+        @Query("userId") userId: String
+    ): BaseResponse<List<Job>>
+
+    @GET("jobs/getById/{id}")
+    suspend fun getAppliedJobs(
+        @Path("id") userId: String
+    ): BaseResponse<List<Job>>
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: UUID): ApiResponse<User>

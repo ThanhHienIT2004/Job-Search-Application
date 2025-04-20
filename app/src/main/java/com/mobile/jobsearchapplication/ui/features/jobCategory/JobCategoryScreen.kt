@@ -50,7 +50,6 @@ fun SectionJobCategory(
     Text(
         "Danh mục việc làm",
         fontSize = 24.sp, fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp, 8.dp)
     )
      when (jobCategoryUiState) {
          is JobCategoryUiState.Loading -> {
@@ -70,7 +69,6 @@ fun SectionJobCategory(
              val categories = (jobCategoryUiState as JobCategoryUiState.Success).jobCategories
 
              LazyRow(
-                 contentPadding = PaddingValues(horizontal = 16.dp),
                  horizontalArrangement = Arrangement.spacedBy(12.dp)
              ) {
                  items(categories) { category ->

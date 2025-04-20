@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextFieldCustom(
     modifier: Modifier = Modifier,
+    isNumeric: Boolean = false,
     model: TextFieldModel
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -76,7 +78,8 @@ fun TextFieldCustom(
             )
         },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = if(!model.isImeActionDone) ImeAction.Next else  ImeAction.Done
+            imeAction = if(!model.isImeActionDone) ImeAction.Next else  ImeAction.Done,
+            keyboardType = if (isNumeric) KeyboardType.Number else KeyboardType.Text
         ),
         keyboardActions = if(!model.isImeActionDone) {
             KeyboardActions(

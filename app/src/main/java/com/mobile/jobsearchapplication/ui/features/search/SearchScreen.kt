@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.features.job.JobItem
+import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.utils.dataStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,12 +34,17 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
     val viewModel: SearchViewModel = viewModel(
         factory = SearchViewModelFactory(context.dataStore)
     )
+    val jobVM: JobViewModel = viewModel()
     var query by rememberSaveable { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     val uiState by viewModel.uiState.collectAsState()
     val searchHistory by viewModel.searchHistory.collectAsState()
+
+    LaunchedEffect(Unit) {
+        jobVM.loadFavoriteJobs()
+    }
 
     Column(
         modifier = Modifier
@@ -161,6 +167,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                                     .padding(horizontal = 8.dp)
                             ) {
                                 JobItem(
+                                    jobVM = jobVM,
                                     job = job,
                                     onClick = {
                                         job.id.let {

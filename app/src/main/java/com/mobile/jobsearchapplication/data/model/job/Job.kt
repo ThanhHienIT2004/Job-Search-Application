@@ -27,6 +27,6 @@ data class Job(
 )
 
 data class JobDetailResponse<T>(
-    val data: Job, // Chỉ là một Job, không phải PaginatedData
+    val data: Job?, // Chỉ là một Job, không phải PaginatedData
     val message: String
 )

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 
 @Composable
 fun MenuBarUser(
@@ -42,7 +43,7 @@ fun MainMenuItemUser() {
                 }
                 .then(
                     if (item == menuBarState.onMainMenuBar)
-                        Modifier.border(1.dp, Color.Black, CircleShape)
+                        Modifier.border(1.dp, Color.Gray, CircleShape)
                     else
                         Modifier
                 ),
@@ -72,10 +73,15 @@ fun MenuItemUser(
                 .padding(12.dp, 8.dp)
                 .clickable {
                     if (item.action != null) { item.action.invoke() }
-                    if (item.route != null) { navController.navigate(item.route) }
+                    if (item.route != null) { navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                    } }
                 },
             colors = CardDefaults.cardColors(Color.White),
-            elevation = CardDefaults.elevatedCardElevation()
+            elevation = CardDefaults.elevatedCardElevation(10.dp)
         ) {
             Row(
                 modifier = Modifier.padding(12.dp, 18.dp),

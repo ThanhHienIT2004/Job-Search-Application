@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.job
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,13 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,9 +43,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.job.Job
+import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
 @Composable
 fun SectionListJob(
@@ -51,20 +58,21 @@ fun SectionListJob(
     val jobsState by jobVM.uiState.collectAsState()
     val jobCategoryUiState by jobCategoryVM.uiState.collectAsState()
 
-    when (jobsState) {
-        is JobUiState.Loading -> {
+    when {
+        jobsState is JobUiState.Loading || jobCategoryUiState is JobCategoryUiState.Loading -> {
             SectionJobSkeleton()
         }
-        is JobUiState.Success -> {
+        jobsState is JobUiState.Success && jobCategoryUiState is JobCategoryUiState.Success -> {
             val categories = (jobCategoryUiState as JobCategoryUiState.Success).jobCategories
             val jobsByCategory = (jobsState as JobUiState.Success).jobByCategory
 
             categories.forEachIndexed { index, category ->
+                if (index > 4) return
                 Text(
                     text = category.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(16.dp, top = 20.dp)
+                    modifier = Modifier.padding(top = 16.dp)
                 )
 
                 jobsByCategory?.let {
@@ -76,9 +84,17 @@ fun SectionListJob(
                 }
             }
         }
-        is JobUiState.Error -> {
+        jobsState is JobUiState.Error -> {
             Text(
                 text = (jobsState as JobUiState.Error).message,
+                fontSize = 14.sp,
+                color = Color.Red,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+        jobCategoryUiState is JobCategoryUiState.Error -> {
+            Text(
+                text = (jobCategoryUiState as JobCategoryUiState.Error).message,
                 fontSize = 14.sp,
                 color = Color.Red,
                 modifier = Modifier.padding(16.dp)
@@ -89,7 +105,7 @@ fun SectionListJob(
 
 @Composable
 fun RecommendedJobsList(
-    jobVM: JobViewModel?,
+    jobVM: JobViewModel,
     jobs: List<Job>,
     navController: NavController,
     modifier: Modifier = Modifier
@@ -97,7 +113,6 @@ fun RecommendedJobsList(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
     ) {
         if (jobs.isEmpty()) {
             Text(
@@ -114,10 +129,11 @@ fun RecommendedJobsList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                contentPadding = PaddingValues(horizontal = 40.dp),
-                pageSpacing = 16.dp
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                pageSpacing = 16.dp,
             ) { page ->
                 JobItem(
+                    jobVM,
                     job = jobs[page],
                     onClick = {
                         navController.navigate("job_detail_screen/${jobs[page].id}")
@@ -132,12 +148,17 @@ fun RecommendedJobsList(
 
 @Composable
 fun JobItem(
+    jobVM: JobViewModel,
     job: Job,
     onClick: () -> Unit,
+    isEnableIcon: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    val jobVM: JobViewModel = viewModel()
-    var isFavorite by remember { mutableStateOf(jobVM.checkIsFavorite(jobId = job.id)) }
+    val jobUiState by jobVM.uiState.collectAsState()
+    var isFavorite = rememberSaveable(jobUiState, job.id) {
+        (jobUiState as JobUiState.Success).favoriteJobs?.contains(job.id) == true
+    }
+    val context = LocalContext.current
 
     Card(
         modifier = modifier
@@ -190,18 +211,23 @@ fun JobItem(
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     )
                 }
-
-                Icon(
-                    imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(32.dp)
-                        .clickable {
-                            isFavorite = !isFavorite
-                            jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
-                        },
-                    tint = if (isFavorite) Color.Red else Color.Gray,
-                )
+                if (isEnableIcon) {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
+                        modifier = Modifier
+                            .weight(1f)
+                            .size(32.dp)
+                            .clickable {
+                                if (!isUserLoggedIn()) {
+                                    Toast.makeText(context, "Vui lòng đăng nhập để sử dụng", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    isFavorite = !isFavorite
+                                    jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
+                                }
+                            },
+                        tint = if (isFavorite) Color.Red else Color.Gray,
+                    )
+                }
             }
         }
     }

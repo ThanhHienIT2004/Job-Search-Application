@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 import kotlinx.coroutines.delay
@@ -99,7 +99,7 @@ fun NotificationScreen(
         },
         actionsBot = {
             Box {
-                BottomNavBarCustom(navController = navController)
+                BottomNavBar(navController = navController)
                 if (notiState.unReadCount > 0) {
                     BadgedBox(
                         badge = {
