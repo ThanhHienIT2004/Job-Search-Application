@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseScreen(
     actionsTop: @Composable (RowScope.() -> Unit)? = null,
@@ -24,12 +25,9 @@ fun BaseScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
-                        .height(72.dp)
-                        .background(brush = Brush.linearGradient(
-                            colors = listOf(LightBlue, LightPurple)
-                        ))
-                        .offset(y = 16.dp)
-                    ,
+                        .height(80.dp)
+                        .background(Color(0xFF4A5BCB))
+                        .offset(y = 12.dp),
                 ) {
                     it()
                 }
@@ -39,7 +37,7 @@ fun BaseScreen(
             actionsBot?.let {
                 Row(
                     modifier = Modifier.fillMaxWidth()
-                        .height(80.dp)
+                        .height(64.dp)
                         .background(Color.Transparent)
                     ,
                     horizontalArrangement = Arrangement.SpaceAround,
@@ -49,7 +47,7 @@ fun BaseScreen(
                 }
             }
         }
-    ) { padding ->
-        content(padding)
+    ) { paddingValues ->
+        content(paddingValues)
     }
 }

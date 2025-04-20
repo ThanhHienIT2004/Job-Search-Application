@@ -29,14 +29,14 @@ open class MenuItemUser(val icon: ImageVector, val title: String, val route: Str
 
 sealed class MenuItemProfile(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
     data object PersonalInfo: MenuItemProfile(Icons.Filled.PersonPin, "Hồ sơ cá nhân", "profile_screen", {})
-    data object UpdateInfo: MenuItemProfile(Icons.Filled.EditNote,"Cập nhật thông tin")
+    data object UpdateInfo: MenuItemProfile(Icons.Filled.EditNote,"Cập nhật thông tin", "update_profile_screen")
     data object ChangedBusinessAccount: MenuItemProfile(Icons.Filled.BusinessCenter, "Chuyển tài khoản kinh doanh", )
 }
 
 sealed class MenuItemPosts(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
     data object PublishedPosts: MenuItemPosts(Icons.Filled.HistoryEdu, "Tuyển dụng đã đăng", "posted_screen")
     data object Favorites: MenuItemPosts(Icons.Filled.FavoriteBorder, "Bài đăng yêu thích", "favorite_screen")
-    data object AppliedJobs: MenuItemPosts(Icons.Filled.ModeComment, "Công việc đã ứng tuyển", )
+    data object AppliedJobs: MenuItemPosts(Icons.Filled.ModeComment, "Công việc đã ứng tuyển", "applied_screen")
 }
 
 sealed class MenuItemSettings(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {

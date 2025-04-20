@@ -16,6 +16,7 @@ sealed class SavedUiState{
     data object Loading: SavedUiState()
 
     data class Success(
+        val appliedJobs: List<Job>? = emptyList(),
         val postedJobs: List<Job>? = emptyList(),
         val favoriteJobs: List<Job>? = emptyList()
     ): SavedUiState()
@@ -27,30 +28,27 @@ class SavedViewModel : BaseViewModel() {
     private val _uiState = MutableStateFlow<SavedUiState>(SavedUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val userRepository = UserRepository()
+    private val _currentTab = MutableStateFlow<String>("")
+    val currentTab = _currentTab.asStateFlow()
+
     private val jobRepository = JobRepository()
 
-    init {
-        loadPostedJobs()
-        loadFavoriteJobs()
+    fun onTabChanged(tab: String) {
+        _currentTab.value = tab
     }
 
     fun loadPostedJobs() {
         viewModelScope.launch {
-            _uiState.value = SavedUiState.Loading
             try {
                 val response = withContext(Dispatchers.IO) {
                     jobRepository.getPostedJobs(getLoggedInUserId())
                 }
 
-                if (response.isSuccess) {
-                    _uiState.value = when (val currentState = _uiState.value) {
-                        is SavedUiState.Success -> currentState.copy(postedJobs = response.data)
-                        else -> SavedUiState.Success(postedJobs = response.data)
-                    }
-                } else {
-                    _uiState.value = SavedUiState.Error(message = response.message)
+                _uiState.value = when (val currentState = _uiState.value) {
+                    is SavedUiState.Success -> currentState.copy(postedJobs = response.data)
+                    else -> SavedUiState.Success(postedJobs = response.data)
                 }
+
             } catch (e: Exception) {
                 _uiState.value = SavedUiState.Error("Error fetching posted: ${e.message}")
             }
@@ -59,23 +57,31 @@ class SavedViewModel : BaseViewModel() {
 
     fun loadFavoriteJobs() {
         viewModelScope.launch {
-            _uiState.value = SavedUiState.Loading
             try {
                 val favoriteJobs = withContext(Dispatchers.IO) {
-                    val favoriteIds = userRepository.getInfo(getLoggedInUserId())
-                        .data?.favoritePosts
-                        ?.split(",")
-                        ?.map { it.trim() }
-                        ?.filter { it.isNotBlank() } ?: emptyList()
-
-                    favoriteIds.mapNotNull {
-                        jobRepository.getJobDetail(it).data
-                    }
+                    jobRepository.getFavoriteJobs(getLoggedInUserId()).data
                 }
 
                 _uiState.value = when (val current = _uiState.value) {
                     is SavedUiState.Success -> current.copy(favoriteJobs = favoriteJobs)
                     else -> SavedUiState.Success(favoriteJobs = favoriteJobs)
+                }
+            } catch (e: Exception) {
+                _uiState.value = SavedUiState.Error("Error fetching favorite jobs: ${e.message}")
+            }
+        }
+    }
+
+    fun loadAppliedJobs() {
+        viewModelScope.launch {
+            try {
+                val favoriteJobs = withContext(Dispatchers.IO) {
+                    jobRepository.getAppliedJobs(getLoggedInUserId()).data
+                }
+
+                _uiState.value = when (val current = _uiState.value) {
+                    is SavedUiState.Success -> current.copy(appliedJobs = favoriteJobs)
+                    else -> SavedUiState.Success(appliedJobs = favoriteJobs)
                 }
             } catch (e: Exception) {
                 _uiState.value = SavedUiState.Error("Error fetching favorite jobs: ${e.message}")

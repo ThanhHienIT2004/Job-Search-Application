@@ -26,9 +26,19 @@ interface JobApiService {
         @Query("categoryId") categoryId: String
     ): JobByCategory
 
+    @GET("jobs/getFavoriteJobs")
+    suspend fun getFavoriteJobs(
+        @Query("userId") userId: String
+    ): BaseResponse<List<Job>>
+
     @GET("jobs/getPostedJobs")
     suspend fun getPostedJobs(
         @Query("userId") userId: String
+    ): BaseResponse<List<Job>>
+
+    @GET("jobs/getById/{id}")
+    suspend fun getAppliedJobs(
+        @Path("id") userId: String
     ): BaseResponse<List<Job>>
 
     @GET("users/{id}")

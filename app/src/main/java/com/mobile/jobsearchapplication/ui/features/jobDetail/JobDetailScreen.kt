@@ -296,11 +296,7 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                         )
                     }
                     item {
-                        Text(
-                            text = job.title,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+
                     }
                     item {
                         Row(
@@ -567,7 +563,7 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                             is JobUiState.Success -> {
                                 uiState.jobs?.let {
                                     RecommendedJobsList(
-                                        null,
+                                        jobVM = jobViewModel,
                                         jobs = it,
                                         navController = navController
                                     )

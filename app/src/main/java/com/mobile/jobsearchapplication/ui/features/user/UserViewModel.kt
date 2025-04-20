@@ -11,16 +11,25 @@ import kotlinx.coroutines.launch
 
 data class UserState(
     val isLoggedIn: Boolean = isUserLoggedIn(),
-    val email: String = if(isLoggedIn) getCurrentUserEmail() else "Đăng nhập / Đăng ký"
+    val email: String = ""
 )
 
 class UserViewModel : ViewModel() {
     private val _userState = MutableStateFlow(UserState())
     val  userState = _userState.asStateFlow()
 
+    fun loadUserState() {
+        _userState.value = UserState(isUserLoggedIn(), getEmail())
+    }
+
+    private fun getEmail(): String {
+        return if(isUserLoggedIn()) getCurrentUserEmail() else "☛ Đăng nhập / Đăng ký"
+    }
+
     fun singOut() {
         viewModelScope.launch {
             FirebaseAuth.getInstance().signOut()
+            _userState.value = _userState.value.copy(isLoggedIn = false)
         }
     }
 }

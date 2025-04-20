@@ -57,7 +57,7 @@ fun RegisterScreen(
 
         registerVM.listTextFieldRegister.forEach {
             TextFieldCustom(
-                Modifier.padding(top = 10.dp), it
+                Modifier.padding(top = 10.dp), model = it
             )
         }
 

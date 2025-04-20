@@ -1,90 +1,95 @@
-@file:JvmName("BottomNavBarKt")
-
 package com.mobile.jobsearchapplication.ui.components.bottomBar
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.mobile.jobsearchapplication.ui.theme.LightBlue
+import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 
-// Định nghĩa các màn hình
 sealed class Screen(val route: String, val icon: ImageVector) {
-    object Home : Screen("home_screen", Icons.Filled.Home)
-    object PostedJob : Screen("posted_screen", Icons.Filled.Article)
-    object PostJob : Screen("post_screen", Icons.Filled.AddCircle)
-    object Notifications : Screen("notificationsState", Icons.Filled.Notifications)
-    object Account : Screen("account", Icons.Filled.AccountCircle)
+    data object Home : Screen("home_screen", Icons.Filled.Home)
+    data object PostedJob : Screen("applied_screen", Icons.Filled.Article)
+    data object PostJob : Screen("post_screen", Icons.Filled.AddCircle)
+    data object Account : Screen("account", Icons.Filled.AccountCircle)
 }
 
 val bottomNavItems = listOf(
     Screen.Home,
     Screen.PostedJob,
     Screen.PostJob,
-    Screen.Notifications,
     Screen.Account
 )
 
 @Composable
-fun BottomNavBarCustom(
+fun BottomNavBar(
     navController: NavController,
     modifier: Modifier = Modifier
-) {
+){
     val currRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-    Surface(
-        color = LightBlue,
-        shape = RoundedCornerShape(32.dp),
+    val selectedIndex = bottomNavItems.indexOfFirst { it.route == currRoute }.coerceAtLeast(0)
+
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .shadow(50.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Transparent),
-            horizontalArrangement = Arrangement.SpaceEvenly, // Căn đều các icon
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            bottomNavItems.forEach { screen ->
-                if (screen.route == currRoute) {
-                    CurrIconBottomNav(screen.route, screen.icon, navController)
-                } else {
-                    IconBottomNav(screen.route, screen.icon, navController)
+        Row{
+            bottomNavItems.forEachIndexed { index, item ->
+                if (selectedIndex+1 == index) {
+                    Box(Modifier.weight(1f)) {
+                        ItemNavBarDefault(
+                            item = item,
+                            modifier = Modifier.fillMaxWidth()
+                                .clickable {
+                                    baseNavController(navController, item.route)
+                                }
+                        )
+                        ShapeArrowRight(Modifier.align(Alignment.TopStart))
+                    }
+                } else if (selectedIndex>0 && selectedIndex-1 == index) {
+                    Box(Modifier.weight(1f)) {
+                        ItemNavBarDefault(
+                            item = item,
+                            modifier = Modifier.fillMaxWidth()
+                                .clickable {
+                                    baseNavController(navController, item.route)
+                                }
+                        )
+                        ShapeArrowLeft(Modifier.align(Alignment.BottomEnd))
+                    }
+                }
+                else {
+                    ItemNavBarDefault(
+                        item = item,
+                        modifier = Modifier.weight(1f)
+                            .clickable {
+                                baseNavController(navController, item.route)
+                            }
+                    )
                 }
             }
         }
@@ -92,89 +97,81 @@ fun BottomNavBarCustom(
 }
 
 @Composable
-fun IconBottomNav(
-    route: String,
-    icon: ImageVector,
-    navController: NavController
+fun ItemNavBarDefault(
+    item: Screen,
+    modifier: Modifier = Modifier
 ) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 1.2f else 1f,
-        animationSpec = tween(200),
-        label = "scaleAnimation"
-    )
-
-    Box(
-        modifier = Modifier
-            .size(48.dp)
-            .clip(CircleShape)
-            .scale(scale)
-            .background(Color.Transparent)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                        tryAwaitRelease()
-                        isPressed = false
-                    }
-                )
-            }
+    Box (
+        modifier = modifier.height(54.dp).padding(horizontal = 2.dp)
+            .background(Color(0xFF2C2F2F), RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
     ) {
-        IconButton(
-            onClick = {
-                isPressed = true
-                navController.navigate(route) {
-                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
+        Box(
             modifier = Modifier.size(48.dp)
+                .background(Color(0xFFF8F7F7), CircleShape),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = icon,
-                contentDescription = route,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                imageVector = item.icon, contentDescription = "",
+                modifier = Modifier.size(42.dp), tint = Color(0xFF2C2F2F)
             )
         }
     }
 }
 
-
 @Composable
-fun CurrIconBottomNav(
-    route: String,
-    icon: ImageVector,
-    navController: NavController
+fun ShapeArrowRight(
+    modifier: Modifier = Modifier
 ) {
-    val scale by animateFloatAsState(
-        targetValue = 1.2f, // Phóng to khi chọn
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "scaleAnimation"
-    )
-
     Box(
-        modifier = Modifier
-            .size(50.dp) // Kích thước tăng nhẹ để tạo điểm nhấn
-            .clip(CircleShape)
-            .background(Color.White) // Làm nổi bật icon được chọn
-            .scale(scale),
-        contentAlignment = Alignment.Center
+        modifier = modifier,
+        contentAlignment = Alignment.CenterStart
     ) {
-        IconButton(
-            onClick = {
-                navController.navigate(route) {
-                    restoreState = true
-                }
-            },
-            modifier = Modifier.size(40.dp)
+        Card(
+            modifier = Modifier.width(26.dp).height(24.dp)
+                .offset(x = (-2).dp, y = (-5).dp),
+            shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
+            colors = CardDefaults.cardColors(Color.White)
+        ) { }
+        Card(
+            modifier = Modifier.width(38.dp).height(16.dp)
+                .offset(x = (-18).dp)
+                .align(Alignment.TopStart),
+            shape = RoundedCornerShape(0.dp, 20.dp, 20.dp, 0.dp),
+            colors = CardDefaults.cardColors(Color(0xFF2C2F2F))
         ) {
             Icon(
-                imageVector = icon,
-                contentDescription = route,
-                tint = LightBlue,
-                modifier = Modifier.size(28.dp) // Tăng nhẹ icon để tạo sự khác biệt
+                imageVector = Icons.Filled.ArrowForwardIos, contentDescription = "",
+                modifier = Modifier.size(32.dp).offset(x = 10.dp), tint = Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun ShapeArrowLeft(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Card(
+            modifier = Modifier.width(24.dp).height(24.dp)
+                .offset(x = 12.dp, y = 4.dp),
+            shape = RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp),
+            colors = CardDefaults.cardColors(Color.White)
+        ) { }
+        Card(
+            modifier = Modifier.width(34.dp).height(16.dp)
+                .offset(x = 16.dp, y = 8.dp)
+                .align(Alignment.TopStart),
+            shape = RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp),
+            colors = CardDefaults.cardColors(Color(0xFF2C2F2F))
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "",
+                modifier = Modifier.size(32.dp).offset(x = (-5).dp), tint = Color.White
             )
         }
     }

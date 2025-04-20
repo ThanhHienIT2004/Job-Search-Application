@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -12,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,10 +25,12 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.play.integrity.internal.f
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBarCustom
+import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.components.menuBar.user.MenuBarUser
+import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
 
 @Composable
@@ -33,21 +38,31 @@ fun UserScreen(
     navController: NavController,
     viewModel: UserViewModel = viewModel()
 ) {
+    val userState by viewModel.userState.collectAsState()
+
+    LaunchedEffect(userState) {
+        viewModel.loadUserState()
+    }
+
     BaseScreen(
+        actionsTop = {
+            TitleTopBar(text = "Menu", modifier = Modifier.padding(start = 32.dp))
+        },
         actionsBot = {
-            BottomNavBarCustom(navController)
+            BottomNavBar(navController)
         }
     ) { padding ->
         Box(
             modifier = Modifier.padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFB6C3E3))
+                .background(Color(0xFFD5D9E0))
         ) {
-            TopUserScreen(navController)
+            TopUserScreen(viewModel, navController)
 
             CenterUserScreen(
                 navController,
                 Modifier.align(Alignment.TopCenter)
+                    .offset(y = (DeviceSizeUtils.deviceHeight().dp / 7.5f))
             )
 
             BottomUserScreen(
@@ -60,42 +75,51 @@ fun UserScreen(
 
 @Composable
 fun TopUserScreen(
+    viewModel: UserViewModel,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val viewModel = viewModel<UserViewModel>()
     val context = LocalContext.current
     val userState by viewModel.userState.collectAsState()
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.23f)
-            .zIndex(0f)
+            .fillMaxHeight(0.19f)
             .clip(RoundedCornerShape(0.dp, 0.dp, 32.dp, 32.dp)),
         color = Color(0xFF4A5BCB),
     ) {
+        HorizontalDivider()
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 16.dp),
+            verticalAlignment = Alignment.Top
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_profile),
                 contentDescription = "Avatar",
-                modifier = Modifier
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(Color.White),
+                modifier = Modifier.weight(1f)
                     .padding(10.dp, 0.dp)
                     .size(70.dp),
+
             )
 
-            Column {
+            Column(
+                modifier = Modifier.weight(4f)
+            ) {
+                Spacer(Modifier.height(5.dp))
                 Text(
-                    text =  userState.email,
+                    text = userState.email,
                     if (!userState.isLoggedIn) {
-                        Modifier.clickable { navController.navigate("auth_screen") }
+                        Modifier.clickable {
+                            navController.navigate("auth_screen")
+                        }
                     }else { modifier },
-                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp, fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(10.dp))
                 Text("Super Quang",
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -111,10 +135,8 @@ fun CenterUserScreen(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth(0.8f)
-            .fillMaxHeight(0.07f)
-            .offset(y = (DeviceSizeUtils.deviceHeight().dp / 5f))
+        modifier = modifier.fillMaxWidth(0.8f)
+            .fillMaxHeight(0.085f)
             .zIndex(1f)
             .clip(RoundedCornerShape(32.dp)),
         color = Color(0xFFF6F9FC)
@@ -137,7 +159,7 @@ fun BottomUserScreen(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.75f)
+            .fillMaxHeight(0.78f)
             .clip(RoundedCornerShape(32.dp, 32.dp, 0.dp, 0.dp)),
         color = Color(0xFFE9ECF8)
     ) {
@@ -150,10 +172,4 @@ fun BottomUserScreen(
             MenuBarUser(false, navController)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PrevUser() {
-    UserScreen(navController = rememberNavController())
 }

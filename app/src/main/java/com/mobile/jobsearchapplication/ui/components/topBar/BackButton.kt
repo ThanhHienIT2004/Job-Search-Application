@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
 
 @Composable
 fun BackButton(
@@ -24,6 +25,7 @@ fun BackButton(
             .padding(start = 10.dp)
             .size(32.dp)
             .clickable { navController.popBackStack() },
+
         tint = Color.White
      )
 }
