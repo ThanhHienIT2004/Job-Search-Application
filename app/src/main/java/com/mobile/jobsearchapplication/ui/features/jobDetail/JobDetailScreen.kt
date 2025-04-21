@@ -42,9 +42,10 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
 
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /* Favorite */ }) {
+            BackButton(navController, "home_screen")
+            Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
+
+            IconButton(onClick = { /* tim */ }) {
                 Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.White)
             }
             IconButton(onClick = { /* Share */ }) {

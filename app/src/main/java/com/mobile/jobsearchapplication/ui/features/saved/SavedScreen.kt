@@ -34,6 +34,7 @@ import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.components.dropdownMenu.MenuGrid
 import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.menuBar.saved.MenuBarSaved
+import com.mobile.jobsearchapplication.ui.components.skeleton.JobItemSkeleton
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.ui.features.job.JobItem
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
@@ -83,7 +84,7 @@ fun SavedScreen(
                     onTabSelected = { tab ->
                         savedVM.onTabChanged(tab)
                         when (tab) {
-                            "applied_screen" -> {
+                            "applied_screen" -> {                                jobVM.loadFavoriteJobs()
                                 savedVM.loadAppliedJobs()
                                 jobVM.loadFavoriteJobs()
                             }
@@ -106,7 +107,7 @@ fun SavedScreen(
 
             when{
                 savedUiState.value is SavedUiState.Loading || jobUiState.value is JobUiState.Loading -> {
-                    Text("This is loading")
+                    JobItemSkeleton()
                 }
                 jobUiState.value is JobUiState.Error -> { (jobUiState.value as JobUiState.Error).message }
                 savedUiState.value is SavedUiState.Error -> { (savedUiState.value as SavedUiState.Error).message }
@@ -152,7 +153,8 @@ fun SavedScreen(
                             jobs =  listItem,
                             jobVM = jobVM,
                             navController = navController,
-                            columnCount = columnCount
+                            columnCount = columnCount,
+                            modifier = Modifier
                         )
                     }
                 }
@@ -172,8 +174,8 @@ fun SectionListSaved(
     LazyVerticalGrid(
         columns = GridCells.Fixed(columnCount),
         contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
     ) {
         items(jobs.size) { job ->

@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.ui.components.PostItemList
-import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
+import com.mobile.jobsearchapplication.ui.features.menuUser.UserViewModel
 
 @Composable
 fun FavoriteJobsScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {

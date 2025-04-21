@@ -21,7 +21,7 @@ import com.mobile.jobsearchapplication.ui.features.post.PostScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.features.saved.SavedScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
-import com.mobile.jobsearchapplication.ui.features.user.UserScreen
+import com.mobile.jobsearchapplication.ui.features.menuUser.MenuUserScreen
 
 @Composable
 fun AppNavigation() {
@@ -47,7 +47,8 @@ fun AppNavigation() {
         composable("notificationsState") { NotificationScreen(navController) }
 
         // menu
-        composable("account") { UserScreen(navController) }
+        composable("auth_screen") {  AuthScreen(navController) }
+        composable("menu_screen") { MenuUserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
         composable("update_profile_screen") { ProfileScreen(navController) }
 
@@ -56,7 +57,6 @@ fun AppNavigation() {
         composable("favorite_screen") { SavedScreen(navController) }
         composable("posted_screen") {  SavedScreen(navController) }
 
-        composable("auth_screen") {  AuthScreen(navController) }
         composable("search_screen") {
             SearchScreen(navController)
         }
@@ -65,7 +65,7 @@ fun AppNavigation() {
 
 
 //            composable("detail_job_screen") { JobDetailScreen(navController) }
-        composable("adv_job_search/{query}") { backStackEntry ->
+        composable("filter_screen/{query}") { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query") ?: ""
             PostFilterScreen(navController, query)
         }

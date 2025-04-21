@@ -6,12 +6,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
 object DeviceSizeUtils {
-    @Composable
-    fun deviceWidth(): Int {
-        val configuration = LocalConfiguration.current
-        val screenWidthDp = configuration.screenWidthDp
-        return screenWidthDp
-    }
 
     @Composable
     fun deviceHeight(): Int {
@@ -25,12 +19,5 @@ object DeviceSizeUtils {
         val density = LocalDensity.current
         val screenWidthPx = with(density) { LocalConfiguration.current.screenWidthDp.dp.toPx() }
         return screenWidthPx
-    }
-
-    @Composable
-    fun deviceHeightInPx(): Float {
-        val screenHeightDp = LocalConfiguration.current.screenHeightDp
-        val screenHeightPx = with(LocalDensity.current) { screenHeightDp.dp.toPx() }
-        return screenHeightPx
     }
 }

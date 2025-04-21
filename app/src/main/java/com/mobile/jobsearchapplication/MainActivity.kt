@@ -17,7 +17,9 @@ class MainActivity : ComponentActivity() {
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         setContent {
-            AppNavigation()
+//            AppTheme {
+                AppNavigation()
+//            }
         }
     }
 }

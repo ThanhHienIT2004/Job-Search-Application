@@ -1,4 +1,4 @@
-package com.mobile.jobsearchapplication.ui.components.textField.auth
+package com.mobile.jobsearchapplication.ui.components.textField.account
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -71,11 +71,12 @@ fun TextFieldCustom(
         },
         isError = model.isError,
         supportingText = {
-            if (model.isError)
-            Text(
-                text = model.messageError,
-                modifier = Modifier.fillMaxWidth().wrapContentWidth()
-            )
+            if (model.isError) {
+                Text(
+                    text = model.messageError,
+                    modifier = Modifier.fillMaxWidth().wrapContentWidth()
+                )
+            }
         },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = if(!model.isImeActionDone) ImeAction.Next else  ImeAction.Done,

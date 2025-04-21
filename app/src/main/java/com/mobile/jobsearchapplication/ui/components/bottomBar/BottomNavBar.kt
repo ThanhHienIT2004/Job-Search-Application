@@ -36,7 +36,7 @@ sealed class Screen(val route: String, val icon: ImageVector) {
     data object Home : Screen("home_screen", Icons.Filled.Home)
     data object PostedJob : Screen("applied_screen", Icons.Filled.Article)
     data object PostJob : Screen("post_screen", Icons.Filled.AddCircle)
-    data object Account : Screen("account", Icons.Filled.AccountCircle)
+    data object Account : Screen("menu_screen", Icons.Filled.AccountCircle)
 }
 
 val bottomNavItems = listOf(

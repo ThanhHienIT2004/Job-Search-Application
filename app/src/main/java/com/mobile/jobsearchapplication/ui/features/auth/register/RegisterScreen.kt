@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldCustom
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 
 @Composable
