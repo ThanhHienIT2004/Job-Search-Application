@@ -26,7 +26,12 @@ fun BackButton(
         modifier = modifier
             .padding(start = 10.dp)
             .size(32.dp)
-            .clickable { baseNavController(navController, route) },
+            .clickable { navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+            } },
 
         tint = Color.White
      )
