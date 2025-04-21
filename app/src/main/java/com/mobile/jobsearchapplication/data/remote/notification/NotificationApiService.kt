@@ -5,8 +5,11 @@ import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.UUID
@@ -21,13 +24,16 @@ interface   NotificationApiService {
         @Query("limit") limit: Int
     ):NotificationListResponse<Notification>
 
-    // Lấy thông báo theo ID
-    @GET("get/{id}")
-    suspend fun getNotificationById(@Path("id") notificationId: UUID): ApiResponse<Notification>
+    // Trong NotificationApiService.kt
+    @PATCH("notification/{id}/read")
+    suspend fun updateNotificationReadStatus(
+        @Path("id") notificationId: String,
+        @Body isRead: Boolean
+    ): ApiResponse<Notification>
 
-    // Lấy thông tin người dùng theo ID
-    @GET("users/{id}")
-    suspend fun getUser(@Path("id") userId: UUID): ApiResponse<User>
+    // Tạo thông báo
+    @POST("notification/add")
+    suspend fun createNotification(@Body notification: Notification): ApiResponse<Notification>
 
     // Xóa thông báo theo ID
     @DELETE("delete/{id}")

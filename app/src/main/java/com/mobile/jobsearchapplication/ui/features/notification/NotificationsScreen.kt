@@ -1,5 +1,7 @@
 package com.mobile.jobsearchapplication.ui.features.notification
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -47,6 +49,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,6 +62,7 @@ import com.mobile.jobsearchapplication.ui.theme.LightBlue
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
 import kotlinx.coroutines.delay
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotificationScreen(
     navController: NavHostController,
@@ -66,7 +70,8 @@ fun NotificationScreen(
 ) {
     val viewModel: NotificationViewModel = viewModel()
     val notiState by viewModel.notificationsState.collectAsState()
-    val userId = "10ece493-41a4-4a16-801a-ce2cf3652de2"
+    val userId = "bXIGtkgsFqQn5WMi4uS6i7QrQ7G3"
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.loadNotification(userId)
@@ -95,6 +100,12 @@ fun NotificationScreen(
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
+                Button(
+                    onClick = { viewModel.testSendLocalNotification(context) },
+                    colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
+                ) {
+                    Text("Test Notification")
+                }
             }
         },
         actionsBot = {
@@ -255,6 +266,7 @@ fun NotificationItem(notification: SingleNotification) {
     val scale = remember { Animatable(1f) }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val viewModel: NotificationViewModel = viewModel()
 
     LaunchedEffect(isPressed) {
         if (isPressed) {
@@ -274,7 +286,7 @@ fun NotificationItem(notification: SingleNotification) {
                 .shadow(6.dp, RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(interactionSource = interactionSource, indication = null) {
-                    // Bạn có thể xử lý sự kiện click ở đây nếu cần
+                    viewModel.checkIsRead(notification.id.toString(), true) // Đánh dấu đã đọc
                 }
                 .background(
                     brush = Brush.linearGradient(
@@ -323,12 +335,12 @@ fun NotificationItem(notification: SingleNotification) {
                         text = notification.title,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = if (notification.isRead) FontWeight.Normal else FontWeight.SemiBold,
                             color = Color(0xFF1A1A1A)
                         )
                     )
                     Text(
-                        text = notification.message,
+                        text = notification.description,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 14.sp,
                             color = Color(0xFF666666)
@@ -340,13 +352,13 @@ fun NotificationItem(notification: SingleNotification) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "Loại: ${notification.typeNotification}",
+                            text = "Loại: ${notification.type}",
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = 12.sp,
                                 color = Color(0xFF888888)
                             )
                         )
-                        notification.createAt?.let {
+                        notification.createdAt?.let {
                             Text(
                                 text = "Nhận lúc: $it",
                                 style = MaterialTheme.typography.bodySmall.copy(
@@ -361,7 +373,6 @@ fun NotificationItem(notification: SingleNotification) {
         }
     }
 }
-
 @Composable
 fun Xuong() {
     Card(
