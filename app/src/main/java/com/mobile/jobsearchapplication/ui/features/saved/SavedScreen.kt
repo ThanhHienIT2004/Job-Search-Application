@@ -1,17 +1,29 @@
 package com.mobile.jobsearchapplication.ui.features.saved
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -19,15 +31,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.model.job.AppliedJobs
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
@@ -84,7 +105,7 @@ fun SavedScreen(
                     onTabSelected = { tab ->
                         savedVM.onTabChanged(tab)
                         when (tab) {
-                            "applied_screen" -> {                                jobVM.loadFavoriteJobs()
+                            "applied_screen" -> {
                                 savedVM.loadAppliedJobs()
                                 jobVM.loadFavoriteJobs()
                             }
@@ -120,14 +141,18 @@ fun SavedScreen(
                 }
                 savedUiState.value is SavedUiState.Success && jobUiState.value is JobUiState.Success -> {
                     val listItem = when(tabSaved.value) {
-                        "applied_screen" -> (savedUiState.value as SavedUiState.Success).appliedJobs
-                        "posted_screen" -> (savedUiState.value as SavedUiState.Success).postedJobs
-                        "favorite_screen" -> (savedUiState.value as SavedUiState.Success).favoriteJobs
+                        "posted_screen" -> (savedUiState.value as SavedUiState.Success).postedJobs ?: emptyList()
+                        "favorite_screen" -> (savedUiState.value as SavedUiState.Success).favoriteJobs ?: emptyList()
                         else -> emptyList()
                     }
-
-                    // Kiểm tra danh sách có empty
-                    if (listItem.isNullOrEmpty()) {
+                    val listAppliedJobs = (savedUiState.value as SavedUiState.Success).appliedJobs ?: emptyList()
+                    val checkListEmpty = when(tabSaved.value) {
+                        "applied_screen" -> listAppliedJobs.isEmpty()
+                        "posted_screen" -> listItem.isEmpty()
+                        "favorite_screen" -> listItem.isEmpty()
+                        else -> false
+                    }
+                    if (checkListEmpty) {
                         EmptyState(
                             icon = R.drawable.img_empty_state,
                             message = when(tabSaved.value) {
@@ -149,13 +174,22 @@ fun SavedScreen(
                             ) }
                         )
                     } else {
-                        SectionListSaved(
-                            jobs =  listItem,
-                            jobVM = jobVM,
-                            navController = navController,
-                            columnCount = columnCount,
-                            modifier = Modifier
-                        )
+                        when(tabSaved.value) {
+                            "applied_screen" -> SectionListAppliedSaved(
+                                jobs =  listAppliedJobs,
+                                jobVM = jobVM,
+                                navController = navController,
+                                columnCount = columnCount,
+                                modifier = Modifier
+                            )
+                            else -> SectionListSaved(
+                                jobs =  listItem,
+                                jobVM = jobVM,
+                                navController = navController,
+                                columnCount = columnCount,
+                                modifier = Modifier
+                            )
+                        }
                     }
                 }
             }
@@ -196,6 +230,118 @@ fun SectionListSaved(
                         }
                     )
             )
+        }
+    }
+}
+
+@Composable
+fun SectionListAppliedSaved(
+    jobs: List<AppliedJobs>,
+    jobVM: JobViewModel,
+    navController: NavController,
+    columnCount: Int = 2,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columnCount),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier
+    ) {
+        items(jobs.size) { job ->
+            AppliedJobItem(
+                jobVM = jobVM,
+                job = jobs[job],
+                onClick = {
+                    baseNavController(navController,"job_detail_screen/${jobs[job].id}")
+                },
+                isOneColumn = columnCount == 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (columnCount == 1) {
+                            Modifier.aspectRatio(1.8f)
+                        } else {
+                            Modifier.aspectRatio(1f)
+                        }
+                    )
+            )
+        }
+    }
+}
+
+@Composable
+fun AppliedJobItem(
+    jobVM: JobViewModel,
+    job: AppliedJobs,
+    onClick: () -> Unit,
+    isOneColumn: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+
+    ElevatedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFBFCFF)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AsyncImage(
+                model = job.jobImage,
+                contentDescription = "Job Image",
+                modifier = Modifier
+                    .padding(top = 5.dp)
+                    .fillMaxWidth(0.95f)
+                    .then(
+                        if (isOneColumn) {
+                            Modifier.fillMaxHeight(0.6f)
+                        } else {
+                            Modifier.fillMaxHeight(0.4f)
+                        }
+                    ),
+                contentScale = ContentScale.FillWidth,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.error)
+            )
+            Text(
+                text = job.title, textAlign = TextAlign.Start,
+                maxLines = 1, color = Color(0xFF414949),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 16.dp, top = 10.dp)
+            )
+            Row {
+                Column(
+                    modifier = Modifier.weight(5f)
+                ) {
+                    Text(
+                        text = "Trạng thái: ${job.statusResponse}",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                    Text(
+                        text = "Nơi làm việc: ${job.location}",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                    )
+                    Text(
+                        text = "Mức lương: ${if (job.salaryMin != null && job.salaryMax != null) {
+                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"}
+                        else {
+                            "Salary not specified"
+                        }}",
+                        color = Color(0xFF414949),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 1.dp)
+                    )
+                }
+            }
         }
     }
 }

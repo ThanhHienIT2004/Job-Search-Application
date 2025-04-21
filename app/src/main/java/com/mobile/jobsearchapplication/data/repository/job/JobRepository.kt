@@ -3,6 +3,7 @@ package com.mobile.jobsearchapplication.data.repository.job
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.company.Company
+import com.mobile.jobsearchapplication.data.model.job.AppliedJobs
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.model.job.JobByCategory
 import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
@@ -48,7 +49,7 @@ class JobRepository : JobApiService {
         }
     }
 
-    override suspend fun getAppliedJobs(userId: String): BaseResponse<List<Job>> {
+    override suspend fun getAppliedJobs(userId: String): BaseResponse<List<AppliedJobs>> {
         return try {
             jobApiService.getAppliedJobs(userId)
         } catch (e: Exception) {
