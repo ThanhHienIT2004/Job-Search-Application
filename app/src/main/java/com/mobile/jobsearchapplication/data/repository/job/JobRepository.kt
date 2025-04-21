@@ -11,6 +11,7 @@ import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
 import com.mobile.jobsearchapplication.utils.RetrofitClient.jobApiService
+import okhttp3.MultipartBody
 import java.io.IOException
 import java.util.UUID
 
@@ -31,7 +32,7 @@ class JobRepository : JobApiService {
         }
     }
 
-    override suspend fun getJobsByCategory(categoryId: String): JobByCategory {
+    override suspend fun getJobsByCategory(categoryId: Int): JobByCategory {
         return try {
             jobApiService.getJobsByCategory(categoryId)
         } catch (e: Exception) {
@@ -72,9 +73,13 @@ class JobRepository : JobApiService {
     }
 
     override suspend fun createJob(job: JsonObject): ApiResponse<Job> {
-        // Log JSON để debug
-        println("Sending JSON: $job")
-        // Gọi API
         return jobApiService.createJob(job)
+    }
+    override suspend fun createJobWithImage(multipartBody: MultipartBody): ApiResponse<Job> {
+        return try {
+            jobApiService.createJobWithImage(multipartBody)
+        } catch (e: Exception) {
+            ApiResponse(data = null, message = "Error creating job: ${e.message}")
+        }
     }
 }

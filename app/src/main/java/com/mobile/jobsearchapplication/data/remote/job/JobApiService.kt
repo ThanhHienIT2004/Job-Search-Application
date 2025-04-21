@@ -10,9 +10,11 @@ import com.mobile.jobsearchapplication.data.model.job.JobByCategory
 import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
+import okhttp3.MultipartBody
 import org.checkerframework.checker.units.qual.A
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -27,7 +29,7 @@ interface JobApiService {
 
     @GET("jobs/getJobsByCategory")
     suspend fun getJobsByCategory(
-        @Query("categoryId") categoryId: String
+        @Query("categoryId") categoryId: Int
     ): JobByCategory
 
     @GET("jobs/getFavoriteJobs")
@@ -54,7 +56,9 @@ interface JobApiService {
     @POST("jobs/add")
     suspend fun createJob(@Body job: JsonObject): ApiResponse<Job>
 
-
+    @Multipart
+    @POST("jobs/add")
+    suspend fun createJobWithImage(@Body multipartBody: MultipartBody): ApiResponse<Job>
 
 //    @GET("users/{userId}/saved-jobs")
 //    suspend fun getSavedJobs(@Path("userId") userId: UUID): ApiResponse<List<SavedJob>>

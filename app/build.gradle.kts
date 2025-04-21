@@ -114,4 +114,6 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation("io.getstream:stream-chat-android-compose:6.1.0")
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.28.0")
+
 }

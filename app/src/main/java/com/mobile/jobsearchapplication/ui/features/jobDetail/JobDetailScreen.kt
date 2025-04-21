@@ -28,11 +28,8 @@ import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.CustomInfoBox
 import com.mobile.jobsearchapplication.ui.components.CustomSectionBox
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
-import com.mobile.jobsearchapplication.ui.features.job.JobUiState
-import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
-import com.mobile.jobsearchapplication.ui.features.job.RecommendedJobsList
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
-import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserName
+import com.mobile.jobsearchapplication.data.model.job.Job
 
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
@@ -70,11 +67,9 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
 
 @Composable
 fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
-    val currentUser = getCurrentUserName()
     val userRepository = remember { UserRepository() }
     val companyRepository = remember { CompanyRepository() }
     var companyName by remember { mutableStateOf<String?>(null) }
-
     var postedByName by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(uiState) {
@@ -128,11 +123,11 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                         Triple(Icons.Default.Business, "Company", "Công ty: ${companyName ?: "Đang tải..."}" to Pair(Color.Gray, Color.Black)),
                         Triple(Icons.Default.Person, "Posted By", "Người đăng: ${postedByName ?: "Đang tải..."}" to Pair(Color.Gray, Color.Black)),
                         Triple(Icons.Default.LocationOn, "Location", job.location to Pair(Color.Gray, Color.Black)),
-                        Triple(Icons.Default.Work, "Job Type", job.jobType to Pair(Color.Gray, Color.Black)),
-                        Triple(Icons.Default.Badge, "Experience Level", job.experienceLevel to Pair(Color.Gray, Color.Black)),
                         Triple(Icons.Default.Group, "Quantity", "Số lượng: ${job.quantity}" to Pair(Color.Gray, Color.Black)),
-                        Triple(Icons.Default.People, "Gender Requirement", "Giới tính: ${job.genderRequire}" to Pair(Color.Gray, Color.Black)),
-                        Triple(Icons.Default.Verified, "Status", "Trạng thái: ${job.status}" to Pair(Color.Gray, Color.Black)),
+                        Triple(Icons.Default.Work, "Job Type", "Hình thức: ${job.jobType.toVietnameseJobType()}" to Pair(Color.Gray, Color.Black)),
+                        Triple(Icons.Default.Badge, "Experience Level", "Kinh nghiệm: ${job.experienceLevel.toVietnameseExperience()}" to Pair(Color.Gray, Color.Black)),
+                        Triple(Icons.Default.People, "Gender Requirement", "Giới tính: ${job.genderRequire.toVietnameseGender()}" to Pair(Color.Gray, Color.Black)),
+                        Triple(Icons.Default.Verified, "Status", "Trạng thái: ${job.status.toVietnameseStatus()}" to Pair(Color.Gray, Color.Black)),
                         Triple(Icons.Default.AccessTime, "Created At", "Đăng ngày: ${job.createdAt}" to Pair(Color.Gray, Color.Gray)),
                     )
                 ) { (icon, desc, textAndColors) ->
@@ -184,4 +179,37 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
             // Không hiển thị gì
         }
     }
+}
+
+fun String.toVietnameseJobType(): String = when (this) {
+    "FULL_TIME" -> "Toàn thời gian"
+    "PART_TIME" -> "Bán thời gian"
+    "CONTRACT" -> "Hợp đồng"
+    "INTERNSHIP" -> "Thực tập"
+    "FREELANCE" -> "Tự do"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseExperience(): String = when (this) {
+    "ENTRY" -> "Mới vào nghề"
+    "MID_LEVEL" -> "Trung cấp"
+    "SENIOR" -> "Cao cấp"
+    "LEADER" -> "Trưởng nhóm"
+    "MANAGER" -> "Quản lý"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseGender(): String = when (this) {
+    "MALE" -> "Nam"
+    "FEMALE" -> "Nữ"
+    "ANY" -> "Không yêu cầu"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseStatus(): String = when (this) {
+    "ACTIVE" -> "Đang hoạt động"
+    "CLOSED" -> "Đã đóng"
+    "DRAFT" -> "Bản nháp"
+    "EXPIRED" -> "Hết hạn"
+    else -> "Không xác định"
 }

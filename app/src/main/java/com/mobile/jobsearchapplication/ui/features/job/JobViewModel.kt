@@ -73,10 +73,10 @@ class JobViewModel : ViewModel() {
                 val response = withContext(Dispatchers.IO) {
                     userRepository.getInfo(getLoggedInUserId())
                         .data?.favoritePosts
-                            ?.split(",")
-                            ?.map { it.trim() }
-                            ?.filter { it.isNotBlank() }
-                            ?.map { UUID.fromString(it) }
+                        ?.split(",")
+                        ?.map { it.trim() }
+                        ?.filter { it.isNotBlank() }
+                        ?.map { UUID.fromString(it) }
                 }
                 _uiState.value = when (val currentState = _uiState.value) {
                     is JobUiState.Success -> currentState.copy(favoriteJobs = response)

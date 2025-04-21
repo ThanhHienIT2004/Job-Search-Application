@@ -215,8 +215,8 @@ fun JobItem(
                         modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                     )
                     Text(
-                        text = "Mức lương: ${if (job.salaryMin != null && job.salaryMax != null) { 
-                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"} 
+                        text = "Mức lương: ${if (job.salaryMin != null && job.salaryMax != null) {
+                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"}
                         else {
                             "Salary not specified"
                         }}",

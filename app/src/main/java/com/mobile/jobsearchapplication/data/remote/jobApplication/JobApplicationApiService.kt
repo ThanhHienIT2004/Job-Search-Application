@@ -25,3 +25,12 @@ data class JobApplicationResponse(
     val message: String,
     val data: JobApplication? = null
 )
+data class ApiResponse<T>(
+    val data: ResponseData<T>?,
+    val message: String
+)
+
+data class ResponseData<T>(
+    val pageCount: Int,
+    val data: List<T>
+)

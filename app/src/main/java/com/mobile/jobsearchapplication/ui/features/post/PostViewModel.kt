@@ -11,8 +11,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.job.Job
-import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
 import com.mobile.jobsearchapplication.data.repository.job.JobRepository
+import com.mobile.jobsearchapplication.utils.FireBaseUtils
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -68,21 +68,21 @@ data class JobPost(
 @RequiresApi(Build.VERSION_CODES.O)
 class PostViewModel(
     private val jobRepository: JobRepository = JobRepository(),
-
 ) : ViewModel() {
+    private val userId = FireBaseUtils.getLoggedInUserId() ?: ""
     var jobPost by mutableStateOf(
         JobPost(
-            companyId = "1",
+            companyId = userId, // Gán companyId từ userId hoặc lấy từ AuthRepository
             title = "",
             description = "",
             requirements = "Không yêu cầu",
             benefits = null,
-            postedBy = "5nXIVWS9GMQRb3hJim2pZ8j6v2M2",
+            postedBy = userId,
             categoryId = 0,
             salary = JobPost.Salary(min = 0.0, max = 0.0),
             employmentType = "FULL_TIME",
             location = JobPost.Location(city = "", district = null, address = "", isRemote = false),
-            experience = JobPost.Experience(minYears = 0, maxYears = 0, level = "FRESH"), // Thay ENTRY bằng FRESH
+            experience = JobPost.Experience(minYears = 0, maxYears = 0, level = "FRESH"),
             deadline = LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
             positionsAvailable = 0,
             genderRequirement = "ANY",
@@ -100,6 +100,8 @@ class PostViewModel(
 
     private fun validateJobPost(): Result<Unit> {
         return when {
+            userId.isEmpty() -> Result.failure(Exception("Vui lòng đăng nhập để đăng tin"))
+            jobPost.companyId.isEmpty() -> Result.failure(Exception("ID công ty không hợp lệ"))
             jobPost.title.isBlank() -> Result.failure(Exception("Tiêu đề không được để trống"))
             jobPost.description.isBlank() -> Result.failure(Exception("Mô tả công việc không được để trống"))
             jobPost.positionsAvailable <= 0 -> Result.failure(Exception("Số lượng tuyển dụng phải lớn hơn 0"))
@@ -109,8 +111,6 @@ class PostViewModel(
             jobPost.location.city.isBlank() -> Result.failure(Exception("Thành phố không được để trống"))
             jobPost.location.address.isBlank() -> Result.failure(Exception("Địa chỉ không được để trống"))
             jobPost.categoryId <= 0 -> Result.failure(Exception("Danh mục công việc không hợp lệ"))
-            jobPost.companyId == "default_company_id" -> Result.failure(Exception("ID công ty không hợp lệ"))
-            jobPost.postedBy == "default_user_id" -> Result.failure(Exception("Vui lòng đăng nhập để đăng tin"))
             jobPost.additionalInfo.workingHours.isBlank() -> Result.failure(Exception("Giờ làm việc không được để trống"))
             jobPost.experience.level !in listOf("INTERN", "FRESH", "JUNIOR", "SENIOR", "LEAD") -> Result.failure(Exception("Mức kinh nghiệm không hợp lệ"))
             jobPost.employmentType !in listOf("FULL_TIME", "PART_TIME", "CONTRACT") -> Result.failure(Exception("Loại công việc không hợp lệ"))
@@ -133,29 +133,24 @@ class PostViewModel(
                 // Tạo JSON theo cấu trúc JobParams
                 val jsonBody = Gson().toJsonTree(jobPost).asJsonObject
 
-                // Log JSON để debug
-                println("JSON Body: $jsonBody")
-
                 // Gọi API
                 val response: ApiResponse<Job> = jobRepository.createJob(jsonBody)
-                if (response.data != null) {
-                    postResult = Result.success("Đăng tin thành công: ${response.message}")
-                } else {
-                    postResult = Result.failure(Exception("Đăng tin thất bại: ${response.message}"))
-                }
+                postResult = Result.success(response.message ?: "Đăng tin thành công")
+
             } catch (e: HttpException) {
-                postResult = when (e.code()) {
-                    400 -> Result.failure(Exception("Yêu cầu không hợp lệ: Vui lòng kiểm tra dữ liệu nhập"))
-                    401 -> Result.failure(Exception("Chưa đăng nhập hoặc token hết hạn"))
-                    403 -> Result.failure(Exception("Không có quyền đăng tin"))
-                    404 -> Result.failure(Exception("Không tìm thấy endpoint /jobs/add"))
-                    500 -> Result.failure(Exception("Lỗi server, vui lòng thử lại sau"))
-                    else -> Result.failure(Exception("Lỗi HTTP: ${e.code()} - ${e.message()}"))
-                }
+                postResult = Result.failure(
+                    when (e.code()) {
+                        400 -> Exception("Dữ liệu nhập không hợp lệ")
+                        401 -> Exception("Vui lòng đăng nhập lại")
+                        403 -> Exception("Không có quyền đăng tin")
+                        404 -> Exception("Không tìm thấy dịch vụ")
+                        else -> Exception("Lỗi server: ${e.code()} - ${e.message()}")
+                    }
+                )
             } catch (e: IOException) {
-                postResult = Result.failure(Exception("Lỗi kết nối mạng, vui lòng kiểm tra kết nối"))
+                postResult = Result.failure(Exception("Lỗi kết nối mạng"))
             } catch (e: Exception) {
-                postResult = Result.failure(Exception("Lỗi không xác định: ${e.message}"))
+                postResult = Result.failure(Exception("Lỗi: ${e.message ?: "Không xác định"}"))
             }
         }
     }
