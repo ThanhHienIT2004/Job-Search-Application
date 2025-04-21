@@ -1,8 +1,8 @@
 package com.mobile.jobsearchapplication.utils
 
-import com.mobile.jobsearchapplication.data.remote.application.JobApplicationService
 import com.mobile.jobsearchapplication.data.remote.auth.AuthApiService
 import com.mobile.jobsearchapplication.data.remote.job.JobApiService
+import com.mobile.jobsearchapplication.data.remote.jobApplication.JobApplicationApiService
 import com.mobile.jobsearchapplication.data.remote.jobcategory.JobCategoryApiService
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
@@ -37,8 +37,8 @@ object RetrofitClient {
     val userApiService: UserApiService by lazy {
         retrofit.create(UserApiService::class.java)
     }
-    val jobApplicationApiService: JobApplicationService by lazy {
-        retrofit.create(JobApplicationService::class.java)
+    val jobApplicationApiService: JobApplicationApiService by lazy {
+        retrofit.create(JobApplicationApiService::class.java)
     }
 
     val notificationApiService : NotificationApiService by lazy {

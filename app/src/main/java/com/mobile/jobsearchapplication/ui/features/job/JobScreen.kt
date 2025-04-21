@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.ui.features.job
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,14 +12,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,6 +53,7 @@ import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
+import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
 @Composable
@@ -67,13 +74,23 @@ fun SectionListJob(
             val jobsByCategory = (jobsState as JobUiState.Success).jobByCategory
 
             categories.forEachIndexed { index, category ->
-                if (index > 4) return
-                Text(
-                    text = category.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = category.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+
+                    Text(
+                        text = "Mở rộng",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(end = 16.dp)
+                            .clickable { baseNavController(navController, "filter_screen/${category.name}") }
+                    )
+                }
 
                 jobsByCategory?.let {
                     RecommendedJobsList(
@@ -117,8 +134,8 @@ fun RecommendedJobsList(
         if (jobs.isEmpty()) {
             Text(
                 text = "Không có công việc phù hợp",
-                fontSize = 14.sp,
-                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 16.dp),
                 color = Color.Gray
             )
         } else {
@@ -126,19 +143,16 @@ fun RecommendedJobsList(
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                contentPadding = PaddingValues(horizontal = 32.dp),
-                pageSpacing = 16.dp,
+                modifier = Modifier.padding(vertical = 8.dp),
+                contentPadding = PaddingValues(horizontal = 24.dp),
+                beyondViewportPageCount = 2,
+                pageSpacing = 12.dp,
             ) { page ->
                 JobItem(
                     jobVM,
                     job = jobs[page],
-                    onClick = {
-                        navController.navigate("job_detail_screen/${jobs[page].id}")
-                    },
-                    modifier = modifier
+                    onClick = { navController.navigate("job_detail_screen/${jobs[page].id}") },
+                    modifier = modifier.padding(bottom = 20.dp)
                 )
             }
         }
@@ -158,9 +172,10 @@ fun JobItem(
     var isFavorite = rememberSaveable(jobUiState, job.id) {
         (jobUiState as JobUiState.Success).favoriteJobs?.contains(job.id) == true
     }
+
     val context = LocalContext.current
 
-    Card(
+    ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
@@ -185,38 +200,36 @@ fun JobItem(
             )
             Text(
                 text = job.title, textAlign = TextAlign.Start,
-                maxLines = 2, color = Color(0xFF414949),
-                fontSize = 14.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(8.dp, 8.dp)
-                    .fillMaxWidth()
+                maxLines = 1, color = Color(0xFF414949),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 16.dp, top = 10.dp)
             )
             Row {
                 Column(
                     modifier = Modifier.weight(5f)
                 ) {
                     Text(
-                        text = job.location,
-                        fontSize = 12.sp, color = Color(0xFF414949),
-                        modifier = Modifier.padding(8.dp, 4.dp)
+                        text = "Nơi làm việc: ${job.location}",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                     )
                     Text(
-                        text = if (job.salaryMin != null && job.salaryMax != null) {
-                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"
-                        } else {
+                        text = "Mức lương: ${if (job.salaryMin != null && job.salaryMax != null) { 
+                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"} 
+                        else {
                             "Salary not specified"
-                        },
+                        }}",
                         color = Color(0xFF414949),
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 16.dp, top = 1.dp)
                     )
                 }
                 if (isEnableIcon) {
                     Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Icon Favorite",
-                        modifier = Modifier
-                            .weight(1f)
-                            .size(32.dp)
+                        imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Icon Favorite",
+                        modifier = Modifier.weight(1f).size(32.dp)
                             .clickable {
                                 if (!isUserLoggedIn()) {
                                     Toast.makeText(context, "Vui lòng đăng nhập để sử dụng", Toast.LENGTH_SHORT).show()

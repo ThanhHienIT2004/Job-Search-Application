@@ -52,8 +52,11 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
 
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
-            TitleTopBar(text = "Đăng tin tuyển dụng")
+            BackButton(navController, "home_screen")
+
+            TitleTopBar(
+                text = "Đăng tin tuyển dụng",
+            )
         }
     ) { padding ->
         Column(
@@ -292,19 +295,8 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    isLoading = true
-                    viewModel.submitPost()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isLoading
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
-                    Text("Đăng tin")
-                }
+            Button(onClick = { viewModel.submitPost() }, modifier = Modifier.fillMaxWidth()) {
+                Text("Đăng tin")
             }
         }
     }

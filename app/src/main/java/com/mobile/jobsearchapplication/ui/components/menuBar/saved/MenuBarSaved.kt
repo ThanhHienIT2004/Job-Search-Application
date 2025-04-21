@@ -24,6 +24,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -67,7 +68,7 @@ fun ItemMenuSaved(
     ExtendedFloatingActionButton(
         onClick = { onClick() },
         icon = { Icon(item.icon, "Icon menu saved") },
-        text = { Text(text = item.title) },
+        text = { Text(text = item.title, style = MaterialTheme.typography.bodyMedium) },
         expanded = isExpanded,
         containerColor = Color(0xFFF5F5F5),
         contentColor = if (isExpanded) Color.Black else Color.Gray,
