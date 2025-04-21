@@ -27,7 +27,6 @@ fun BackButton(
             .padding(start = 10.dp)
             .size(32.dp)
             .clickable { baseNavController(navController, route) },
-
         tint = Color.White
      )
 }

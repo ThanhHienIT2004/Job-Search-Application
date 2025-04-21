@@ -35,7 +35,8 @@ fun CustomInfoBox(
         Text(
             text = text,
             fontSize = fontSize.sp,
-            color = textColor
+            color = textColor,
+            fontWeight = FontWeight.Bold
         )
     }
 }
