@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -145,9 +146,13 @@ fun SavedScreen(
                         else -> emptyList()
                     }
                     val listAppliedJobs = (savedUiState.value as SavedUiState.Success).appliedJobs ?: emptyList()
-
-                    // Kiểm tra danh sách có empty
-                    if (listItem.isNullOrEmpty() && listAppliedJobs.isEmpty()) {
+                    val checkListEmpty = when(tabSaved.value) {
+                        "applied_screen" -> listAppliedJobs.isEmpty()
+                        "posted_screen" -> listItem.isEmpty()
+                        "favorite_screen" -> listItem.isEmpty()
+                        else -> false
+                    }
+                    if (checkListEmpty) {
                         EmptyState(
                             icon = R.drawable.img_empty_state,
                             message = when(tabSaved.value) {
