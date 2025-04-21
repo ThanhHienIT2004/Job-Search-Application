@@ -14,7 +14,7 @@ import java.io.IOException
 import java.util.UUID
 
 class JobRepository : JobApiService {
-    override suspend fun getJobs(): ApiResponse<List<Job>> {
+    override suspend fun getJobs(): ApiResponse<Job> {
         return try {
             jobApiService.getJobs()
         } catch (e: Exception) {

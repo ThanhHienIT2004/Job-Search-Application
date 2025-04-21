@@ -18,7 +18,7 @@ import java.util.*
 
 interface JobApiService {
     @GET("jobs")
-    suspend fun getJobs(): ApiResponse<List<Job>>
+    suspend fun getJobs(): ApiResponse<Job>
 
     @GET("jobs/getById/{id}")
     suspend fun getJobDetail(@Path("id") jobId: String): JobDetailResponse<Job>
