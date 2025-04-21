@@ -1,5 +1,7 @@
 package com.mobile.jobsearchapplication.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
@@ -23,6 +25,7 @@ import com.mobile.jobsearchapplication.ui.features.saved.SavedScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
 import com.mobile.jobsearchapplication.ui.features.menuUser.MenuUserScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
