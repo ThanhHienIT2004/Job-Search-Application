@@ -18,6 +18,10 @@ class FireBaseUtils {
         fun getCurrentUserEmail(): String {
             return auth.currentUser?.email.toString()
         }
+
+        fun getCurrentUserName(): String {
+            return auth.currentUser?.displayName.toString()
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
+import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,6 +30,7 @@ import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.ui.features.job.RecommendedJobsList
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserName
 
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
@@ -63,6 +66,8 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
 
 @Composable
 fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
+    val currentUser = getCurrentUserName()
+
     when (uiState) {
         is JobDetailUiState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -77,23 +82,25 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                         .padding(bottom = 80.dp)
                 ) {
                     item {
+
                         AsyncImage(
                             model = job.jobImage ?: R.drawable.placeholder,
                             contentDescription = "Job Image",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(bottom = 8.dp),
+                                .height(280.dp)
+                                .padding(bottom = 8.dp, top = 80.dp),
                             contentScale = ContentScale.Crop,
                             error = painterResource(id = R.drawable.error)
                         )
+                        Text(job.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth().padding(start = 8.dp))
                     }
                     // Nhóm thông tin công việc thành danh sách
                     items(
                         listOf(
                             Triple(Icons.Default.AttachMoney, "Salary", "${job.salaryMin ?: "N/A"} - ${job.salaryMax ?: "N/A"} ${job.currency}" to Pair(LightPurple, LightPurple)),
                             Triple(Icons.Default.Business, "Company", "Company ID: ${job.companyId}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Person, "Posted By", "Posted By: ${job.postedBy}" to Pair(Color.Gray, Color.Black)),
+                            Triple(Icons.Default.Person, "Posted By", "Posted By: $currentUser" to Pair(Color.Gray, Color.Black)),
                             Triple(Icons.Default.LocationOn, "Location", job.location to Pair(Color.Gray, Color.Black)),
                             Triple(Icons.Default.Work, "Job Type", job.jobType to Pair(Color.Gray, Color.Black)),
                             Triple(Icons.Default.Badge, "Experience Level", job.experienceLevel to Pair(Color.Gray, Color.Black)),
@@ -112,6 +119,7 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                             textColor = colors.second
                         )
                     }
+
                     // Deadline nếu có
                     if (!job.deadline.isNullOrEmpty()) {
                         item {
@@ -123,6 +131,7 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                             )
                         }
                     }
+
                     // Các phần mô tả, yêu cầu, quyền lợi
                     items(
                         listOf(
@@ -131,7 +140,7 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                             "Quyền lợi" to job.benefits.orEmpty()
                         )
                     ) { (title, content) ->
-                        CustomSectionBox(title = title, content = content)
+                            CustomSectionBox(title = title, content = content)
                     }
                     item {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -141,28 +150,30 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        val jobViewModel: JobViewModel = viewModel()
-                        when (val uiState = jobViewModel.uiState.collectAsState().value) {
-                            is JobUiState.Loading -> {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                            is JobUiState.Success -> {
-                                uiState.jobs?.let {
-                                    RecommendedJobsList(
-                                        jobVM = jobViewModel,
-                                        jobs = it,
-                                        navController = navController
-                                    )
-                                }
-                            }
-                            is JobUiState.Error -> {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
-                                }
-                            }
-                        }
+
+//                        val jobViewModel: JobViewModel = viewModel()
+//                        when (val uiState = jobViewModel.uiState.collectAsState().value) {
+//                            is JobUiState.Loading -> {
+//                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                                    CircularProgressIndicator()
+//                                }
+//                            }
+//                            is JobUiState.Success -> {
+//                                uiState.jobs?.let {
+//                                    RecommendedJobsList(
+//                                        jobVM = jobViewModel,
+//                                        jobs = it,
+//                                        navController = navController
+//                                    )
+//                                }
+//                            }
+//                            is JobUiState.Error -> {
+//                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                                    Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
+//                                }
+//                            }
+//                        }
+
                     }
                 }
             }

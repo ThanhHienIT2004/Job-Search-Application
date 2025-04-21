@@ -196,5 +196,4 @@ fun SectionListSaved(
             )
         }
     }
-
 }
