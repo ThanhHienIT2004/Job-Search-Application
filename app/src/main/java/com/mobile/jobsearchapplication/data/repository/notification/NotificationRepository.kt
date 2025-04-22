@@ -19,7 +19,7 @@ class NotificationRepository : NotificationApiService {
     }
 
     override suspend fun updateNotificationReadStatus(
-        notificationId: String,
+        notificationId: Long,
         isRead: Boolean
     ): ApiResponse<Notification> {
         return api.updateNotificationReadStatus(notificationId, isRead)
@@ -47,7 +47,7 @@ class NotificationRepository : NotificationApiService {
             } else {
                 ApiResponse(
                     data = null,
-                    message = response.message ?: "Failed to create notification"
+                    message = response.message
                 )
             }
         } catch (e: Exception) {

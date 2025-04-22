@@ -8,10 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.mobile.jobsearchapplication.data.model.ApiResponse
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.repository.job.JobRepository
+import com.mobile.jobsearchapplication.data.repository.token.TokenRepository
 import com.mobile.jobsearchapplication.utils.FireBaseUtils
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -69,7 +69,7 @@ data class JobPost(
 class PostViewModel(
     private val jobRepository: JobRepository = JobRepository(),
 ) : ViewModel() {
-    private val userId = FireBaseUtils.getLoggedInUserId() ?: ""
+    private val userId = FireBaseUtils.getLoggedInUserId()
     var jobPost by mutableStateOf(
         JobPost(
             companyId = userId, // Gán companyId từ userId hoặc lấy từ AuthRepository
@@ -135,7 +135,7 @@ class PostViewModel(
 
                 // Gọi API
                 val response: ApiResponse<Job> = jobRepository.createJob(jsonBody)
-                postResult = Result.success(response.message ?: "Đăng tin thành công")
+                postResult = Result.success(response.message)
 
             } catch (e: HttpException) {
                 postResult = Result.failure(

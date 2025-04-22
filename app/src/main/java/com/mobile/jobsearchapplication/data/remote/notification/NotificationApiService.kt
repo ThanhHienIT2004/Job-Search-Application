@@ -27,7 +27,7 @@ interface   NotificationApiService {
     // Trong NotificationApiService.kt
     @PATCH("notification/{id}/read")
     suspend fun updateNotificationReadStatus(
-        @Path("id") notificationId: String,
+        @Path("id") notificationId: Long,
         @Body isRead: Boolean
     ): ApiResponse<Notification>
 

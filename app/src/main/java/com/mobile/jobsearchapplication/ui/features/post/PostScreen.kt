@@ -488,7 +488,7 @@ fun CustomTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = label) }, // Sử dụng AnnotatedString trực tiếp
+        label = { Text(text = label) },
         modifier = modifier.fillMaxWidth(),
         keyboardOptions = keyboardOptions,
         maxLines = maxLines,

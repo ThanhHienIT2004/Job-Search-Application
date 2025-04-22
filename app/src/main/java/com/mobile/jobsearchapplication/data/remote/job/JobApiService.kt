@@ -8,17 +8,15 @@ import com.mobile.jobsearchapplication.data.model.job.AppliedJobs
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.model.job.JobByCategory
 import com.mobile.jobsearchapplication.data.model.job.JobDetailResponse
-import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
 import okhttp3.MultipartBody
-import org.checkerframework.checker.units.qual.A
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.*
+import java.util.UUID
 
 interface JobApiService {
     @GET("jobs")
