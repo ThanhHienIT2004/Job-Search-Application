@@ -8,5 +8,5 @@ import com.mobile.jobsearchapplication.ui.components.textField.account.TextField
 fun PostedManagerScreen(
     modifier: Modifier = Modifier
 ) {
-    
+
 }

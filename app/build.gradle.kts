@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.google.googleid)
     implementation(libs.androidx.credentials)
-
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 

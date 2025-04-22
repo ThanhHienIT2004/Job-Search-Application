@@ -108,7 +108,6 @@ fun TopUserScreen(
                 modifier = Modifier.weight(1f)
                     .padding(10.dp, 0.dp)
                     .size(70.dp),
-
             )
 
             Column(

@@ -28,7 +28,7 @@ fun BackButton(
             .size(32.dp)
             .clickable { navController.navigate(route) {
                 popUpTo(navController.graph.startDestinationId) {
-                    saveState = true
+                    saveState = false
                 }
                 launchSingleTop = true
             } },
