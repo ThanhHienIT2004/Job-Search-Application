@@ -18,6 +18,7 @@ import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
 import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
 import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
+import com.mobile.jobsearchapplication.ui.features.jobPostManagement.JobPostManagementScreen
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.post.PostScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
@@ -59,6 +60,11 @@ fun AppNavigation() {
         composable("applied_screen") { SavedScreen(navController) }
         composable("favorite_screen") { SavedScreen(navController) }
         composable("posted_screen") {  SavedScreen(navController) }
+
+        composable("job_post_management/{query}") { backStackEntry ->
+            val query = backStackEntry.arguments?.getString("query") ?: ""
+            JobPostManagementScreen(navController, query)
+        }
 
         composable("search_screen") {
             SearchScreen(navController)
