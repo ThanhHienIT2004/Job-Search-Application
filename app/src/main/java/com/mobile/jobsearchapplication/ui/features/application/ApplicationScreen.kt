@@ -179,7 +179,7 @@ fun ApplicationScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "Đã có lỗi xảy ra",
+                            text = "Bạn đã apply công việc này rồi!!",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -191,7 +191,7 @@ fun ApplicationScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp) )
                         TextButton(
                             onClick = { viewModel.resetApplicationState() },
                             colors = ButtonDefaults.textButtonColors(
@@ -199,7 +199,7 @@ fun ApplicationScreen(
                             )
                         ) {
                             Text(
-                                text = "Thử lại",
+                                text = "Thoát",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp
                             )

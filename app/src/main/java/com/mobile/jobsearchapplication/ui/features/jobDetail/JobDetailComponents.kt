@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -71,7 +72,7 @@ fun BottomActionBar(navController: NavController, jobId: String) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(LightPurple),
+                .background(Color(0xFF4A5BCB)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -116,12 +117,18 @@ fun BottomActionBar(navController: NavController, jobId: String) {
                     showBottomSheet = true
                     scope.launch { sheetState.show() }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6F61)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .height(48.dp)
                     .padding(end = 8.dp)
             ) {
+                Icon(
+                    imageVector = Icons.Default.Description,
+                    contentDescription = "Apply",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
                 Text(
                     text = "Ứng tuyển",
                     color = Color.White,

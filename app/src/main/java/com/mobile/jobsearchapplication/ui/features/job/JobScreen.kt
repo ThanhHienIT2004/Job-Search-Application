@@ -235,7 +235,7 @@ fun JobItem(
                                     Toast.makeText(context, "Vui lòng đăng nhập để sử dụng", Toast.LENGTH_SHORT).show()
                                 } else {
                                     isFavorite = !isFavorite
-                                    jobVM.updateFavoriteApi(jobId = job.id, state = isFavorite)
+                                    jobVM.updateFavoriteApi(jobId = job.id.toString(), state = isFavorite)
                                 }
                             },
                         tint = if (isFavorite) Color.Red else Color.Gray,
