@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -34,7 +35,10 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PostScreen(navController: NavHostController, viewModel: PostViewModel = viewModel()) {
+fun PostScreen(
+    navController: NavHostController,
+    viewModel: PostViewModel = viewModel()
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
@@ -71,7 +75,11 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 navController.popBackStack()
             }.onFailure { exception ->
-                Toast.makeText(context, exception.message ?: "Lỗi không xác định", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    exception.message ?: "Lỗi không xác định",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -91,65 +99,7 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Phần thông tin nhà tuyển dụng
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "THÔNG TIN NHÀ TUYỂN DỤNG",
-                        fontSize = 18.sp,
-                        color = Color.Gray
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    CustomTextField(
-                        label = buildAnnotatedString {
-                            append("Thành phố")
-                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
-                        },
-                        value = jobPost.location.city,
-                        onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(city = it)) }
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    CustomTextField(
-                        label = buildAnnotatedString {
-                            append("Quận/Huyện")
-                        },
-                        value = jobPost.location.district ?: "",
-                        onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(district = it)) }
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    CustomTextField(
-                        label = buildAnnotatedString {
-                            append("Địa chỉ")
-                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
-                        },
-                        value = jobPost.location.address,
-                        onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(address = it)) }
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = jobPost.location.isRemote,
-                            onCheckedChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(isRemote = it)) }
-                        )
-                        Text("Làm việc từ xa", modifier = Modifier.padding(start = 8.dp))
-                    }
-                }
-            }
+            SectionInfoRecruiter(jobPost, viewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -200,7 +150,8 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                             withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                         }.toString(),
                         options = categories.map { it.second },
-                        selectedOption = categories.find { it.first == jobPost.categoryId }?.second ?: "",
+                        selectedOption = categories.find { it.first == jobPost.categoryId }?.second
+                            ?: "",
                         onOptionSelected = { selected ->
                             val categoryId = categories.find { it.second == selected }?.first ?: 0
                             viewModel.jobPost = jobPost.copy(categoryId = categoryId)
@@ -218,7 +169,8 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         onValueChange = {
                             if (it.all { char -> char.isDigit() }) {
-                                viewModel.jobPost = jobPost.copy(positionsAvailable = it.toIntOrNull() ?: 0)
+                                viewModel.jobPost =
+                                    jobPost.copy(positionsAvailable = it.toIntOrNull() ?: 0)
                             }
                         }
                     )
@@ -251,7 +203,11 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             onValueChange = {
                                 if (it.all { char -> char.isDigit() || char == '.' }) {
-                                    viewModel.jobPost = jobPost.copy(salary = jobPost.salary.copy(min = it.toDoubleOrNull() ?: 0.0))
+                                    viewModel.jobPost = jobPost.copy(
+                                        salary = jobPost.salary.copy(
+                                            min = it.toDoubleOrNull() ?: 0.0
+                                        )
+                                    )
                                 }
                             }
                         )
@@ -265,7 +221,11 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             onValueChange = {
                                 if (it.all { char -> char.isDigit() || char == '.' }) {
-                                    viewModel.jobPost = jobPost.copy(salary = jobPost.salary.copy(max = it.toDoubleOrNull() ?: 0.0))
+                                    viewModel.jobPost = jobPost.copy(
+                                        salary = jobPost.salary.copy(
+                                            max = it.toDoubleOrNull() ?: 0.0
+                                        )
+                                    )
                                 }
                             }
                         )
@@ -311,7 +271,13 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
                         label = buildAnnotatedString {
                             append("Kinh nghiệm làm việc")
                         }.toString(),
-                        options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm", "Trưởng nhóm"),
+                        options = listOf(
+                            "Không yêu cầu",
+                            "Dưới 1 năm",
+                            "1-2 năm",
+                            "Trên 2 năm",
+                            "Trưởng nhóm"
+                        ),
                         selectedOption = when (jobPost.experience.level) {
                             "FRESH" -> "Không yêu cầu"
                             "INTERN" -> "Dưới 1 năm"
@@ -440,6 +406,76 @@ fun PostScreen(navController: NavHostController, viewModel: PostViewModel = view
         }
     }
 }
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun SectionInfoRecruiter(
+    jobPost: JobPost,
+    viewModel: PostViewModel
+) {
+// Phần thông tin nhà tuyển dụng
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "THÔNG TIN NHÀ TUYỂN DỤNG",
+                fontSize = 18.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            CustomTextField(
+                label = buildAnnotatedString {
+                    append("Thành phố")
+                    withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
+                },
+                value = jobPost.location.city,
+                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(city = it)) }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CustomTextField(
+                label = buildAnnotatedString {
+                    append("Quận/Huyện")
+                },
+                value = jobPost.location.district ?: "",
+                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(district = it)) }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CustomTextField(
+                label = buildAnnotatedString {
+                    append("Địa chỉ")
+                    withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
+                },
+                value = jobPost.location.address,
+                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(address = it)) }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = jobPost.location.isRemote,
+                    onCheckedChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(isRemote = it)) }
+                )
+                Text("Làm việc từ xa", modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+    }
+}
+
+
 @Composable
 fun CustomTextField(
     label: AnnotatedString, // Đổi từ String sang AnnotatedString
@@ -453,11 +489,16 @@ fun CustomTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(text = label) }, // Sử dụng AnnotatedString trực tiếp
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         keyboardOptions = keyboardOptions,
         maxLines = maxLines,
+        shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color(0xFFFFA500),
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedIndicatorColor = Color(0xFFEFAF39),
             unfocusedIndicatorColor = Color.Gray
         )
     )

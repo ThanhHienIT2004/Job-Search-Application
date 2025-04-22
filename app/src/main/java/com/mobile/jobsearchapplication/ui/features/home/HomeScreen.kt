@@ -42,8 +42,6 @@ fun HomeScreen(
         if (isRefreshing) {
             jobCategoryVM.loadJobCategories()
             jobVM.loadJobByCategory()
-            kotlinx.coroutines.delay(2000) // Simulate network delay
-            kotlinx.coroutines.delay(1000) // Additional 1s for loading animation
             isRefreshing = false
         }
     }

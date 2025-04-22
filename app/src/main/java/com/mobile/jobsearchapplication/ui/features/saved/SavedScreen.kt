@@ -162,34 +162,24 @@ fun SavedScreen(
                                 else -> ""
                             },
                             onClick = {
-                                baseNavController(
-                                    navController,
-                                    route = when (tabSaved.value) {
-                                        "applied_screen" -> "home_screen"
-                                        "posted_screen" -> "post_screen"
-                                        "favorite_screen" -> "home_screen"
-                                        else -> ""
-                                    }
-
-                            ) }
+                                baseNavController(navController, route = when (tabSaved.value) {
+                                    "applied_screen" -> "home_screen"
+                                    "posted_screen" -> "post_screen"
+                                    "favorite_screen" -> "home_screen"
+                                    else -> ""
+                                })
+                            }
                         )
                     } else {
-                        when(tabSaved.value) {
-                            "applied_screen" -> SectionListAppliedSaved(
-                                jobs =  listAppliedJobs,
-                                jobVM = jobVM,
-                                navController = navController,
-                                columnCount = columnCount,
-                                modifier = Modifier
-                            )
-                            else -> SectionListSaved(
-                                jobs =  listItem,
-                                jobVM = jobVM,
-                                navController = navController,
-                                columnCount = columnCount,
-                                modifier = Modifier
-                            )
-                        }
+                        SectionListSaved(
+                            jobVM = jobVM,
+                            jobs =  listItem,
+                            appliedJobs = listAppliedJobs,
+                            tag = tabSaved.value,
+                            navController = navController,
+                            columnCount = columnCount,
+                            modifier = Modifier
+                        )
                     }
                 }
             }
@@ -200,7 +190,9 @@ fun SavedScreen(
 @Composable
 fun SectionListSaved(
     jobs: List<Job>,
+    appliedJobs: List<AppliedJobs>,
     jobVM: JobViewModel,
+    tag: String = "posted_screen",
     navController: NavController,
     columnCount: Int = 2,
     modifier: Modifier = Modifier
@@ -212,61 +204,45 @@ fun SectionListSaved(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
     ) {
-        items(jobs.size) { job ->
-            JobItem(
-                jobVM = jobVM,
-                job = jobs[job],
-                onClick = {
-                    baseNavController(navController,"job_detail_screen/${jobs[job].id}")
-                },
-                isEnableIcon = columnCount != 3,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (columnCount == 1) {
-                            Modifier.aspectRatio(1.8f)
-                        } else {
-                            Modifier.aspectRatio(1f)
-                        }
+        if (tag == "applied_screen") {
+            items(appliedJobs.size) { job ->
+                AppliedJobItem(
+                    jobVM = jobVM,
+                    job = appliedJobs[job],
+                    onClick = {
+                        baseNavController(navController,"job_detail_screen/${appliedJobs[job].id}")
+                    },
+                    isOneColumn = columnCount == 1,
+                    modifier = Modifier.fillMaxWidth()
+                        .then(
+                            if (columnCount == 1) Modifier.aspectRatio(1.8f)
+                            else Modifier.aspectRatio(1f)
+                        )
+                )
+            }
+        } else {
+            items(jobs.size) { job ->
+                    JobItem(
+                        jobVM = jobVM,
+                        job = jobs[job],
+                        onClick = {
+                            if (tag == "posted_screen")
+                                baseNavController(navController,"job_post_management/${jobs[job].id}")
+                            else if (tag == "favorite_screen")
+                                baseNavController(navController,"job_detail_screen/${jobs[job].id}")
+                        },
+                        isEnableIcon = columnCount != 3,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (columnCount == 1) {
+                                    Modifier.aspectRatio(1.8f)
+                                } else {
+                                    Modifier.aspectRatio(1f)
+                                }
+                            )
                     )
-            )
-        }
-    }
-}
-
-@Composable
-fun SectionListAppliedSaved(
-    jobs: List<AppliedJobs>,
-    jobVM: JobViewModel,
-    navController: NavController,
-    columnCount: Int = 2,
-    modifier: Modifier = Modifier
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(columnCount),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
-    ) {
-        items(jobs.size) { job ->
-            AppliedJobItem(
-                jobVM = jobVM,
-                job = jobs[job],
-                onClick = {
-                    baseNavController(navController,"job_detail_screen/${jobs[job].id}")
-                },
-                isOneColumn = columnCount == 1,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (columnCount == 1) {
-                            Modifier.aspectRatio(1.8f)
-                        } else {
-                            Modifier.aspectRatio(1f)
-                        }
-                    )
-            )
+                }
         }
     }
 }
@@ -279,7 +255,6 @@ fun AppliedJobItem(
     isOneColumn: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
@@ -287,7 +262,7 @@ fun AppliedJobItem(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFFBFCFF)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
