@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.data.repository.notification
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
@@ -19,43 +20,20 @@ class NotificationRepository : NotificationApiService {
     }
 
     override suspend fun updateNotificationReadStatus(
-        notificationId: String,
+        notificationId: Long,
         isRead: Boolean
     ): ApiResponse<Notification> {
         return api.updateNotificationReadStatus(notificationId, isRead)
     }
 
-    override suspend fun createNotification(notification: Notification): ApiResponse<Notification> {
+    override suspend fun createNotification(notification: Notification): BaseResponse<Notification> {
         return try {
-            // Kiểm tra dữ liệu bắt buộc
-            if (notification.title.isNullOrEmpty() ||
-                notification.type.isNullOrEmpty() ||
-                notification.userId.isNullOrEmpty()) {
-                return ApiResponse(
-                    data = null,
-                    message = "Title, type, và userId không được rỗng"
-                )
-            }
+            api.createNotification(notification)
 
-            // Gửi yêu cầu POST, server sẽ sinh Id tự tăng
-            val response = api.createNotification(notification)
-            if (response.data != null) {
-                ApiResponse(
-                    data = response.data,
-                    message = response.message
-                )
-            } else {
-                ApiResponse(
-                    data = null,
-                    message = response.message ?: "Failed to create notification"
-                )
-            }
-        } catch (e: Exception) {
-            ApiResponse(
-                data = null,
-                message = e.message ?: "Error creating notification"
-            )
+        } catch (e: Exception){
+            BaseResponse(isSuccess = false, message = e.message ?: "Unknown error")
         }
+
     }
 
     override suspend fun deleteNotification(notificationId: UUID): ApiResponse<Notification> {

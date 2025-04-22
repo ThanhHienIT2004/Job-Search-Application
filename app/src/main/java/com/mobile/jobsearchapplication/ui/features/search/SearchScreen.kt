@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +26,8 @@ import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.features.job.JobItem
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.utils.dataStore
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,11 +41,13 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
     var query by rememberSaveable { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
 
     val uiState by viewModel.uiState.collectAsState()
     val searchHistory by viewModel.searchHistory.collectAsState()
 
     LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
         jobVM.loadFavoriteJobs()
     }
 
@@ -57,19 +62,21 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
             query = query,
             onQueryChange = { newQuery ->
                 query = newQuery
-                active = false
                 coroutineScope.launch {
-                    delay(300) // Debounce 300ms
-                    viewModel.searchJobs(newQuery, userId, isFullSearch = false)
+                    flow { emit(newQuery) }
+                        .debounce(300)
+                        .collect { debouncedQuery ->
+                            viewModel.searchJobs(debouncedQuery, userId, isFullSearch = false)
+                        }
                 }
             },
             onSearch = { newQuery ->
                 viewModel.searchJobs(newQuery, userId, isFullSearch = true)
                 active = false
             },
-            active = active,
+            active = false,
             onActiveChange = { active = it },
-            placeholder = { Text(text = "Tìm kiếm công việc") },
+            placeholder = { Text("Tìm kiếm công việc") },
             leadingIcon = {
                 if (active) {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -110,6 +117,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
+                .focusRequester(focusRequester)
         ) {
             searchHistory.forEach { item ->
                 ListItem(
@@ -141,8 +149,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                 }
             }
             is SearchUiState.Success -> {
-                val jobs = (uiState as SearchUiState.Success).jobs // Gán giá trị cục bộ ngay tại nhánh
-
+                val jobs = (uiState as SearchUiState.Success).jobs
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(vertical = 8.dp),
@@ -190,7 +197,7 @@ fun SearchScreen(navController: NavController, userId: String? = null) {
                 }
             }
             is SearchUiState.Error -> {
-                val message = (uiState as SearchUiState.Error).message // Gán giá trị cục bộ ngay tại nhánh
+                val message = (uiState as SearchUiState.Error).message
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center

@@ -1,12 +1,12 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
-import android.icu.text.CaseMap.Title
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -21,9 +21,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,17 +32,13 @@ import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.repository.company.CompanyRepository
 import com.mobile.jobsearchapplication.data.repository.user.UserRepository
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.CustomInfoBox
-import com.mobile.jobsearchapplication.ui.components.CustomSectionBox
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
-import com.mobile.jobsearchapplication.ui.theme.LightPurple
-import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 import java.util.UUID
-import androidx.compose.ui.platform.LocalContext
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
     val context = LocalContext.current
@@ -89,7 +84,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
             }
             ThreeDotsMenu(navController, jobId)
         },
-        actionsBot = { BottomActionBar(navController, jobId) }
+        actionsBot = { BottomActionBar(navController, viewModel ) }
     ) {
         Column(
             modifier = Modifier

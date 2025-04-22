@@ -9,7 +9,7 @@ data class Notification(
     @SerializedName("title") val title: String? = null,
     @SerializedName("description") val description: String? = null,
     @SerializedName("type") val type: String? = null,
-    @SerializedName("imageRes") val avatar: Int? = null,
+    @SerializedName("imageRes") val avatar: String? = null,
     @SerializedName("createdAt") val createdAt: String? = null,
     @SerializedName("senderId") val senderID: String? = null,
     @SerializedName("senderName") val senderName: String? = null,
@@ -18,7 +18,7 @@ data class Notification(
 ) {
     fun toSingleNotification() = SingleNotification(
         id = Id ?: "",
-        avatar = avatar ?: 0,
+        avatar = avatar ?: "",
         title = title ?: "",
         description = description ?: "",
         createdAt = createdAt,
@@ -26,8 +26,8 @@ data class Notification(
         userId = userId ?: "",
         senderName = senderName ?: "Unknown",
         type = type ?: "",
-        isRead = isRead ?: false,
-        jobId = relatedId ?: ""
+        isRead = isRead == false,
+        relateId = relatedId ?: ""
     )
 }
 
