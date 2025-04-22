@@ -1,18 +1,48 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
-import android.icu.text.CaseMap.Title
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,15 +58,18 @@ import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.CustomInfoBox
 import com.mobile.jobsearchapplication.ui.components.CustomSectionBox
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
-import com.mobile.jobsearchapplication.ui.features.job.JobUiState
-import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
-import com.mobile.jobsearchapplication.ui.features.job.RecommendedJobsList
+import com.mobile.jobsearchapplication.ui.features.notification.NotificationViewModel
 import com.mobile.jobsearchapplication.ui.theme.LightPurple
+import com.mobile.jobsearchapplication.utils.FireBaseUtils
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserName
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
     val viewModel: JobDetailViewModel = viewModel()
+    val notificationViewModel: NotificationViewModel = viewModel()
+    val context = LocalContext.current
+
 
     LaunchedEffect(jobId) {
         viewModel.fetchJobDetail(jobId)
@@ -48,7 +81,36 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
 
             Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
 
-            IconButton(onClick = { /* tim */ }) {
+            IconButton(onClick = {
+                // Xử lý nhấn "tym"
+                val uiState = viewModel.uiState.value
+                when (uiState) {
+                    is JobDetailUiState.Success -> {
+                        val job = uiState.job
+                        val applicantId = FireBaseUtils.getLoggedInUserId()
+                        if (false) {
+                            Toast.makeText(context, "Vui lòng đăng nhập để thích công việc", Toast.LENGTH_SHORT).show()
+                            return@IconButton
+                        }
+                        if (applicantId == job.postedBy) {
+                            Toast.makeText(context, "Bạn không thể thích bài của chính mình", Toast.LENGTH_SHORT).show()
+                            return@IconButton
+                        }
+                        notificationViewModel.sendLikeNotification(
+                            context = context,
+                            applicantId = applicantId,
+                            jobId = job.id.toString(), // job.id là String
+                            jobTitle = job.title,
+                            receiverId = job.postedBy,
+                            notificationId = System.currentTimeMillis().toInt()
+                        )
+                        Toast.makeText(context, "Đã gửi thông báo đến người đăng", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(context, "Lỗi: Không thể tải thông tin công việc", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }) {
                 Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.White)
             }
             IconButton(onClick = { /* Share */ }) {
@@ -80,10 +142,10 @@ fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
     LaunchedEffect(uiState) {
         if (uiState is JobDetailUiState.Success) {
             val postedByResponse = userRepository.getInfo(uiState.job.postedBy)
-            postedByName = postedByResponse.data?.fullName ?: "Không rõ"
+            postedByName = postedByResponse.data?.fullName ?: "Khan rõ"
 
             val companyResponse = companyRepository.getCompanyDetail(uiState.job.companyId)
-            companyName = companyResponse.data?.name ?: "Không rõ"
+            companyName = companyResponse.data?.name ?: "Khan rõ"
         }
     }
  

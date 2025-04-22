@@ -72,12 +72,12 @@ class PostViewModel(
 ) : ViewModel() {
     var jobPost by mutableStateOf(
         JobPost(
-            companyId = "1",
+            companyId = "a7KxP9mZqW2rT5vY8nL3jF6hB4dC",
             title = "",
             description = "",
             requirements = "Không yêu cầu",
             benefits = null,
-            postedBy = "5nXIVWS9GMQRb3hJim2pZ8j6v2M2",
+            postedBy = "g3DCV3byPnau4HXRhQYso4iTBoE2",
             categoryId = 0,
             salary = JobPost.Salary(min = 0.0, max = 0.0),
             employmentType = "FULL_TIME",

@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.data.repository.notification
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.remote.notification.NotificationApiService
@@ -19,11 +20,12 @@ class NotificationRepository : NotificationApiService {
     }
 
     override suspend fun updateNotificationReadStatus(
-        notificationId: String,
+        notificationId: Long,
         isRead: Boolean
-    ): ApiResponse<Notification> {
+    ): ApiResponse<Boolean> {
         return api.updateNotificationReadStatus(notificationId, isRead)
     }
+
 
     override suspend fun createNotification(notification: Notification): ApiResponse<Notification> {
         return try {

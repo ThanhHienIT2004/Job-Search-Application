@@ -17,7 +17,7 @@ data class Notification(
     @SerializedName("jobId") val relatedId: String? = null
 ) {
     fun toSingleNotification() = SingleNotification(
-        id = Id ?: "",
+        id = Id ?: 0L,
         avatar = avatar ?: 0,
         title = title ?: "",
         description = description ?: "",
@@ -26,7 +26,7 @@ data class Notification(
         userId = userId ?: "",
         senderName = senderName ?: "Unknown",
         type = type ?: "",
-        isRead = isRead ?: false,
+        isRead = isRead == false,
         jobId = relatedId ?: ""
     )
 }

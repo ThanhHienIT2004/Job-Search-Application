@@ -56,6 +56,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation ("com.google.accompanist:accompanist-placeholder-material:0.33.2-alpha")
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation ("com.google.firebase:firebase-messaging-ktx")
 
     // firebase
     implementation(platform(libs.firebase.bom))

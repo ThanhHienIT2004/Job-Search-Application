@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.data.remote.notification
 
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
@@ -10,6 +11,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.UUID
@@ -25,11 +27,11 @@ interface   NotificationApiService {
     ):NotificationListResponse<Notification>
 
     // Trong NotificationApiService.kt
-    @PATCH("notification/{id}/read")
+    @PUT("notification/update")
     suspend fun updateNotificationReadStatus(
-        @Path("id") notificationId: String,
-        @Body isRead: Boolean
-    ): ApiResponse<Notification>
+        @Query("id") notificationId: Long,
+        @Query("isRead") isRead: Boolean
+    ): ApiResponse<Boolean>
 
     // Tạo thông báo
     @POST("notification/add")

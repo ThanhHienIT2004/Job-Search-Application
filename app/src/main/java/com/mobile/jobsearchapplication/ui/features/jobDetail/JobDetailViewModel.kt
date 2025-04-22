@@ -24,7 +24,7 @@ class JobDetailViewModel : ViewModel() {
                     _uiState.value = response.data?.let { JobDetailUiState.Success(it) }!!
                 } else {
                     _uiState.value =
-                        JobDetailUiState.Error(response.message ?: "Lỗi không xác định")
+                        JobDetailUiState.Error(response.message)
                 }
             } catch (e: Exception) {
                 _uiState.value =
