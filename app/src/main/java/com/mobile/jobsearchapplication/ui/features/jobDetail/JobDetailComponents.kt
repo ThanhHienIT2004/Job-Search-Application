@@ -23,7 +23,7 @@ import com.mobile.jobsearchapplication.ui.theme.LightPurple
 import kotlinx.coroutines.launch
 
 @Composable
-fun ThreeDotsMenu() {
+fun ThreeDotsMenu(navController: NavController, jobId: String) {
     var expanded by remember { mutableStateOf(false) }
 
     Box {
@@ -40,7 +40,10 @@ fun ThreeDotsMenu() {
         ) {
             DropdownMenuItem(
                 text = { Text("Chỉnh sửa") },
-                onClick = { expanded = false /* Xử lý chỉnh sửa */ }
+                onClick = {
+                    expanded = false
+                    navController.navigate("edit_job_screen/{jobId}")
+                }
             )
             DropdownMenuItem(
                 text = { Text("Xoá") },

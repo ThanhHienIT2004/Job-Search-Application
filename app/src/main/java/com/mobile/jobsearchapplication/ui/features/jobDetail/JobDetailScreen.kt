@@ -51,9 +51,6 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
     val jobVM: JobViewModel = viewModel()
     val jobUiState by jobVM.uiState.collectAsState()
 
-
-
-
     // Gọi API lấy chi tiết công việc
     LaunchedEffect(jobId) {
         viewModel.fetchJobDetail(jobId)
@@ -90,7 +87,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
             IconButton(onClick = { /* Share */ }) {
                 Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
             }
-            ThreeDotsMenu()
+            ThreeDotsMenu(navController, jobId)
         },
         actionsBot = { BottomActionBar(navController, jobId) }
     ) {
@@ -103,7 +100,6 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
         }
     }
 }
-
 
 @Composable
 fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavController) {
@@ -173,7 +169,13 @@ fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavControll
                 item { InfoCard(icon = Icons.Default.Work, title = "Hình thức", value = job.jobType.toVietnameseJobType()) }
                 item { InfoCard(icon = Icons.Default.Badge, title = "Kinh nghiệm", value = job.experienceLevel.toVietnameseExperience()) }
                 item { InfoCard(icon = Icons.Default.People, title = "Giới tính", value = job.genderRequire.toVietnameseGender()) }
-
+                item { InfoCard(Icons.Default.Group, "Số lượng", "${job.quantity}") }
+                item { InfoCard(Icons.Default.Verified, "Trạng thái", job.status.toVietnameseStatus()) }
+                item { InfoCard(Icons.Default.AccessTime, "Ngày đăng", job.createdAt) }
+                if (!job.deadline.isNullOrEmpty()) {
+                    item { InfoCard(Icons.Default.CalendarMonth, "Hạn nộp", job.deadline ?: "") }
+                }
+                item { InfoCard(Icons.Default.LocationOn, "Địa điểm", job.location) }
                 item {
                     DetailSectionCard(title = "Mô tả công việc", content = job.description)
                 }
@@ -183,13 +185,6 @@ fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavControll
                 item {
                     DetailSectionCard(title = "Quyền lợi", content = job.benefits.orEmpty())
                 }
-                item { InfoCard(Icons.Default.Group, "Số lượng", "${job.quantity}") }
-                item { InfoCard(Icons.Default.Verified, "Trạng thái", job.status.toVietnameseStatus()) }
-                item { InfoCard(Icons.Default.AccessTime, "Ngày đăng", job.createdAt) }
-                if (!job.deadline.isNullOrEmpty()) {
-                    item { InfoCard(Icons.Default.CalendarMonth, "Hạn nộp", job.deadline ?: "") }
-                }
-                item { InfoCard(Icons.Default.LocationOn, "Địa điểm", job.location) }
 
             }
         }

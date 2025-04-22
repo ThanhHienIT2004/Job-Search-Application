@@ -9,6 +9,7 @@ import com.mobile.jobsearchapplication.data.remote.user.UserApiService
 import com.mobile.jobsearchapplication.utils.RetrofitClient
 import retrofit2.http.Body
 import retrofit2.http.Query
+import timber.log.Timber
 
 class UserRepository: UserApiService {
     private val userApiService = RetrofitClient.userApiService
@@ -22,7 +23,7 @@ class UserRepository: UserApiService {
                 data = response.data
             )
         } catch (e: Exception) {
-            Log.e("getInfo", "Lỗi: ${e.message}", e)
+            Timber.tag("getInfo").e(e, "Lỗi: ${e.message}")
             BaseResponse(
                 isSuccess = false,
                 message = "Lỗi khi lấy thông tin: ${e.message}",
@@ -43,7 +44,7 @@ class UserRepository: UserApiService {
                 data = response.data
             )
         } catch (e: Exception) {
-            Log.e("updateInfo", "Lỗi: ${e.message}", e)
+            Timber.tag("updateInfo").e(e, "Lỗi: ${e.message}")
             BaseResponse(
                 isSuccess = false,
                 message = "Lỗi khi cập nhật thông tin: ${e.message}",
