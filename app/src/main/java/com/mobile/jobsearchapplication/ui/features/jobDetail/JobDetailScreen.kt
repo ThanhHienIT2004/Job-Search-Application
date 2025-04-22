@@ -206,6 +206,13 @@ fun String.toVietnameseGender(): String = when (this) {
     else -> "Không xác định"
 }
 
+fun String.toVietnameseGender1(): String = when (this) {
+    "Male" -> "Nam"
+    "Female" -> "Nữ"
+    "Other" -> "Không xác định"
+    else -> ""
+}
+
 fun String.toVietnameseStatus(): String = when (this) {
     "ACTIVE" -> "Đang hoạt động"
     "CLOSED" -> "Đã đóng"
