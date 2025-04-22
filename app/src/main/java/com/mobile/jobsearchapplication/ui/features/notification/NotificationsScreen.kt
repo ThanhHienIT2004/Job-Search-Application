@@ -46,9 +46,9 @@ fun NotificationScreen(
     val notiState by viewModel.notificationsState.collectAsState()
     val userId = userState
 
-    LaunchedEffect(Unit) {
-        viewModel.loadNotification(userId)
-    }
+//    LaunchedEffect(Unit) {
+//        viewModel.loadNotification(userId)
+//    }
 
     Column(
         modifier = modifier

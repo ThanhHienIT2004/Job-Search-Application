@@ -26,10 +26,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.core.net.toUri
 import com.mobile.jobsearchapplication.utils.FireBaseUtils
+import java.util.UUID
 
 data class SingleNotification(
     val id: Any,
-    @DrawableRes val avatar: Int = 0,
+    val avatar: String = "",
     val title: String = "",
     val description: String = "",
     val createdAt: String? = null,
@@ -38,7 +39,7 @@ data class SingleNotification(
     val senderName: String = "",
     val type: String = "",
     val isRead: Boolean = false,
-    val jobId: String? = null
+    val relateId: String? = null
 )
 
 data class NotificationUserState(
@@ -60,6 +61,8 @@ class NotificationViewModel : ViewModel() {
     private val _notificationsState = MutableStateFlow(NotificationUserState())
     val notificationsState = _notificationsState.asStateFlow()
 
+
+
     private fun updateNotificationsAndCount(
         currentState: NotificationUserState,
         updateAction: (List<SingleNotification>) -> List<SingleNotification>
@@ -68,6 +71,24 @@ class NotificationViewModel : ViewModel() {
         val unReadCount = updatedNotifications.count { !it.isRead }
         println("Updated notifications: $updatedNotifications, unReadCount: $unReadCount")
         return updatedNotifications to unReadCount
+    }
+
+    fun createNotification(receiveId: String){
+        viewModelScope.launch {
+            val request = Notification(
+                userId = receiveId,
+                title = "Bạn có thông báo mới",
+                description = "Người dùng khác đã ứng tuyển bài đăng của bạn",
+                type = "Ứng tuyển",
+                avatar = "0",
+                createdAt ="",
+                senderID = FireBaseUtils.getLoggedInUserId(),
+                senderName = "Người dùng",
+                isRead = false,
+                relatedId =""
+            )
+            notificationRepository.createNotification(request)
+        }
     }
 
     fun loadNotification(userId: String) {
@@ -225,7 +246,7 @@ class NotificationViewModel : ViewModel() {
                     title = "Bạn Người dùng đã ứng tuyển công việc của bạn",
                     description = "Xem chi tiết công việc \"$jobTitle\" để biết thêm thông tin.",
                     type = "APPLICATION",
-                    avatar = 0,
+                    avatar = "0",
                     createdAt = java.time.LocalDateTime.now().toString(),
                     senderID = applicantId,
                     senderName = "Người dùng",
@@ -279,7 +300,7 @@ class NotificationViewModel : ViewModel() {
                     title = "Bạn Người dùng đã thích công việc của bạn",
                     description = "Xem chi tiết công việc \"$jobTitle\" để biết thêm thông tin.",
                     type = "LIKE",
-                    avatar = 0,
+                    avatar = "0",
                     createdAt = java.time.LocalDateTime.now().toString(),
                     senderID = applicantId,
                     senderName = "Người dùng",

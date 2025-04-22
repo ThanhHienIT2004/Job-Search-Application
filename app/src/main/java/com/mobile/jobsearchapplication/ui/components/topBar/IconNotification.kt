@@ -44,6 +44,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationViewModel
+import com.mobile.jobsearchapplication.utils.FireBaseUtils
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,18 +54,18 @@ fun IconNotification(
 ) {
     val notificationState by viewModel.notificationsState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-    val userId = "g3DCV3byPnau4HXRhQYso4iTBoE2"
+    val userId = FireBaseUtils.getLoggedInUserId()
 
     // Debug unReadCount
     LaunchedEffect(notificationState.unReadCount) {
         println("IconNotification - unReadCount: ${notificationState.unReadCount}")
     }
 
-//    DisposableEffect(Unit) {
-//        viewModel.startPolling(userId)
-//        onDispose {
-//        }
-//    }
+    DisposableEffect(Unit) {
+        viewModel.refreshNotifications(userId)
+        onDispose {
+        }
+    }
 
     Box(
         modifier = modifier

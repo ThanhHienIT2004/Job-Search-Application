@@ -3,11 +3,13 @@ package com.mobile.jobsearchapplication.ui.features.auth.login
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.repository.auth.AuthRepository
+import com.mobile.jobsearchapplication.data.repository.token.TokenRepository
 import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldModel
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
 import com.mobile.jobsearchapplication.utils.RetrofitClient
+import com.mobile.jobsearchapplication.utils.TokenUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ data class LoginState(
 
 class LoginViewModel() : AuthViewModel() {
     private val authRepository = AuthRepository(RetrofitClient.authApiService)
+    private val tokenRepository = TokenRepository(RetrofitClient.tokenApiService)
 
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
@@ -98,6 +101,17 @@ class LoginViewModel() : AuthViewModel() {
                 val response = authRepository.createUser(getLoggedInUserId())
 
                 if (response.isSuccess) {
+                    TokenUtils.fetchFcmToken { token ->
+                        if (token != null) {
+                            viewModelScope.launch {
+                                try {
+                                    tokenRepository.createToken(getLoggedInUserId(), token) // Gửi token lên server
+                                } catch (e: Exception) {
+                                    // Ghi log hoặc xử lý lỗi nếu cần
+                                }
+                            }
+                        }
+                    }
                     _loginState.value = _loginState.value.copy(isLoggedSucess = true)
                 } else {
                     _loginState.value = _loginState.value.copy(isLoggedSucess = false)
