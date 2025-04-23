@@ -167,7 +167,7 @@ fun TopProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = "http://192.168.1.35:8080/${infoProfileState.avatar.takeIf { it.isNotBlank() }}",
+                    model = "http://172.19.16.1:8080/${infoProfileState.avatar.takeIf { it.isNotBlank() }}",
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .size(120.dp)
@@ -451,7 +451,7 @@ fun GetAvatarOnAlbum(
         model = if (tempAvatarUri != null) {
             tempAvatarUri
         } else if (infoProfileState.avatar.isNotBlank()) {
-            "http://192.168.1.35:8080/${infoProfileState.avatar}"
+            "http://172.19.16.1:8080/${infoProfileState.avatar}"
         } else {
             null
         },

@@ -5,4 +5,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="default_web_client_id">658252124828-jgu5kjikfn1nfj83phu3vkk9kr9e4gs2.apps.googleusercontent.com</string>
+    <string name="base_url">http://172.19.16.1:8080/</string>
 </resources>

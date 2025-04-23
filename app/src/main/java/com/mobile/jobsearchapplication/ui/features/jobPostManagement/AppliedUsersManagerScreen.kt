@@ -74,7 +74,7 @@ fun AppliedUserItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "http://192.168.1.35:8080/${appliedUser.avatar}",
+                model = "http://172.19.16.1:8080/${appliedUser.avatar}",
                 contentDescription = "Avatar",
                 modifier = Modifier.weight(1.5f).padding(12.dp)
                     .clip(RoundedCornerShape(24.dp))
@@ -86,7 +86,7 @@ fun AppliedUserItem(
                 modifier = Modifier.weight(3f).padding(4.dp)
             ) {
                 Text(
-                    text = "Họ tên: ${appliedUser.userId}",
+                    text = "Họ tên: ${appliedUser.fullName}",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
@@ -111,7 +111,7 @@ fun AppliedUserItem(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                             .clickable {
-                                val cvUrl = "http://192.168.1.35:8080/${appliedUser.applicationCvUrl}"
+                                val cvUrl = "http://172.19.16.1:8080/${appliedUser.applicationCvUrl}"
                                 val intent = Intent(Intent.ACTION_VIEW).apply {
                                     setData(Uri.parse(cvUrl))
                                 }

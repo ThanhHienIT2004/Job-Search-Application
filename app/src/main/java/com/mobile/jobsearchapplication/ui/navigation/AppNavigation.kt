@@ -33,7 +33,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "posted_screen",
+        startDestination = "home_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
 
