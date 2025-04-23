@@ -209,7 +209,7 @@ fun JobItem(
                         else {
                             "Salary not specified"
                         }}",
-                        color = Color(0xFF414949),
+                        color = Color.Blue,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp, top = 1.dp)
                     )
