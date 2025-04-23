@@ -116,7 +116,7 @@ fun SectionLayoutManager(
             if (appliedUsers.isEmpty()) {
                 EmptyState(
                     icon = R.drawable.img_go_log_in,
-                    message = "No applied users",
+                    message = "Chưa có ứng tuyển nào",
                     onClick = {}
                 )
             } else {

@@ -2,8 +2,9 @@ package com.mobile.jobsearchapplication.ui.features.profile
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.repository.user.UserRepository
@@ -16,6 +17,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
 
 data class InfoProfileState(
     val fullName: String = "",
@@ -75,12 +81,53 @@ class ProfileViewModel: BaseViewModel() {
 
     fun loadBitmapFromUri(context: Context, uri: Uri): Bitmap? {
         return try {
-            context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                BitmapFactory.decodeStream(inputStream)
-            }
+            MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    fun updateImageProfile(context: Context, uri: Uri) {
+        viewModelScope.launch {
+            try {
+                // Lưu file từ Uri vào bộ nhớ tạm
+                val mimeType = context.contentResolver.getType(uri) ?: "image/jpeg" // Mặc định là JPEG nếu không xác định được
+                val fileExtension = when (mimeType) {
+                    "image/png" -> "png"
+                    else -> "jpg"
+                }
+                val file = File(context.cacheDir, "temp_avatar.$fileExtension")
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    FileOutputStream(file).use { output ->
+                        val bytesCopied = input.copyTo(output)
+                        println("Bytes copied: $bytesCopied") // Debug log
+                    }
+                }
+
+                if (!file.exists() || file.length() == 0L) {
+                    Toast.makeText(context, "File trống hoặc không tồn tại", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
+                val avatarPart = MultipartBody.Part.createFormData("avatar", file.name, requestFile)
+
+                // Gọi API qua repository
+                val response = userRepository.updateImage(
+                    uuid = getLoggedInUserId(),
+                    avatar = avatarPart,
+                    cv = null // Rõ ràng truyền cv = null
+                )
+                if (response.isSuccess) {
+                    val newAvatarUrl = response.data?.avatar ?: ""
+                    onChangeValueInfo(newAvatarUrl, "avatar") // Cập nhật avatar mới
+                } else {
+                    Toast.makeText(context, "Error1: ${response.message}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -137,13 +184,11 @@ class ProfileViewModel: BaseViewModel() {
         viewModelScope.launch {
             val uuid = getLoggedInUserId()
             val request = UpdateInfoUser(
-                avatar = _infoProfileState.value.avatar,
                 bio = _infoProfileState.value.bio,
                 fullName = _infoProfileState.value.fullName,
                 phoneNumber = _infoProfileState.value.phoneNumber,
                 birthDay = _infoProfileState.value.birthDay,
                 gender = _infoProfileState.value.gender,
-                cvUrl = _infoProfileState.value.cvUrl,
             )
             val response = withContext(Dispatchers.IO) { userRepository.updateInfo(uuid, request) }
             if (response.isSuccess) {

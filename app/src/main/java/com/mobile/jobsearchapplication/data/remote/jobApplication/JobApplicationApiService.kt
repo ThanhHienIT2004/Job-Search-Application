@@ -3,12 +3,15 @@ package com.mobile.jobsearchapplication.data.remote.jobApplication
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.jobapplication.AppliedUserWithApplication
 import com.mobile.jobsearchapplication.data.model.jobapplication.JobApplication
+import com.mobile.jobsearchapplication.data.model.jobapplication.UpdateAppliedStatus
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -28,6 +31,12 @@ interface JobApplicationApiService {
     suspend fun getAppliedUsersByJobId(
         @Query("jobId") jobId: String
     ): BaseResponse<List<AppliedUserWithApplication>>
+
+    @PUT("applications/updateStatusAppliedJob")
+    suspend fun updateStatusAppliedJob(
+        @Body updateAppliedStatus: UpdateAppliedStatus
+    ): BaseResponse<Any>
+
 }
 
 

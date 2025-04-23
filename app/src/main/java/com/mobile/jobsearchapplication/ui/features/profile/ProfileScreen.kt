@@ -14,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,11 +28,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -135,6 +141,7 @@ fun TopProfileScreen(
     profileVM: ProfileViewModel,
     modifier: Modifier = Modifier
 ) {
+    val profileState by profileVM.profileState.collectAsState()
     val infoProfileState by profileVM.infoProfileState.collectAsState()
 
     ElevatedCard(
@@ -151,15 +158,28 @@ fun TopProfileScreen(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_avatar),
-                contentDescription = "Avatar",
+            Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .aspectRatio(1f)
-                    .clip(CircleShape)
-                    .border(3.dp, Color.Black, CircleShape)
-            )
+                    .then(
+                        if (profileState.isModeEditor) Modifier.size(140.dp)
+                        else Modifier.size(120.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = "http://192.168.1.35:8080/${infoProfileState.avatar.takeIf { it.isNotBlank() }}",
+                    contentDescription = "Avatar",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .border(1.dp, Color.Black, CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                if (profileState.isModeEditor) {
+                    GetAvatarOnAlbum(profileVM, Modifier.align(Alignment.BottomEnd))
+                }
+            }
 
             Text(
                 text = getCurrentUserEmail(),
@@ -392,6 +412,88 @@ fun SectionUpdatedProfile(
             )
         }
     }
+}
 
+@Composable
+fun GetAvatarOnAlbum(
+    profileVM: ProfileViewModel,
+    modifier: Modifier = Modifier
+) {
+    val profileState by profileVM.profileState.collectAsState()
+    val infoProfileState by profileVM.infoProfileState.collectAsState()
+    val context = LocalContext.current
+
+    // State để lưu Uri ảnh tạm thời (trước khi upload)
+    var tempAvatarUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Launcher để chọn ảnh
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            tempAvatarUri = it
+            profileVM.updateImageProfile(context, it) // Đổi từ updateCv thành updateAvatar
+        }
+    }
+
+    // Launcher để yêu cầu permission
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            pickImageLauncher.launch("image/*")
+        } else {
+            Toast.makeText(context, "Quyền truy cập ảnh bị từ chối", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    AsyncImage(
+        model = if (tempAvatarUri != null) {
+            tempAvatarUri
+        } else if (infoProfileState.avatar.isNotBlank()) {
+            "http://192.168.1.35:8080/${infoProfileState.avatar}"
+        } else {
+            null
+        },
+        contentDescription = "Avatar",
+        modifier = Modifier
+            .size(120.dp)
+            .aspectRatio(1f)
+            .clip(CircleShape)
+            .border(3.dp, Color.Black, CircleShape),
+        placeholder = painterResource(id = R.drawable.ic_avatar),
+        error = painterResource(id = R.drawable.error),
+        contentScale = ContentScale.Crop
+    )
+    FloatingActionButton(
+        onClick = {
+            if (profileState.isModeEditor) {
+                val permission =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    } else {
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    }
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        permission
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    pickImageLauncher.launch("image/*")
+                } else {
+                    requestPermissionLauncher.launch(permission)
+                }
+            }
+        },
+        modifier = modifier.size(32.dp),
+        containerColor = Color.White,
+        elevation = FloatingActionButtonDefaults.elevation(2.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.ModeEdit,
+            contentDescription = "Edit",
+            tint = Color(0xFF1976D2)
+        )
+    }
 }
 

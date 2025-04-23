@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.data.repository.jobApplication
 
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.jobapplication.AppliedUserWithApplication
+import com.mobile.jobsearchapplication.data.model.jobapplication.UpdateAppliedStatus
 import com.mobile.jobsearchapplication.data.remote.jobApplication.JobApplicationApiService
 import com.mobile.jobsearchapplication.data.remote.jobApplication.JobApplicationResponse
 import com.mobile.jobsearchapplication.utils.RetrofitClient
@@ -32,5 +33,14 @@ class JobApplicationRepository : JobApplicationApiService {
 
     override suspend fun getAppliedUsersByJobId(jobId: String): BaseResponse<List<AppliedUserWithApplication>> {
         return api.getAppliedUsersByJobId(jobId)
+    }
+
+    override suspend fun updateStatusAppliedJob(updateAppliedStatus: UpdateAppliedStatus): BaseResponse<Any> {
+        return try {
+            api.updateStatusAppliedJob(updateAppliedStatus)
+            BaseResponse(message = "Success")
+        } catch (e: Exception) {
+            BaseResponse(message = "Error: ${e.message}")
+        }
     }
 }

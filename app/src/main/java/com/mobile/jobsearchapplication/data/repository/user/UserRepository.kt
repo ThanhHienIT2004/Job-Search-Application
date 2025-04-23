@@ -1,12 +1,12 @@
 package com.mobile.jobsearchapplication.data.repository.user
 
-import android.util.Log
 import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.user.FavoriteJobPosting
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.model.user.User
 import com.mobile.jobsearchapplication.data.remote.user.UserApiService
 import com.mobile.jobsearchapplication.utils.RetrofitClient
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.Query
 
@@ -22,7 +22,6 @@ class UserRepository: UserApiService {
                 data = response.data
             )
         } catch (e: Exception) {
-            Log.e("getInfo", "Lỗi: ${e.message}", e)
             BaseResponse(
                 isSuccess = false,
                 message = "Lỗi khi lấy thông tin: ${e.message}",
@@ -43,7 +42,22 @@ class UserRepository: UserApiService {
                 data = response.data
             )
         } catch (e: Exception) {
-            Log.e("updateInfo", "Lỗi: ${e.message}", e)
+            BaseResponse(
+                isSuccess = false,
+                message = "Lỗi khi cập nhật thông tin: ${e.message}",
+                data = null
+            )
+        }
+    }
+
+    override suspend fun updateImage(
+        uuid: String,
+        avatar: MultipartBody.Part,
+        cv: MultipartBody.Part?
+    ): BaseResponse<User> {
+        return try {
+            userApiService.updateImage(uuid, avatar, cv)
+        } catch (e: Exception) {
             BaseResponse(
                 isSuccess = false,
                 message = "Lỗi khi cập nhật thông tin: ${e.message}",
@@ -65,7 +79,6 @@ class UserRepository: UserApiService {
                 data = response.data
             )
         } catch (e: Exception) {
-            Log.e("updateInfo", "Lỗi: ${e.message}", e)
             BaseResponse(
                 isSuccess = false,
                 message = "Lỗi khi cập nhật thông tin: ${e.message}",

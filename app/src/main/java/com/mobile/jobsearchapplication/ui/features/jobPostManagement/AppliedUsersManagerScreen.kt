@@ -2,7 +2,6 @@ package com.mobile.jobsearchapplication.ui.features.jobPostManagement
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,18 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivities
 import androidx.navigation.NavController
@@ -53,7 +50,7 @@ fun AppliedUsersManagerScreen(
     val appliedUsers = (uiState.value as JobPostManagementUiState.Success).appliedUsers
     Column {
         appliedUsers.forEach { appliedUser ->
-            AppliedUserItem(navController ,appliedUser)
+            AppliedUserItem(navController, jPMViewModel, appliedUser)
         }
     }
 }
@@ -61,6 +58,7 @@ fun AppliedUsersManagerScreen(
 @Composable
 fun AppliedUserItem(
     navController: NavController,
+    jPMViewModel: JobPostManagementViewModel,
     appliedUser: AppliedUserWithApplication,
     modifier: Modifier = Modifier
 ) {
@@ -88,7 +86,7 @@ fun AppliedUserItem(
                 modifier = Modifier.weight(3f).padding(4.dp)
             ) {
                 Text(
-                    text = "Họ tên: ${appliedUser.fullName}",
+                    text = "Họ tên: ${appliedUser.userId}",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
@@ -128,16 +126,27 @@ fun AppliedUserItem(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ButtonAppliedUser()
+                if (appliedUser.applicationStatus == "PENDING") {
+                    ButtonAppliedUser(jPMViewModel, appliedUser)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ButtonAppliedUser() {
+fun ButtonAppliedUser(
+    jPMViewModel: JobPostManagementViewModel,
+    appliedUser: AppliedUserWithApplication
+) {
+    val context = LocalContext.current
     FloatingActionButton(
-        onClick = { /*TODO*/ },
+        onClick = { jPMViewModel.updateStatusAppliedJob(
+            userId = appliedUser.userId,
+            jobId =  appliedUser.jobId,
+            status = "Accepted",
+            context = context
+        ) },
         modifier = Modifier.size(50.dp, 40.dp),
         shape = RoundedCornerShape(8.dp),
         containerColor = Color(0xFF43A047),
@@ -150,7 +159,12 @@ fun ButtonAppliedUser() {
     }
 
     FloatingActionButton(
-        onClick = { /*TODO*/ },
+        onClick = { jPMViewModel.updateStatusAppliedJob(
+            userId = appliedUser.userId,
+            jobId =  appliedUser.jobId,
+            status = "Declined",
+            context = context
+        ) },
         modifier = Modifier.size(50.dp, 40.dp),
         shape = RoundedCornerShape(8.dp),
         containerColor = Color(0xFFE53935),

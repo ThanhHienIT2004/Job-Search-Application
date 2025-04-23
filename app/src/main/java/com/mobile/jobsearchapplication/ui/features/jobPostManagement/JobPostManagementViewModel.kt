@@ -1,8 +1,11 @@
 package com.mobile.jobsearchapplication.ui.features.jobPostManagement
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.data.model.jobapplication.AppliedUserWithApplication
+import com.mobile.jobsearchapplication.data.model.jobapplication.UpdateAppliedStatus
 import com.mobile.jobsearchapplication.data.repository.jobApplication.JobApplicationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,6 +41,25 @@ class JobPostManagementViewModel: ViewModel() {
                 }
             } catch (e: Exception) {
                 _uiState.value = JobPostManagementUiState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun updateStatusAppliedJob(userId: String, jobId: UUID, status: String, context: Context) {
+        viewModelScope.launch {
+            try {
+                val updateAppliedStatus = UpdateAppliedStatus(userId, jobId, status)
+                val response = jobApplicationRepository.updateStatusAppliedJob(updateAppliedStatus)
+                if (response.message == "Success") {
+                    loadAppliedUsers(jobId.toString())
+                    Toast.makeText(context, "Cập nhật trạng thái thành công", Toast.LENGTH_SHORT).show()
+                } else {
+                    _uiState.value = JobPostManagementUiState.Error(response.message)
+                    Toast.makeText(context, "Cập nhật trạng thái thất bại", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                _uiState.value = JobPostManagementUiState.Error(e.message ?: "Unknown error")
+                Toast.makeText(context, "Cập nhật trạng thái thất bại", Toast.LENGTH_SHORT).show()
             }
         }
     }

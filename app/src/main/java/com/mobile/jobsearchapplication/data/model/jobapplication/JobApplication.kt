@@ -33,3 +33,9 @@ data class AppliedUserWithApplication(
     val additionalInfo: String,
     val applicationCvUrl: String
 )
+
+data class UpdateAppliedStatus(
+    val userId: String,
+    val jobId: UUID,
+    val status: String
+)

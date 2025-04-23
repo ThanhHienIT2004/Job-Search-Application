@@ -21,8 +21,7 @@ class MenuBarUserViewModel: ViewModel() {
 
     private val listItemMenuProfile = listOf(
         MenuItemProfile.PersonalInfo,
-        MenuItemProfile.UpdateInfo,
-        MenuItemProfile.ChangedBusinessAccount
+        MenuItemProfile.UpdateInfo
     )
 
     private val listItemMenuPosts = listOf(
