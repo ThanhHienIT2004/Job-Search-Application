@@ -37,14 +37,6 @@ class JobViewModel : ViewModel() {
     private val jobRepository = JobRepository()
     private val userRepository = UserRepository()
 
-
-    fun checkIsFavorite(jobId: UUID): Boolean {
-        return when (val state = _uiState.value) {
-            is JobUiState.Success -> state.favoriteJobs?.contains(jobId) ?: false
-            else -> false
-        }
-    }
-
     fun loadJobByCategory() {
         viewModelScope.launch {
             try {
@@ -58,7 +50,7 @@ class JobViewModel : ViewModel() {
                         page.toString(), "20"
                     ).data?.data ?: emptyList()
                     categories.mapIndexed() { index, category ->
-                        if (index >5) return@mapIndexed emptyList()
+//                        if (index >5) return@mapIndexed emptyList()
                         jobRepository.getJobsByCategory(category.id).data
                     }
                 }
@@ -81,10 +73,10 @@ class JobViewModel : ViewModel() {
                 val response = withContext(Dispatchers.IO) {
                     userRepository.getInfo(getLoggedInUserId())
                         .data?.favoritePosts
-                            ?.split(",")
-                            ?.map { it.trim() }
-                            ?.filter { it.isNotBlank() }
-                            ?.map { UUID.fromString(it) }
+                        ?.split(",")
+                        ?.map { it.trim() }
+                        ?.filter { it.isNotBlank() }
+                        ?.map { UUID.fromString(it) }
                 }
                 _uiState.value = when (val currentState = _uiState.value) {
                     is JobUiState.Success -> currentState.copy(favoriteJobs = response)
@@ -96,7 +88,7 @@ class JobViewModel : ViewModel() {
         }
     }
 
-    fun updateFavoriteApi(jobId: UUID, state: Boolean) {
+    fun updateFavoriteApi(jobId: String, state: Boolean) {
         viewModelScope.launch {
             val userId = getLoggedInUserId()
             val request = FavoriteJobPosting(jobId, state)
@@ -104,9 +96,7 @@ class JobViewModel : ViewModel() {
                 withContext(Dispatchers.IO) {
                     userRepository.favoriteJobPosting(uuid = userId, request = request)
                 }
-                Timer("Updated favorite: $jobId, state: $state")
                 loadFavoriteJobs()
-
             } catch (e: Exception) {
                 _uiState.value = JobUiState.Error("Error updating favorite: ${e.message}")
             }

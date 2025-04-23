@@ -22,7 +22,9 @@ fun CustomInfoBox(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -33,7 +35,8 @@ fun CustomInfoBox(
         Text(
             text = text,
             fontSize = fontSize.sp,
-            color = textColor
+            color = textColor,
+            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -48,13 +51,16 @@ fun CustomSectionBox(
         Text(
             text = title,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+                .padding(horizontal = 8.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = content,
             fontSize = 14.sp,
             modifier = modifier
+                .padding(horizontal = 8.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
     }

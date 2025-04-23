@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mobile.jobsearchapplication.R
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldCustom
 import com.mobile.jobsearchapplication.ui.features.auth.AuthViewModel
 import com.mobile.jobsearchapplication.ui.features.auth.register.RegisterViewModel
 

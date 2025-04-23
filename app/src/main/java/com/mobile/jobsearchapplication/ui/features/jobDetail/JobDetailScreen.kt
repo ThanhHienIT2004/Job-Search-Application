@@ -1,18 +1,27 @@
 package com.mobile.jobsearchapplication.ui.features.jobDetail
 
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,167 +29,255 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
+import com.mobile.jobsearchapplication.data.repository.company.CompanyRepository
+import com.mobile.jobsearchapplication.data.repository.user.UserRepository
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.CustomInfoBox
-import com.mobile.jobsearchapplication.ui.components.CustomSectionBox
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
-import com.mobile.jobsearchapplication.ui.features.job.RecommendedJobsList
-import com.mobile.jobsearchapplication.ui.theme.LightPurple
+import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
+import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailScreen(jobId: String, navController: NavController) {
+    val context = LocalContext.current
     val viewModel: JobDetailViewModel = viewModel()
+    val jobVM: JobViewModel = viewModel()
+    val jobUiState by jobVM.uiState.collectAsState()
 
+    // Gọi API lấy chi tiết công việc
     LaunchedEffect(jobId) {
         viewModel.fetchJobDetail(jobId)
+        jobVM.loadFavoriteJobs()
+    }
+    // Đặt isFavorite là mutableStateOf để có thể cập nhật được
+    var isFavorite by rememberSaveable { mutableStateOf(false) }
+
+    if (jobUiState is JobUiState.Success) {
+        isFavorite = (jobUiState as JobUiState.Success).favoriteJobs?.contains(UUID.fromString(jobId)) == true
     }
 
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /* Favorite */ }) {
-                Icon(Icons.Filled.Favorite, contentDescription = "Favorite", tint = Color.White)
-            }
+            BackButton(navController, "home_screen")
+            Spacer(modifier = Modifier.weight(1f)) // Đẩy icon sang phải
+
+            Icon(
+                imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = "Icon Favorite",
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable {
+                        if (!isUserLoggedIn()) {
+                            Toast.makeText(context, "Vui lòng đăng nhập để lưu công việc", Toast.LENGTH_SHORT).show()
+                            return@clickable
+                        }
+                        isFavorite = !isFavorite
+                        jobVM.updateFavoriteApi(jobId = jobId, state = isFavorite)
+                    },
+                tint = if (isFavorite) Color.Red else Color.Gray,
+            )
+
             IconButton(onClick = { /* Share */ }) {
                 Icon(Icons.Filled.Share, contentDescription = "Share", tint = Color.White)
             }
-            ThreeDotsMenu()
+            ThreeDotsMenu(navController, jobId)
         },
-        actionsBot = { BottomActionBar(navController, jobId) }
+        actionsBot = { BottomActionBar(navController, viewModel ) }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            JobDetailContent(viewModel.uiState.collectAsState().value, navController)
+            JobDetailContentModern(viewModel.uiState.collectAsState().value, navController)
         }
     }
 }
 
 @Composable
-fun JobDetailContent(uiState: JobDetailUiState, navController: NavController) {
-    when (uiState) {
-        is JobDetailUiState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavController) {
+    val userRepository = remember { UserRepository() }
+    val companyRepository = remember { CompanyRepository() }
+    var companyName by remember { mutableStateOf<String?>(null) }
+    var postedByName by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(uiState) {
+        if (uiState is JobDetailUiState.Success) {
+            companyName = companyRepository.getCompanyDetail(uiState.job.companyId).data?.name
+            postedByName = userRepository.getInfo(uiState.job.postedBy).data?.fullName
         }
+    }
+
+    when (uiState) {
         is JobDetailUiState.Success -> {
-            uiState.job.let { job ->
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 80.dp)
-                ) {
-                    item {
+            val job = uiState.job
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF9F9F9))
+                    .padding(bottom = 80.dp)
+            ) {
+                item {
+                    Box {
                         AsyncImage(
                             model = job.jobImage ?: R.drawable.placeholder,
                             contentDescription = "Job Image",
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(bottom = 8.dp),
-                            contentScale = ContentScale.Crop,
-                            error = painterResource(id = R.drawable.error)
+                                .height(250.dp)
+                                .padding(top = 80.dp)
                         )
-                    }
-                    // Nhóm thông tin công việc thành danh sách
-                    items(
-                        listOf(
-                            Triple(Icons.Default.AttachMoney, "Salary", "${job.salaryMin ?: "N/A"} - ${job.salaryMax ?: "N/A"} ${job.currency}" to Pair(LightPurple, LightPurple)),
-                            Triple(Icons.Default.Business, "Company", "Company ID: ${job.companyId}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Person, "Posted By", "Posted By: ${job.postedBy}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.LocationOn, "Location", job.location to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Work, "Job Type", job.jobType to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Badge, "Experience Level", job.experienceLevel to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Group, "Quantity", "Số lượng: ${job.quantity}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.People, "Gender Requirement", "Giới tính: ${job.genderRequire}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.Verified, "Status", "Trạng thái: ${job.status}" to Pair(Color.Gray, Color.Black)),
-                            Triple(Icons.Default.AccessTime, "Created At", "Đăng ngày: ${job.createdAt}" to Pair(Color.Gray, Color.Gray)),
-                        )
-                    ) { (icon, desc, textAndColors) ->
-                        val (text, colors) = textAndColors
-                        CustomInfoBox(
-                            icon = icon,
-                            contentDescription = desc,
-                            text = text,
-                            iconTint = colors.first,
-                            textColor = colors.second
-                        )
-                    }
-                    // Deadline nếu có
-                    if (!job.deadline.isNullOrEmpty()) {
-                        item {
-                            CustomInfoBox(
-                                icon = Icons.Default.CalendarMonth,
-                                contentDescription = "Deadline",
-                                text = "Hạn nộp: ${job.deadline}",
-                                textColor = Color.Gray
-                            )
-                        }
-                    }
-                    // Các phần mô tả, yêu cầu, quyền lợi
-                    items(
-                        listOf(
-                            "Mô tả công việc" to job.description,
-                            "Yêu cầu" to job.requirements.orEmpty(),
-                            "Quyền lợi" to job.benefits.orEmpty()
-                        )
-                    ) { (title, content) ->
-                        CustomSectionBox(title = title, content = content)
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Việc tương tự",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        val jobViewModel: JobViewModel = viewModel()
-                        when (val uiState = jobViewModel.uiState.collectAsState().value) {
-                            is JobUiState.Loading -> {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                            is JobUiState.Success -> {
-                                uiState.jobs?.let {
-                                    RecommendedJobsList(
-                                        jobVM = jobViewModel,
-                                        jobs = it,
-                                        navController = navController
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color.Transparent, Color(0xAA000000)),
+                                        startY = 100f
                                     )
-                                }
-                            }
-                            is JobUiState.Error -> {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
-                                }
+                                ),
+                            contentAlignment = Alignment.BottomStart
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    text = job.title,
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = companyName ?: "",
+                                    color = Color.LightGray,
+                                    fontSize = 14.sp
+                                )
                             }
                         }
                     }
                 }
+
+                item { InfoCard(icon = Icons.Default.AttachMoney, title = "Mức lương", value = "${job.salaryMin} - ${job.salaryMax} ${job.currency}") }
+                item { InfoCard(icon = Icons.Default.Person, title = "Người đăng", value = postedByName ?: "") }
+                item { InfoCard(icon = Icons.Default.Work, title = "Hình thức", value = job.jobType.toVietnameseJobType()) }
+                item { InfoCard(icon = Icons.Default.Badge, title = "Kinh nghiệm", value = job.experienceLevel.toVietnameseExperience()) }
+                item { InfoCard(icon = Icons.Default.People, title = "Giới tính", value = job.genderRequire.toVietnameseGender()) }
+                item { InfoCard(Icons.Default.Group, "Số lượng", "${job.quantity}") }
+                item { InfoCard(Icons.Default.Verified, "Trạng thái", job.status.toVietnameseStatus()) }
+                item { InfoCard(Icons.Default.AccessTime, "Ngày đăng", job.createdAt) }
+                if (!job.deadline.isNullOrEmpty()) {
+                    item { InfoCard(Icons.Default.CalendarMonth, "Hạn nộp", job.deadline ?: "") }
+                }
+                item { InfoCard(Icons.Default.LocationOn, "Địa điểm", job.location) }
+                item {
+                    DetailSectionCard(title = "Mô tả công việc", content = job.description)
+                }
+                item {
+                    DetailSectionCard(title = "Yêu cầu", content = job.requirements.orEmpty())
+                }
+                item {
+                    DetailSectionCard(title = "Quyền lợi", content = job.benefits.orEmpty())
+                }
+
             }
         }
+
+        is JobDetailUiState.Loading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
         is JobDetailUiState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = uiState.message,
-                    color = Color.Red,
-                    fontSize = 14.sp
-                )
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Lỗi: ${uiState.message}", color = Color.Red)
             }
         }
-        is JobDetailUiState.Idle -> {
-            // Không hiển thị gì
+
+        else -> {}
+    }
+}
+
+@Composable
+fun InfoCard(icon: ImageVector, title: String, value: String) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(6.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(icon, contentDescription = title, tint = Color(0xFF4A5BCB), modifier = Modifier.size(28.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(title, fontSize = 14.sp, color = Color.Gray)
+                Text(value, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            }
         }
     }
+}
+
+@Composable
+fun DetailSectionCard(title: String, content: String) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(6.dp),
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = content, fontSize = 14.sp)
+        }
+    }
+}
+
+fun String.toVietnameseJobType(): String = when (this) {
+    "FULL_TIME" -> "Toàn thời gian"
+    "PART_TIME" -> "Bán thời gian"
+    "CONTRACT" -> "Hợp đồng"
+    "INTERNSHIP" -> "Thực tập"
+    "FREELANCE" -> "Tự do"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseExperience(): String = when (this) {
+    "ENTRY" -> "Mới vào nghề"
+    "MID_LEVEL" -> "Trung cấp"
+    "SENIOR" -> "Cao cấp"
+    "LEADER" -> "Trưởng nhóm"
+    "MANAGER" -> "Quản lý"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseGender(): String = when (this) {
+    "MALE" -> "Nam"
+    "FEMALE" -> "Nữ"
+    "ANY" -> "Không yêu cầu"
+    else -> "Không xác định"
+}
+
+fun String.toVietnameseGender1(): String = when (this) {
+    "Male" -> "Nam"
+    "Female" -> "Nữ"
+    "Other" -> "Không xác định"
+    else -> ""
+}
+
+fun String.toVietnameseStatus(): String = when (this) {
+    "ACTIVE" -> "Còn tuyển"
+    "CLOSED" -> "Đã đóng"
+    "DRAFT" -> "Bản nháp"
+    "EXPIRED" -> "Hết hạn"
+    else -> "Không xác định"
 }

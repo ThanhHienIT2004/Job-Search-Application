@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.ui.components.topBar
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ fun TitleTopBar(
 ) {
     Text(
         text = text,
-        fontSize = 32.sp, fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.headlineLarge,
         modifier = modifier.padding(start = 10.dp),
         color = Color.White
     )

@@ -7,6 +7,8 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+.idea/
+git rm --cached .idea/inspectionProfiles/Project_Default.xml
 .DS_Store
 /build
 /captures
@@ -14,3 +16,11 @@
 .cxx
 local.properties
 app/src/main/java/com/mobile/jobsearchapplication/network/ApiClient.kt
+/app/caches/
+/app/wrapper/dists/
+/app/wrapper/caches/
+app/daemon/
+app/kotlin-profile/
+app/android/FakeDependency.jar
+app/.tmp/
+app/native/

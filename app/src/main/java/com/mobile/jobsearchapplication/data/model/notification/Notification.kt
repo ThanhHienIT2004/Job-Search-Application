@@ -4,27 +4,30 @@ import com.google.gson.annotations.SerializedName
 import com.mobile.jobsearchapplication.ui.features.notification.SingleNotification
 
 data class Notification(
+    @SerializedName("Id") val Id: Long? = null,
     @SerializedName("userId") val userId: String? = null,
     @SerializedName("title") val title: String? = null,
-    @SerializedName("description") val message: String? = null,
-    @SerializedName("type") val typeNotification: String? = null,
-    @SerializedName("imageRes") val avatar: Int? = null,
-    @SerializedName("createAt") val createAt: String? = null,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("type") val type: String? = null,
+    @SerializedName("imageRes") val avatar: String? = null,
+    @SerializedName("createdAt") val createdAt: String? = null,
     @SerializedName("senderId") val senderID: String? = null,
     @SerializedName("senderName") val senderName: String? = null,
-    @SerializedName("isRead") val isRead: Boolean? = false
+    @SerializedName("isRead") val isRead: Boolean? = false,
+    @SerializedName("jobId") val relatedId: String? = null
 ) {
     fun toSingleNotification() = SingleNotification(
-        avatar = avatar ?: 0,
+        id = Id ?: "",
+        avatar = avatar ?: "",
         title = title ?: "",
-        message = message ?: "",
-        createAt = createAt,
+        description = description ?: "",
+        createdAt = createdAt,
         senderID = senderID ?: "",
+        userId = userId ?: "",
         senderName = senderName ?: "Unknown",
-        typeNotification = typeNotification ?: "",
-        isRead = isRead ?:false
-
-
+        type = type ?: "",
+        isRead = isRead == false,
+        relateId = relatedId ?: ""
     )
 }
 

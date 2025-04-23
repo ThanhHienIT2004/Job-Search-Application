@@ -1,6 +1,7 @@
 package com.mobile.jobsearchapplication.ui.features.saved
 
 import androidx.lifecycle.viewModelScope
+import com.mobile.jobsearchapplication.data.model.job.AppliedJobs
 import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.data.repository.job.JobRepository
 import com.mobile.jobsearchapplication.data.repository.user.UserRepository
@@ -16,7 +17,7 @@ sealed class SavedUiState{
     data object Loading: SavedUiState()
 
     data class Success(
-        val appliedJobs: List<Job>? = emptyList(),
+        val appliedJobs: List<AppliedJobs>? = emptyList(),
         val postedJobs: List<Job>? = emptyList(),
         val favoriteJobs: List<Job>? = emptyList()
     ): SavedUiState()
@@ -75,13 +76,13 @@ class SavedViewModel : BaseViewModel() {
     fun loadAppliedJobs() {
         viewModelScope.launch {
             try {
-                val favoriteJobs = withContext(Dispatchers.IO) {
+                val appliedJobs = withContext(Dispatchers.IO) {
                     jobRepository.getAppliedJobs(getLoggedInUserId()).data
                 }
 
                 _uiState.value = when (val current = _uiState.value) {
-                    is SavedUiState.Success -> current.copy(appliedJobs = favoriteJobs)
-                    else -> SavedUiState.Success(appliedJobs = favoriteJobs)
+                    is SavedUiState.Success -> current.copy(appliedJobs = appliedJobs)
+                    else -> SavedUiState.Success(appliedJobs = appliedJobs)
                 }
             } catch (e: Exception) {
                 _uiState.value = SavedUiState.Error("Error fetching favorite jobs: ${e.message}")

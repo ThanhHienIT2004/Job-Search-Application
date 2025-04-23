@@ -1,11 +1,14 @@
-package com.mobile.jobsearchapplication.ui.features.user
+package com.mobile.jobsearchapplication.ui.features.menuUser
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -18,23 +21,26 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.google.android.play.integrity.internal.f
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.bottomBar.BottomNavBar
 import com.mobile.jobsearchapplication.ui.components.menuBar.user.MenuBarUser
+import com.mobile.jobsearchapplication.ui.components.menuBar.user.MenuBarUserViewModel
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.utils.DeviceSizeUtils
+import com.mobile.jobsearchapplication.utils.ThemePreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun UserScreen(
+fun MenuUserScreen(
     navController: NavController,
     viewModel: UserViewModel = viewModel()
 ) {
@@ -102,7 +108,6 @@ fun TopUserScreen(
                 modifier = Modifier.weight(1f)
                     .padding(10.dp, 0.dp)
                     .size(70.dp),
-
             )
 
             Column(
@@ -116,12 +121,12 @@ fun TopUserScreen(
                             navController.navigate("auth_screen")
                         }
                     }else { modifier },
-                    fontSize = 22.sp, fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
                     color = Color.White
                 )
                 Spacer(Modifier.height(10.dp))
                 Text("Super Quang",
-                    fontSize = 15.sp, fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )
             }
@@ -134,6 +139,19 @@ fun CenterUserScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val themePreferences = remember { ThemePreferences(context) }
+    val themeState by themePreferences.isDarkTheme.collectAsState(initial = isSystemInDarkTheme())
+    val menuBarUserViewModel: MenuBarUserViewModel = viewModel()
+    val coroutineScope = rememberCoroutineScope()
+
+    menuBarUserViewModel.listItemForSettings[0].action = {
+        coroutineScope.launch {
+//            themePreferences.saveThemeToDataStore(!themeState)
+            Toast.makeText(context, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Surface(
         modifier = modifier.fillMaxWidth(0.8f)
             .fillMaxHeight(0.085f)

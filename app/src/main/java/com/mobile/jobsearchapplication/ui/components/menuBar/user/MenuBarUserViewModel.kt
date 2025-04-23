@@ -31,7 +31,7 @@ class MenuBarUserViewModel: ViewModel() {
         MenuItemPosts.AppliedJobs
     )
 
-    private val listItemForSettings = listOf(
+    val listItemForSettings = listOf(
         MenuItemSettings.DarkMode,
         MenuItemSettings.Notifications
     )

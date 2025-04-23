@@ -1,18 +1,19 @@
 package com.mobile.jobsearchapplication.ui.features.profile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
-import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.data.model.user.UpdateInfoUser
 import com.mobile.jobsearchapplication.data.repository.user.UserRepository
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldModel
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getLoggedInUserId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -29,7 +30,6 @@ data class InfoProfileState(
 data class ProfileState(
     var isModeEditor: Boolean = false,
     val isUpdateInfoSuccess: Boolean = false,
-    val isZoomImage: Boolean = false
 )
 
 class ProfileViewModel: BaseViewModel() {
@@ -54,12 +54,6 @@ class ProfileViewModel: BaseViewModel() {
         }
     }
 
-    fun onZoomImage() {
-        _profileState.value = profileState.value.copy(
-            isZoomImage = !_profileState.value.isZoomImage
-        )
-    }
-
     // -----------Info State--------------
     fun getInfoApi() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -79,14 +73,32 @@ class ProfileViewModel: BaseViewModel() {
         }
     }
 
+    fun loadBitmapFromUri(context: Context, uri: Uri): Bitmap? {
+        return try {
+            context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     // --------------------- Text Field Update Profile ---------------------------
+    val bioItem = TextFieldModel(
+        onValueChange = { onChangeValueInfo(it, "bio") },
+        label = "Miêu tả về bản thân",
+        messageError = "Tối đa 250 ký tự"
+    )
     val fullNameItem = TextFieldModel(
         onValueChange = { onChangeValueInfo(it, "fullName") },
-        label = "Họ và tên"
+        label = "Họ và tên",
+        messageError = "Tối đa 50 ký tự"
     )
     val phoneNumberItem = TextFieldModel(
         onValueChange = { onChangeValueInfo(it, "phoneNumber") },
-        label = "Số điện thoại"
+        label = "Số điện thoại",
+        messageError = "Số điện thoại không hợp lệ"
     )
     val genderItem = TextFieldModel(
         onValueChange = { onChangeValueInfo(it, "gender") },
@@ -94,16 +106,16 @@ class ProfileViewModel: BaseViewModel() {
     )
 
     val listItemsUpdate = listOf(
+        bioItem,
         fullNameItem,
-        genderItem,
         phoneNumberItem
     )
 
     private fun makeBlankValueInfo() {
         _infoProfileState.value = _infoProfileState.value.copy(
+            bio = "",
             fullName = "",
             gender = "",
-//            birthDay = "",
             phoneNumber = "",
             cvUrl = "",
         )
@@ -111,6 +123,7 @@ class ProfileViewModel: BaseViewModel() {
 
     fun onChangeValueInfo(value: String, field: String) {
         _infoProfileState.value = when (field) {
+            "bio" -> _infoProfileState.value.copy(bio = value)
             "fullName" -> _infoProfileState.value.copy(fullName = value)
             "phoneNumber" -> _infoProfileState.value.copy(phoneNumber = value)
             "birthDay" -> _infoProfileState.value.copy(birthDay = value)
@@ -124,8 +137,8 @@ class ProfileViewModel: BaseViewModel() {
         viewModelScope.launch {
             val uuid = getLoggedInUserId()
             val request = UpdateInfoUser(
-                avatar = "",
-                bio = "",
+                avatar = _infoProfileState.value.avatar,
+                bio = _infoProfileState.value.bio,
                 fullName = _infoProfileState.value.fullName,
                 phoneNumber = _infoProfileState.value.phoneNumber,
                 birthDay = _infoProfileState.value.birthDay,

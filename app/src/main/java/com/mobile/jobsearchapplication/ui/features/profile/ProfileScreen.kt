@@ -14,25 +14,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -48,14 +47,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -64,8 +60,9 @@ import coil.compose.AsyncImage
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
 import com.mobile.jobsearchapplication.ui.components.emptyState.EmptyState
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldCustom
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldDatePicker
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldCustom
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldDatePicker
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldMenu
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.getCurrentUserEmail
@@ -97,32 +94,37 @@ fun ProfileScreen(
 
     BaseScreen(
         actionsTop = {
-            BackButton(navController)
+            BackButton(navController, "menu_screen")
             TitleTopBar(text = "Thông tin cá nhân")
+            Spacer(Modifier.weight(1f))
+            IconUpdateProfile(
+                isEditing = profileState.isModeEditor,
+                onEditClick = { profileVM.onIconEdit() },
+                modifier = Modifier.padding(end = 16.dp)
+            )
         }
     ) { padding ->
-        LazyColumn (
-            modifier = Modifier.fillMaxSize()
-                .background(Color(0xFFF8F8FC))
-                .padding(padding),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState()),
         ) {
-            item {
-                if (!isUserLoggedIn()) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        EmptyState(
-                            icon = R.drawable.img_go_log_in,
-                            message = "Hãy đăng nhập để sử dụng chức năng này",
-                            onClick = { navController.navigate("auth_screen") }
-                        )
-                    }
-                } else {
-                    TopProfileScreen(profileVM)
-                    TabsMenuProfile(profileVM)
+            if (!isUserLoggedIn()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    EmptyState(
+                        icon = R.drawable.img_go_log_in,
+                        message = "Hãy đăng nhập để sử dụng chức năng này",
+                        onClick = { navController.navigate("auth_screen") }
+                    )
                 }
+            } else {
+                TopProfileScreen(profileVM)
+                TabsMenuProfile(profileVM)
             }
         }
     }
@@ -133,46 +135,48 @@ fun TopProfileScreen(
     profileVM: ProfileViewModel,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier.fillMaxWidth()
-            .padding(top = 16.dp, bottom = 20.dp)
+    val infoProfileState by profileVM.infoProfileState.collectAsState()
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(Color.White),
+        elevation = CardDefaults.cardElevation(10.dp),
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.TopCenter),
+        Column (
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_avatar),
                 contentDescription = "Avatar",
                 modifier = Modifier
-                    .size(130.dp)
+                    .size(120.dp)
                     .aspectRatio(1f)
                     .clip(CircleShape)
-                    .border(3.dp, Color.Gray, CircleShape)
-                    .shadow(8.dp, CircleShape)
+                    .border(3.dp, Color.Black, CircleShape)
             )
 
             Text(
                 text = getCurrentUserEmail(),
-                fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                color = Color(0xFF323333),
-                modifier = Modifier.padding(top = 10.dp)
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Black,
+                modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text = "bio hghj",
-                fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                color = Color(0xFF323333),
+                text = infoProfileState.bio,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xB3101010),
                 modifier = Modifier.padding(top = 10.dp)
             )
         }
-
-        IconUpdateProfile(
-            { profileVM.onIconEdit() },
-            Modifier.align(Alignment.TopEnd)
-        )
-
     }
+
+
 }
 
 @Composable
@@ -183,24 +187,35 @@ fun TabsMenuProfile(
     val tabs = listOf("Hồ sơ", "CV")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-    Column {
-        TabRow(
-            selectedTabIndex = selectedTabIndex
-        ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = { Text(title, fontSize = 16.sp, color = Color.Gray) }
-                )
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(Color.White),
+        elevation = CardDefaults.cardElevation(4.dp),
+    ) {
+        Column {
+            TabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = Color.White,
+                contentColor = Color.Black,
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title, style = MaterialTheme.typography.titleMedium) }
+                    )
+                }
             }
-        }
 
-        when (selectedTabIndex) {
-            0 -> if (!profileState.isModeEditor)
+            when (selectedTabIndex) {
+                0 -> if (!profileState.isModeEditor)
                     SectionInfoProfile(profileVM)
                 else SectionUpdatedProfile(profileVM)
-            1 -> SectionCVProfile(profileVM)
+                1 -> SectionCVProfile(profileVM)
+            }
         }
     }
 }
@@ -233,14 +248,14 @@ fun InfoProfileItem(title: String, value: String) {
         Text(
             text = "$title: ",
             modifier = Modifier.weight(1f),
-            fontSize = 16.sp,fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium,
             color = Color.Black,
         )
         Text(
             text = value,
             modifier = Modifier.weight(2f),
-            fontSize = 14.sp,fontWeight = FontWeight.Bold,
-            color = Color(0xB3131313),
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color(0xFF0E1010),
         )
     }
 }
@@ -255,15 +270,14 @@ fun SectionCVProfile(
 
     // State để lưu Uri ảnh tạm thời (trước khi upload)
     var tempAvatarUri by remember { mutableStateOf<Uri?>(null) }
+
     // Launcher để chọn ảnh
     val pickImageLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
             tempAvatarUri = it
-            // Cập nhật avatar tạm thời trong ViewModel
             profileVM.onChangeValueInfo(it.toString(), "cvUrl")
-            // Upload ảnh (hoặc xử lý local)
             profileVM.updateInfoApi()
         }
     }
@@ -273,34 +287,34 @@ fun SectionCVProfile(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // Mở album
             pickImageLauncher.launch("image/*")
         } else {
             Toast.makeText(context, "Quyền truy cập ảnh bị từ chối", Toast.LENGTH_SHORT).show()
         }
     }
 
+    val bitmap = remember(infoProfileState.cvUrl) {
+        if (infoProfileState.cvUrl.isNotBlank() && infoProfileState.cvUrl.startsWith("content://")) {
+            profileVM.loadBitmapFromUri(context, Uri.parse(infoProfileState.cvUrl))
+        } else {
+            "aaaaa"
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .background(Color(0xFFF1F1FD)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (profileState.isModeEditor) {
-            Text(
-                text = "Chỉnh sửa CV",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Ảnh CV
         AsyncImage(
             model = tempAvatarUri ?: infoProfileState.cvUrl.takeIf { it.isNotBlank() }
-            ?: "https://th.bing.com/th/id/OIP.dhFjdSsJIvsp5WrEsGfVQQHaKe?w=1414&h=2000&rs=1&pid=ImgDetMain",
+                    ?: "https://assets.grok.com/users/8892a3bf-ddc4-4dd0-bd6a-ffcc87a4b000/generated/aH1uo7DGtHaJOs5k/image.jpg",
             contentDescription = "Avatar",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
                 .clickable {
                     if (profileState.isModeEditor) {
                         val permission =
@@ -331,18 +345,29 @@ fun SectionUpdatedProfile(
     modifier: Modifier = Modifier
 ) {
     val infoProfileState by profileVM.infoProfileState.collectAsState()
+
+    profileVM.bioItem.value = infoProfileState.bio
+    profileVM.bioItem.isError = infoProfileState.bio.length > 250
+
     profileVM.fullNameItem.value = infoProfileState.fullName
+    profileVM.fullNameItem.isError = infoProfileState.fullName.length > 50
+
     profileVM.genderItem.value = infoProfileState.gender
+
     profileVM.phoneNumberItem.value = infoProfileState.phoneNumber
+    profileVM.phoneNumberItem.isError = infoProfileState.phoneNumber.length > 11
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         profileVM.listItemsUpdate.forEach {
             TextFieldCustom(model = it, isNumeric = it.label == "Số điện thoại")
         }
+
+        TextFieldMenu(model = profileVM.genderItem, modifier = Modifier.padding(bottom = 16.dp))
 
         TextFieldDatePicker(
             value = infoProfileState.birthDay,
@@ -351,7 +376,8 @@ fun SectionUpdatedProfile(
 
         Button(
             onClick = { profileVM.updateInfoApi() },
-            modifier = Modifier.padding(0.dp, 10.dp)
+            modifier = Modifier
+                .padding(0.dp, 20.dp)
                 .fillMaxWidth(0.5f)
                 .height(50.dp),
             shape = RoundedCornerShape(10.dp),
@@ -361,7 +387,8 @@ fun SectionUpdatedProfile(
             ) {
             Text(
                 "Cập nhật",
-                fontSize = 20.sp, color = Color.Black
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Black,
             )
         }
     }

@@ -3,7 +3,7 @@ package com.mobile.jobsearchapplication.ui.features.auth.register
 import androidx.lifecycle.viewModelScope
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseViewModel
-import com.mobile.jobsearchapplication.ui.components.textField.auth.TextFieldModel
+import com.mobile.jobsearchapplication.ui.components.textField.account.TextFieldModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

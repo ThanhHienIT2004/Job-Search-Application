@@ -12,10 +12,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
+import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 
 @Composable
 fun BackButton(
     navController: NavController,
+    route: String,
     modifier: Modifier = Modifier
 ) {
     Icon(
@@ -24,7 +26,12 @@ fun BackButton(
         modifier = modifier
             .padding(start = 10.dp)
             .size(32.dp)
-            .clickable { navController.popBackStack() },
+            .clickable { navController.navigate(route) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = false
+                }
+                launchSingleTop = true
+            } },
 
         tint = Color.White
      )

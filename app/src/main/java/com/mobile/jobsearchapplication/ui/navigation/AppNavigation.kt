@@ -1,5 +1,7 @@
 package com.mobile.jobsearchapplication.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
@@ -16,20 +18,22 @@ import com.mobile.jobsearchapplication.ui.features.auth.AuthScreen
 import com.mobile.jobsearchapplication.ui.features.filter.PostFilterScreen
 import com.mobile.jobsearchapplication.ui.features.home.HomeScreen
 import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailScreen
+import com.mobile.jobsearchapplication.ui.features.jobPostManagement.JobPostManagementScreen
 import com.mobile.jobsearchapplication.ui.features.notification.NotificationScreen
 import com.mobile.jobsearchapplication.ui.features.post.PostScreen
 import com.mobile.jobsearchapplication.ui.features.profile.ProfileScreen
 import com.mobile.jobsearchapplication.ui.features.saved.SavedScreen
 import com.mobile.jobsearchapplication.ui.features.search.SearchScreen
-import com.mobile.jobsearchapplication.ui.features.user.UserScreen
+import com.mobile.jobsearchapplication.ui.features.menuUser.MenuUserScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = "home_screen",
+        startDestination = "posted_screen",
     ) {
         composable("home_screen") { HomeScreen(navController) }
 
@@ -47,7 +51,8 @@ fun AppNavigation() {
         composable("notificationsState") { NotificationScreen(navController) }
 
         // menu
-        composable("account") { UserScreen(navController) }
+        composable("auth_screen") {  AuthScreen(navController) }
+        composable("menu_screen") { MenuUserScreen(navController) }
         composable("profile_screen") { ProfileScreen(navController) }
         composable("update_profile_screen") { ProfileScreen(navController) }
 
@@ -56,7 +61,11 @@ fun AppNavigation() {
         composable("favorite_screen") { SavedScreen(navController) }
         composable("posted_screen") {  SavedScreen(navController) }
 
-        composable("auth_screen") {  AuthScreen(navController) }
+        composable("job_post_management/{query}") { backStackEntry ->
+            val query = backStackEntry.arguments?.getString("query") ?: ""
+            JobPostManagementScreen(navController, query)
+        }
+
         composable("search_screen") {
             SearchScreen(navController)
         }
@@ -65,7 +74,7 @@ fun AppNavigation() {
 
 
 //            composable("detail_job_screen") { JobDetailScreen(navController) }
-        composable("adv_job_search/{query}") { backStackEntry ->
+        composable("filter_screen/{query}") { backStackEntry ->
             val query = backStackEntry.arguments?.getString("query") ?: ""
             PostFilterScreen(navController, query)
         }
@@ -89,6 +98,22 @@ fun AppNavigation() {
             val jobId = backStackEntry.arguments?.getString("jobId")
             JobDetailScreen(jobId = jobId ?: "", navController = navController)
         }
+
+//        composable(
+//            route = "edit_job_screen/{jobId}",
+//            arguments = listOf(navArgument("jobId") { type = NavType.StringType }),
+//            enterTransition = {
+//                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(700))
+//            },
+//            exitTransition = {
+//                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(700))
+//            }
+//        ) { backStackEntry ->
+//            val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
+//            JobEditScreen(jobId = jobId, navController = navController)
+//        }
+
+
     }
 }
 

@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.mobile.jobsearchapplication.ui.features.user.UserViewModel
+import com.mobile.jobsearchapplication.ui.features.menuUser.UserViewModel
 
 sealed class MenuBarUser(val icon: ImageVector, val title: String) {
     data object Profile: MenuBarUser(Icons.Filled.Person, "Icon Profile")
@@ -25,7 +25,7 @@ sealed class MenuBarUser(val icon: ImageVector, val title: String) {
     data object Logout: MenuBarUser(Icons.Filled.ExitToApp, "Icon Logout")
 }
 
-open class MenuItemUser(val icon: ImageVector, val title: String, val route: String? = null, val action: (() -> Unit)? = {})
+open class MenuItemUser(val icon: ImageVector, val title: String, val route: String? = null, var action: (() -> Unit)? = {})
 
 sealed class MenuItemProfile(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
     data object PersonalInfo: MenuItemProfile(Icons.Filled.PersonPin, "Hồ sơ cá nhân", "profile_screen", {})
@@ -40,7 +40,7 @@ sealed class MenuItemPosts(icon: ImageVector, title: String, route: String? = nu
 }
 
 sealed class MenuItemSettings(icon: ImageVector, title: String, route: String? = null, action: (() -> Unit)? = {}) : MenuItemUser(icon, title, route, action) {
-    data object DarkMode: MenuItemSettings(Icons.Filled.DarkMode, "Chế độ tối", )
+    data object DarkMode: MenuItemSettings(Icons.Filled.DarkMode, "Chế độ tối" )
     data object Notifications: MenuItemSettings(Icons.Filled.EditNotifications, "Cài đặt thông báo")
 }
 

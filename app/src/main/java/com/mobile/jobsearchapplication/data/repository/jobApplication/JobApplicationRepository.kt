@@ -1,5 +1,7 @@
 package com.mobile.jobsearchapplication.data.repository.jobApplication
 
+import com.mobile.jobsearchapplication.data.model.BaseResponse
+import com.mobile.jobsearchapplication.data.model.jobapplication.AppliedUserWithApplication
 import com.mobile.jobsearchapplication.data.remote.jobApplication.JobApplicationApiService
 import com.mobile.jobsearchapplication.data.remote.jobApplication.JobApplicationResponse
 import com.mobile.jobsearchapplication.utils.RetrofitClient
@@ -26,5 +28,9 @@ class JobApplicationRepository : JobApplicationApiService {
             additionalInfo = additionalInfo,
             cv = cv
         )
+    }
+
+    override suspend fun getAppliedUsersByJobId(jobId: String): BaseResponse<List<AppliedUserWithApplication>> {
+        return api.getAppliedUsersByJobId(jobId)
     }
 }

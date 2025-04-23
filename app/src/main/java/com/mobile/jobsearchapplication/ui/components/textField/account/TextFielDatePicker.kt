@@ -1,5 +1,6 @@
-package com.mobile.jobsearchapplication.ui.components.textField.auth
+package com.mobile.jobsearchapplication.ui.components.textField.account
 
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,9 +56,11 @@ fun TextFieldDatePicker(
     )
 
     if (isClickIcon) {
-        DatePickerModal(
-            onDateSelected
-        ) { isClickIcon = false }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DatePickerModal(
+                onDateSelected
+            ) { isClickIcon = false }
+        }
     }
 
 }

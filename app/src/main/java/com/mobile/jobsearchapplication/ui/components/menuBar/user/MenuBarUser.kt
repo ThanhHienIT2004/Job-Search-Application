@@ -72,7 +72,7 @@ fun MenuItemUser(
                 .fillMaxWidth()
                 .padding(12.dp, 8.dp)
                 .clickable {
-                    if (item.action != null) { item.action.invoke() }
+                    if (item.action != null) { item.action!!.invoke() }
                     if (item.route != null) { navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
@@ -89,7 +89,7 @@ fun MenuItemUser(
             ) {
                 Icon(item.icon, contentDescription = item.title, modifier = Modifier.size(32.dp))
                 Spacer(modifier = Modifier.width(16.dp))
-                Text(text = item.title, fontSize = 18.sp)
+                Text(text = item.title, style = MaterialTheme.typography.titleMedium)
             }
         }
     }
