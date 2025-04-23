@@ -56,6 +56,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation ("com.google.accompanist:accompanist-placeholder-material:0.33.2-alpha")
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation ("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
 
     // firebase
     implementation(platform(libs.firebase.bom))
@@ -103,6 +105,7 @@ dependencies {
     implementation(libs.play.services.fido)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.android)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

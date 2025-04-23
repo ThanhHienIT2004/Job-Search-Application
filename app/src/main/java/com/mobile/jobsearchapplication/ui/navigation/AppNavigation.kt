@@ -98,6 +98,22 @@ fun AppNavigation() {
             val jobId = backStackEntry.arguments?.getString("jobId")
             JobDetailScreen(jobId = jobId ?: "", navController = navController)
         }
+
+//        composable(
+//            route = "edit_job_screen/{jobId}",
+//            arguments = listOf(navArgument("jobId") { type = NavType.StringType }),
+//            enterTransition = {
+//                slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(700))
+//            },
+//            exitTransition = {
+//                slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(700))
+//            }
+//        ) { backStackEntry ->
+//            val jobId = backStackEntry.arguments?.getString("jobId") ?: ""
+//            JobEditScreen(jobId = jobId, navController = navController)
+//        }
+
+
     }
 }
 

@@ -67,7 +67,7 @@ class SearchViewModel(private val dataStore: DataStore<Preferences>) : ViewModel
                 val sortedJobs = filteredJobs.sortedByDescending { it.createdAt }
 
                 _uiState.value = SearchUiState.Success(sortedJobs)
-                if (query.isNotEmpty() && isFullSearch) {
+                if (query.isNotBlank()&& isFullSearch) {
                     saveSearchQuery(query)
                 }
             } catch (e: Exception) {

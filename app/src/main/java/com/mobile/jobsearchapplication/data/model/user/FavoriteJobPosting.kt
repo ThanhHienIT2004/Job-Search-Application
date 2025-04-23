@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
 data class FavoriteJobPosting(
-    @SerializedName("jobId") val jobId: UUID,
+    @SerializedName("jobId") val jobId: String,
     @SerializedName("status") val status: Boolean
 )

@@ -2,6 +2,7 @@ package com.mobile.jobsearchapplication.data.remote.notification
 
 
 import com.mobile.jobsearchapplication.data.model.ApiResponse
+import com.mobile.jobsearchapplication.data.model.BaseResponse
 import com.mobile.jobsearchapplication.data.model.NotificationListResponse
 import com.mobile.jobsearchapplication.data.model.notification.Notification
 import com.mobile.jobsearchapplication.data.model.user.User
@@ -27,13 +28,13 @@ interface   NotificationApiService {
     // Trong NotificationApiService.kt
     @PATCH("notification/{id}/read")
     suspend fun updateNotificationReadStatus(
-        @Path("id") notificationId: String,
+        @Path("id") notificationId: Long,
         @Body isRead: Boolean
     ): ApiResponse<Notification>
 
     // Tạo thông báo
     @POST("notification/add")
-    suspend fun createNotification(@Body notification: Notification): ApiResponse<Notification>
+    suspend fun createNotification(@Body notification: Notification): BaseResponse<Notification>
 
     // Xóa thông báo theo ID
     @DELETE("delete/{id}")

@@ -3,7 +3,6 @@ package com.mobile.jobsearchapplication.ui.features.application
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,20 +36,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailUiState
+import com.mobile.jobsearchapplication.ui.features.jobDetail.JobDetailViewModel
+import com.mobile.jobsearchapplication.ui.features.notification.NotificationViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationScreen(
-    jobId: String,
+    jobDtVM: JobDetailViewModel,
     onClose: () -> Unit,
     onExpand: (Boolean) -> Unit = {}
 ) {
     val viewModel: ApplicationViewModel = viewModel()
+    val notificationVM: NotificationViewModel = viewModel()
     val infoProfileState by viewModel.infoProfileState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val formState by viewModel.formState.collectAsState()
-    val currentUserMail = FireBaseUtils.getCurrentUserEmail() ?: "N/A"
+    val currentUserMail = FireBaseUtils.getCurrentUserEmail()
+    val jobDtUiState by jobDtVM.uiState.collectAsState()
+    val job = (jobDtUiState as JobDetailUiState.Success).job
 
     // FocusRequester để chuyển focus giữa TextField
     val coverLetterFocusRequester = remember { FocusRequester() }
@@ -179,7 +184,7 @@ fun ApplicationScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "Đã có lỗi xảy ra",
+                            text = "Bạn đã apply công việc này rồi!!",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -191,7 +196,7 @@ fun ApplicationScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp) )
                         TextButton(
                             onClick = { viewModel.resetApplicationState() },
                             colors = ButtonDefaults.textButtonColors(
@@ -199,7 +204,7 @@ fun ApplicationScreen(
                             )
                         ) {
                             Text(
-                                text = "Thử lại",
+                                text = "Thoát",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp
                             )
@@ -414,7 +419,10 @@ fun ApplicationScreen(
                 uiState !is ApplicationState.Loading) 1f else 0.5f
         )
         Button(
-            onClick = { viewModel.submitApplication(jobId) },
+            onClick = {
+                viewModel.submitApplication(job.id.toString())
+                notificationVM.createNotification(job.postedBy)
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp)

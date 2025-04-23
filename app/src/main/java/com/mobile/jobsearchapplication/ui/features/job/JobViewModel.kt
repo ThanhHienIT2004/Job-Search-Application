@@ -88,7 +88,7 @@ class JobViewModel : ViewModel() {
         }
     }
 
-    fun updateFavoriteApi(jobId: UUID, state: Boolean) {
+    fun updateFavoriteApi(jobId: String, state: Boolean) {
         viewModelScope.launch {
             val userId = getLoggedInUserId()
             val request = FavoriteJobPosting(jobId, state)
