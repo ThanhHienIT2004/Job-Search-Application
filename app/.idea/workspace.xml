@@ -5,43 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3edee151-ed63-4e3c-8504-ae5788c3d6a7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/job/JobDetails.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/token/Token.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/remote/token/TokenApiService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/token/TokenRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobEdit/JobEditScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobEdit/JobEditViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/utils/TokenUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/job/SimilarJob.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/notification/Notification.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/notification/Notification.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/user/FavoriteJobPosting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/model/user/FavoriteJobPosting.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/remote/job/JobApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/remote/job/JobApiService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/remote/notification/NotificationApiService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/remote/notification/NotificationApiService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/company/CompanyRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/company/CompanyRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/notification/NotificationRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/notification/NotificationRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/user/UserRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/data/repository/user/UserRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/components/topBar/IconNotification.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/components/topBar/IconNotification.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/components/topBar/SearchButton.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/components/topBar/SearchButton.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/application/ApplicationScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/application/ApplicationScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/auth/login/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/auth/login/LoginViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/home/HomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/home/HomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/job/JobScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/job/JobScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/job/JobViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/job/JobViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobDetail/JobDetailComponents.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobDetail/JobDetailComponents.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobDetail/JobDetailScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/jobDetail/JobDetailScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/notification/NotificationsScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/notification/NotificationsScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/notification/NotificationsViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/notification/NotificationsViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/post/PostScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/post/PostScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/post/PostViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/post/PostViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/search/SearchScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/search/SearchScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/search/SearchViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/features/search/SearchViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/navigation/AppNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/ui/navigation/AppNavigation.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/utils/FireBaseUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/utils/FireBaseUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/utils/RetrofitClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mobile/jobsearchapplication/utils/RetrofitClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,18 +31,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "QUANGNOTFUN"
-  }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/ThanhHienIT2004/Job-Search-Application.git",
-    "accountId": "df2cf364-b5a1-47fa-98d8-46f0fd120def"
-  }
-}]]></component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -96,7 +49,7 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Merging Quang",
+    "git-widget-placeholder": "Huy2k",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Mobile_Project/Job Search Application"
   }
