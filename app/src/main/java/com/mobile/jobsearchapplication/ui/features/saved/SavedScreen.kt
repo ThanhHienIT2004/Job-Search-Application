@@ -128,7 +128,9 @@ fun SavedScreen(
 
             when{
                 savedUiState.value is SavedUiState.Loading || jobUiState.value is JobUiState.Loading -> {
-                    JobItemSkeleton()
+                    repeat(10) {
+                        JobItemSkeleton()
+                    }
                 }
                 jobUiState.value is JobUiState.Error -> { (jobUiState.value as JobUiState.Error).message }
                 savedUiState.value is SavedUiState.Error -> { (savedUiState.value as SavedUiState.Error).message }
