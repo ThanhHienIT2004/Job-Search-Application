@@ -159,7 +159,7 @@ fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavControll
                     }
                 }
 
-                item { InfoCard(icon = Icons.Default.AttachMoney, title = "Mức lương", value = "${job.salaryMin} - ${job.salaryMax} ${job.currency}") }
+                item { InfoCard(icon = Icons.Default.AttachMoney, title = "Mức lương", value = "${job.salaryMin} - ${job.salaryMax} ${job.currency}/ ${job.salaryPeriod.toVietnamesePeriod()}") }
                 item { InfoCard(icon = Icons.Default.Person, title = "Người đăng", value = postedByName ?: "") }
                 item { InfoCard(icon = Icons.Default.Work, title = "Hình thức", value = job.jobType.toVietnameseJobType()) }
                 item { InfoCard(icon = Icons.Default.Badge, title = "Kinh nghiệm", value = job.experienceLevel.toVietnameseExperience()) }
@@ -266,7 +266,12 @@ fun String.toVietnameseGender(): String = when (this) {
     "ANY" -> "Không yêu cầu"
     else -> "Không xác định"
 }
-
+fun String.toVietnamesePeriod(): String = when (this) {
+    "MONTHLY" -> "Tháng"
+    "WEEKLY" -> "Tuần"
+    "DAYLY" -> "Ngày"
+    else -> ""
+}
 fun String.toVietnameseGender1(): String = when (this) {
     "Male" -> "Nam"
     "Female" -> "Nữ"

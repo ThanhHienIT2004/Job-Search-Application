@@ -11,6 +11,7 @@ data class Job(
     @SerializedName("salaryMin") val salaryMin: BigDecimal?,
     @SerializedName("salaryMax") val salaryMax: BigDecimal?,
     @SerializedName("currency") val currency: String,
+    @SerializedName("salaryPeriod") val salaryPeriod: String,
     @SerializedName("location") val location: String,
     @SerializedName("jobType") val jobType: String,
     @SerializedName("experienceLevel") val experienceLevel: String,
