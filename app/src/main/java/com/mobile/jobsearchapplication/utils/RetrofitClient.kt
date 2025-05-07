@@ -15,7 +15,7 @@ object RetrofitClient {
     private const val BASE_URL =
 //        "http://192.168.112.102:8080/"
 //        "http://192.168.2.193:8080/"
-        "http://192.168.112.101:8080/"
+        "http://192.168.1.23:8080/"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
