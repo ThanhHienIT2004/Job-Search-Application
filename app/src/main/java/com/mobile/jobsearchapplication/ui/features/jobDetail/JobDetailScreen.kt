@@ -36,6 +36,13 @@ import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.features.job.JobUiState
 import com.mobile.jobsearchapplication.ui.features.job.JobViewModel
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
+import java.math.BigDecimal
+import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Currency
+import java.util.Locale
 import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -96,6 +103,7 @@ fun JobDetailScreen(jobId: String, navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavController) {
     val userRepository = remember { UserRepository() }
@@ -159,14 +167,14 @@ fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavControll
                     }
                 }
 
-                item { InfoCard(icon = Icons.Default.AttachMoney, title = "Mức lương", value = "${job.salaryMin} - ${job.salaryMax} ${job.currency}") }
+                item { InfoCard(icon = Icons.Default.AttachMoney, title = "Mức lương", value = "${job.salaryMin?.formatVND()} - ${job.salaryMax?.formatVND()} / ${job.salaryPeriod.toVietnamesePeriod()}")}
                 item { InfoCard(icon = Icons.Default.Person, title = "Người đăng", value = postedByName ?: "") }
                 item { InfoCard(icon = Icons.Default.Work, title = "Hình thức", value = job.jobType.toVietnameseJobType()) }
                 item { InfoCard(icon = Icons.Default.Badge, title = "Kinh nghiệm", value = job.experienceLevel.toVietnameseExperience()) }
                 item { InfoCard(icon = Icons.Default.People, title = "Giới tính", value = job.genderRequire.toVietnameseGender()) }
                 item { InfoCard(Icons.Default.Group, "Số lượng", "${job.quantity}") }
                 item { InfoCard(Icons.Default.Verified, "Trạng thái", job.status.toVietnameseStatus()) }
-                item { InfoCard(Icons.Default.AccessTime, "Ngày đăng", job.createdAt) }
+                item { InfoCard(Icons.Default.AccessTime, "Ngày đăng", job.createdAt.formatIsoLocalDateTime()) }
                 if (!job.deadline.isNullOrEmpty()) {
                     item { InfoCard(Icons.Default.CalendarMonth, "Hạn nộp", job.deadline ?: "") }
                 }
@@ -195,9 +203,14 @@ fun JobDetailContentModern(uiState: JobDetailUiState, navController: NavControll
                 Text("Lỗi: ${uiState.message}", color = Color.Red)
             }
         }
-
         else -> {}
     }
+}
+
+fun BigDecimal.formatVND(): String {
+    val format = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+    format.currency = Currency.getInstance("VND")
+    return format.format(this)
 }
 
 @Composable
@@ -260,20 +273,34 @@ fun String.toVietnameseExperience(): String = when (this) {
     else -> "Không xác định"
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.formatIsoLocalDateTime(): String {
+    return try {
+        val dateTime = LocalDateTime.parse(this, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        dateTime.format(formatter)
+    } catch (e: Exception) {
+        this // Trả lại chuỗi gốc nếu lỗi
+    }
+}
 fun String.toVietnameseGender(): String = when (this) {
     "MALE" -> "Nam"
     "FEMALE" -> "Nữ"
     "ANY" -> "Không yêu cầu"
     else -> "Không xác định"
 }
-
+fun String.toVietnamesePeriod(): String = when (this) {
+    "MONTHLY" -> "Tháng"
+    "WEEKLY" -> "Tuần"
+    "DAYLY" -> "Ngày"
+    else -> ""
+}
 fun String.toVietnameseGender1(): String = when (this) {
     "Male" -> "Nam"
     "Female" -> "Nữ"
     "Other" -> "Không xác định"
     else -> ""
 }
-
 fun String.toVietnameseStatus(): String = when (this) {
     "ACTIVE" -> "Còn tuyển"
     "CLOSED" -> "Đã đóng"

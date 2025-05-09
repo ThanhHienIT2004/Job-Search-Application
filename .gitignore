@@ -24,3 +24,4 @@ app/kotlin-profile/
 app/android/FakeDependency.jar
 app/.tmp/
 app/native/
+app/src/main/java/com/mobile/jobsearchapplication/utils/RetrofitClient.kt

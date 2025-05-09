@@ -42,6 +42,8 @@ import com.mobile.jobsearchapplication.data.model.job.Job
 import com.mobile.jobsearchapplication.ui.components.skeleton.SectionJobSkeleton
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryUiState
 import com.mobile.jobsearchapplication.ui.features.jobCategory.JobCategoryViewModel
+import com.mobile.jobsearchapplication.ui.features.jobDetail.formatVND
+import com.mobile.jobsearchapplication.ui.features.jobDetail.toVietnamesePeriod
 import com.mobile.jobsearchapplication.ui.navigation.NavigationRoute.Companion.baseNavController
 import com.mobile.jobsearchapplication.utils.FireBaseUtils.Companion.isUserLoggedIn
 
@@ -205,7 +207,7 @@ fun JobItem(
                     )
                     Text(
                         text = "Mức lương: ${if (job.salaryMin != null && job.salaryMax != null) {
-                            "${job.salaryMin} - ${job.salaryMax} ${job.currency}"}
+                            "${job.salaryMin.formatVND()} - ${job.salaryMax.formatVND()} / ${job.salaryPeriod.toVietnamesePeriod()}"}
                         else {
                             "Salary not specified"
                         }}",
