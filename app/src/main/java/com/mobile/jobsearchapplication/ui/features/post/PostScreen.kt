@@ -3,18 +3,39 @@ package com.mobile.jobsearchapplication.ui.features.post
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -25,13 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.mobile.jobsearchapplication.R
 import com.mobile.jobsearchapplication.ui.base.BaseScreen
-import com.mobile.jobsearchapplication.ui.components.textField.post.CustomTextField
 import com.mobile.jobsearchapplication.ui.components.textField.post.DropdownMenuField
 import com.mobile.jobsearchapplication.ui.components.topBar.BackButton
 import com.mobile.jobsearchapplication.ui.components.topBar.TitleTopBar
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -169,8 +187,7 @@ fun PostScreen(
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         onValueChange = {
                             if (it.all { char -> char.isDigit() }) {
-                                viewModel.jobPost =
-                                    jobPost.copy(positionsAvailable = it.toIntOrNull() ?: 0)
+                                viewModel.jobPost = jobPost.copy(positionsAvailable = it.toIntOrNull() ?: 0)
                             }
                         }
                     )
@@ -198,16 +215,12 @@ fun PostScreen(
                                 append("Lương tối thiểu")
                                 withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                             },
-                            value = jobPost.salary.min.toString(),
+                            value = jobPost.salaryMin.toString(),
                             modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
                             onValueChange = {
                                 if (it.all { char -> char.isDigit() || char == '.' }) {
-                                    viewModel.jobPost = jobPost.copy(
-                                        salary = jobPost.salary.copy(
-                                            min = it.toDoubleOrNull() ?: 0.0
-                                        )
-                                    )
+                                    viewModel.jobPost = jobPost.copy(salaryMin = it.toDoubleOrNull() ?: 0.0)
                                 }
                             }
                         )
@@ -216,16 +229,12 @@ fun PostScreen(
                                 append("Lương tối đa")
                                 withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                             },
-                            value = jobPost.salary.max.toString(),
+                            value = jobPost.salaryMax.toString(),
                             modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
                             onValueChange = {
                                 if (it.all { char -> char.isDigit() || char == '.' }) {
-                                    viewModel.jobPost = jobPost.copy(
-                                        salary = jobPost.salary.copy(
-                                            max = it.toDoubleOrNull() ?: 0.0
-                                        )
-                                    )
+                                    viewModel.jobPost = jobPost.copy(salaryMax = it.toDoubleOrNull() ?: 0.0)
                                 }
                             }
                         )
@@ -235,7 +244,50 @@ fun PostScreen(
 
                     DropdownMenuField(
                         label = buildAnnotatedString {
+                            append("Đơn vị tiền tệ")
+                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
+                        }.toString(),
+                        options = listOf("VND", "USD", "EUR"),
+                        selectedOption = jobPost.currency,
+                        onOptionSelected = { viewModel.jobPost = jobPost.copy(currency = it) }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    DropdownMenuField(
+                        label = buildAnnotatedString {
+                            append("Chu kỳ lương")
+                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
+                        }.toString(),
+                        options = listOf("Giờ", "Ngày", "Tuần", "Tháng", "Năm"),
+                        selectedOption = when (jobPost.salaryPeriod) {
+                            "HOURLY" -> "Giờ"
+                            "DAILY" -> "Ngày"
+                            "WEEKLY" -> "Tuần"
+                            "MONTHLY" -> "Tháng"
+                            "YEARLY" -> "Năm"
+                            else -> "Tháng"
+                        },
+                        onOptionSelected = {
+                            viewModel.jobPost = jobPost.copy(
+                                salaryPeriod = when (it) {
+                                    "Giờ" -> "HOURLY"
+                                    "Ngày" -> "DAILY"
+                                    "Tuần" -> "WEEKLY"
+                                    "Tháng" -> "MONTHLY"
+                                    "Năm" -> "YEARLY"
+                                    else -> "MONTHLY"
+                                }
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    DropdownMenuField(
+                        label = buildAnnotatedString {
                             append("Giới tính")
+                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                         }.toString(),
                         options = listOf("Không yêu cầu", "Nam", "Nữ"),
                         selectedOption = when (jobPost.genderRequirement) {
@@ -270,15 +322,10 @@ fun PostScreen(
                     DropdownMenuField(
                         label = buildAnnotatedString {
                             append("Kinh nghiệm làm việc")
+                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                         }.toString(),
-                        options = listOf(
-                            "Không yêu cầu",
-                            "Dưới 1 năm",
-                            "1-2 năm",
-                            "Trên 2 năm",
-                            "Trưởng nhóm"
-                        ),
-                        selectedOption = when (jobPost.experience.level) {
+                        options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm", "Trưởng nhóm"),
+                        selectedOption = when (jobPost.experienceLevel) {
                             "FRESH" -> "Không yêu cầu"
                             "INTERN" -> "Dưới 1 năm"
                             "JUNIOR" -> "1-2 năm"
@@ -287,15 +334,16 @@ fun PostScreen(
                             else -> "Không yêu cầu"
                         },
                         onOptionSelected = {
-                            val experience = when (it) {
-                                "Không yêu cầu" -> JobPost.Experience(0, 0, "FRESH")
-                                "Dưới 1 năm" -> JobPost.Experience(0, 1, "INTERN")
-                                "1-2 năm" -> JobPost.Experience(1, 2, "JUNIOR")
-                                "Trên 2 năm" -> JobPost.Experience(2, 5, "SENIOR")
-                                "Trưởng nhóm" -> JobPost.Experience(5, 10, "LEAD")
-                                else -> JobPost.Experience(0, 0, "FRESH")
-                            }
-                            viewModel.jobPost = jobPost.copy(experience = experience)
+                            viewModel.jobPost = jobPost.copy(
+                                experienceLevel = when (it) {
+                                    "Không yêu cầu" -> "FRESH"
+                                    "Dưới 1 năm" -> "INTERN"
+                                    "1-2 năm" -> "JUNIOR"
+                                    "Trên 2 năm" -> "SENIOR"
+                                    "Trưởng nhóm" -> "LEAD"
+                                    else -> "FRESH"
+                                }
+                            )
                         }
                     )
 
@@ -304,6 +352,7 @@ fun PostScreen(
                     DropdownMenuField(
                         label = buildAnnotatedString {
                             append("Loại hình công việc")
+                            withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                         }.toString(),
                         options = listOf("Toàn thời gian", "Bán thời gian", "Hợp đồng"),
                         selectedOption = when (jobPost.employmentType) {
@@ -348,7 +397,9 @@ fun PostScreen(
                         value = jobPost.additionalInfo.overtimePolicy ?: "",
                         onValueChange = {
                             viewModel.jobPost = jobPost.copy(
-                                additionalInfo = jobPost.additionalInfo.copy(overtimePolicy = it)
+                                additionalInfo = jobPost.additionalInfo.copy(
+                                    overtimePolicy = it.ifBlank { null }
+                                )
                             )
                         }
                     )
@@ -362,7 +413,9 @@ fun PostScreen(
                         value = jobPost.additionalInfo.probationPeriod ?: "",
                         onValueChange = {
                             viewModel.jobPost = jobPost.copy(
-                                additionalInfo = jobPost.additionalInfo.copy(probationPeriod = it)
+                                additionalInfo = jobPost.additionalInfo.copy(
+                                    probationPeriod = it.ifBlank { null }
+                                )
                             )
                         }
                     )
@@ -374,7 +427,7 @@ fun PostScreen(
                             append("Thông tin khác")
                         },
                         value = jobPost.benefits ?: "",
-                        onValueChange = { viewModel.jobPost = jobPost.copy(benefits = it) }
+                        onValueChange = { viewModel.jobPost = jobPost.copy(benefits = it.ifBlank { null }) }
                     )
                 }
             }
@@ -407,14 +460,12 @@ fun PostScreen(
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SectionInfoRecruiter(
     jobPost: JobPost,
     viewModel: PostViewModel
 ) {
-// Phần thông tin nhà tuyển dụng
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -434,8 +485,16 @@ fun SectionInfoRecruiter(
                     append("Thành phố")
                     withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                 },
-                value = jobPost.location.city,
-                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(city = it)) }
+                value = jobPost.location.split(", ").getOrNull(0) ?: "",
+                onValueChange = { city ->
+                    val parts = jobPost.location.split(", ")
+                    val newLocation = listOf(
+                        city,
+                        parts.getOrNull(1) ?: "",
+                        parts.getOrNull(2) ?: ""
+                    ).filter { it.isNotBlank() }.joinToString(", ")
+                    viewModel.jobPost = jobPost.copy(location = newLocation)
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -444,8 +503,16 @@ fun SectionInfoRecruiter(
                 label = buildAnnotatedString {
                     append("Quận/Huyện")
                 },
-                value = jobPost.location.district ?: "",
-                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(district = it)) }
+                value = jobPost.location.split(", ").getOrNull(1) ?: "",
+                onValueChange = { district ->
+                    val parts = jobPost.location.split(", ")
+                    val newLocation = listOf(
+                        parts.getOrNull(0) ?: "",
+                        district,
+                        parts.getOrNull(2) ?: ""
+                    ).filter { it.isNotBlank() }.joinToString(", ")
+                    viewModel.jobPost = jobPost.copy(location = newLocation)
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -455,8 +522,16 @@ fun SectionInfoRecruiter(
                     append("Địa chỉ")
                     withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                 },
-                value = jobPost.location.address,
-                onValueChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(address = it)) }
+                value = jobPost.location.split(", ").getOrNull(2) ?: "",
+                onValueChange = { address ->
+                    val parts = jobPost.location.split(", ")
+                    val newLocation = listOf(
+                        parts.getOrNull(0) ?: "",
+                        parts.getOrNull(1) ?: "",
+                        address
+                    ).filter { it.isNotBlank() }.joinToString(", ")
+                    viewModel.jobPost = jobPost.copy(location = newLocation)
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -466,8 +541,15 @@ fun SectionInfoRecruiter(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = jobPost.location.isRemote,
-                    onCheckedChange = { viewModel.jobPost = jobPost.copy(location = jobPost.location.copy(isRemote = it)) }
+                    checked = jobPost.location.contains("(Từ xa)"),
+                    onCheckedChange = { isRemote ->
+                        val newLocation = if (isRemote) {
+                            "${jobPost.location} (Từ xa)".trim()
+                        } else {
+                            jobPost.location.replace("(Từ xa)", "").trim()
+                        }
+                        viewModel.jobPost = jobPost.copy(location = newLocation)
+                    }
                 )
                 Text("Làm việc từ xa", modifier = Modifier.padding(start = 8.dp))
             }
@@ -475,10 +557,9 @@ fun SectionInfoRecruiter(
     }
 }
 
-
 @Composable
 fun CustomTextField(
-    label: AnnotatedString, // Đổi từ String sang AnnotatedString
+    label: AnnotatedString,
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
