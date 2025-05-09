@@ -96,7 +96,7 @@ class PostViewModel(
             jobPost.location.isBlank() -> Result.failure(Exception("Địa chỉ không được để trống"))
             jobPost.categoryId <= 0 -> Result.failure(Exception("Danh mục công việc không hợp lệ"))
             jobPost.additionalInfo.workingHours.isBlank() -> Result.failure(Exception("Giờ làm việc không được để trống"))
-            jobPost.experienceLevel !in listOf("FRESH", "INTERN", "JUNIOR", "SENIOR", "LEAD") ->
+            jobPost.experienceLevel !in listOf("ENTRY", "MID_LEVEL", "SENIOR", "LEADER", "MANAGER") ->
                 Result.failure(Exception("Mức kinh nghiệm không hợp lệ"))
             jobPost.employmentType !in listOf("FULL_TIME", "PART_TIME", "CONTRACT") ->
                 Result.failure(Exception("Loại công việc không hợp lệ"))

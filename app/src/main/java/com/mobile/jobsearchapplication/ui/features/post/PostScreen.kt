@@ -324,24 +324,24 @@ fun PostScreen(
                             append("Kinh nghiệm làm việc")
                             withStyle(style = SpanStyle(color = Color.Red)) { append(" *") }
                         }.toString(),
-                        options = listOf("Không yêu cầu", "Dưới 1 năm", "1-2 năm", "Trên 2 năm", "Trưởng nhóm"),
+                        options = listOf("Không yêu cầu", "1-2 năm", "3-5 năm", "Trên 5 năm", "Quản lý"),
                         selectedOption = when (jobPost.experienceLevel) {
-                            "FRESH" -> "Không yêu cầu"
-                            "INTERN" -> "Dưới 1 năm"
-                            "JUNIOR" -> "1-2 năm"
-                            "SENIOR" -> "Trên 2 năm"
-                            "LEAD" -> "Trưởng nhóm"
+                            "ENTRY" -> "Không yêu cầu"
+                            "MID_LEVEL" -> "1-2 năm"
+                            "SENIOR" -> "3-5 năm"
+                            "LEADER" -> "Trên 5 năm"
+                            "MANAGER" -> "Quản lý"
                             else -> "Không yêu cầu"
                         },
                         onOptionSelected = {
                             viewModel.jobPost = jobPost.copy(
                                 experienceLevel = when (it) {
-                                    "Không yêu cầu" -> "FRESH"
-                                    "Dưới 1 năm" -> "INTERN"
-                                    "1-2 năm" -> "JUNIOR"
-                                    "Trên 2 năm" -> "SENIOR"
-                                    "Trưởng nhóm" -> "LEAD"
-                                    else -> "FRESH"
+                                    "Không yêu cầu" -> "ENTRY"
+                                    "1-2 năm" -> "MID_LEVEL"
+                                    "3-5 năm" -> "SENIOR"
+                                    "Trên 5 năm" -> "LEADER"
+                                    "Quản lý" -> "MANAGER"
+                                    else -> "ENTRY"
                                 }
                             )
                         }
@@ -429,6 +429,7 @@ fun PostScreen(
                         value = jobPost.benefits ?: "",
                         onValueChange = { viewModel.jobPost = jobPost.copy(benefits = it.ifBlank { null }) }
                     )
+
                 }
             }
 
